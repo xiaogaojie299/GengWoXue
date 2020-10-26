@@ -36,7 +36,7 @@
     </el-menu>
   </el-aside>
 
-  <el-container style="border:1px solid black;max-height:100%">
+  <el-container style="border:1px solid black;min-height:100%">
       <router-view></router-view>
   </el-container>
 </el-container>
