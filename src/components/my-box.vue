@@ -25,6 +25,7 @@
   }
   .my-main {
     flex: 1;
+    position: relative;
   }
 }
 </style>

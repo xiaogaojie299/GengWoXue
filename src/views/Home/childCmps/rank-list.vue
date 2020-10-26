@@ -76,7 +76,11 @@ export default {
   margin-top: 6px;
 }
 .rank-list-box {
-  width: 624px;
+  background: #ffffff;
+  box-shadow: 0px 2px 57px 5px rgba(200, 200, 200, 0.32);
+  border-radius: 10px;
+  margin-bottom: 20px;
+  width: 524px;
   min-height: 700px;
   background: url("~@/assets/img/home/list.png") no-repeat;
   background-size: 100% 100%;

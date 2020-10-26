@@ -136,7 +136,7 @@ input:-ms-input-placeholder {
       align-items: center;
 
       background: linear-gradient(110deg, #f13232, #ef763c);
-      border-radius: 20px;
+      border-radius: 0 10px 10px 0;
       // 字体样式
 
       font-size: 25px;

@@ -91,7 +91,7 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .nav {
   width: 100%;
   height: 80px;
@@ -106,7 +106,8 @@ export default {
 }
 .left-title {
   width: 107px;
-  margin-right: 20px;
+  /* height: 34px; */
+  margin-right: 55px;
   color: #eb002a;
   display: flex;
   align-items: center;
@@ -122,8 +123,8 @@ export default {
   right: 0;
 }
 .left-title > img {
-  width: 66px;
-  height: 21px;
+  width: 107px;
+  height: 34px;
 }
 .navbar {
   width: 100%;
@@ -133,9 +134,9 @@ export default {
 .navbar > .navbar-item {
   position: relative;
   margin-right: 86px;
-  font-size: 18px;
+  font-size: 24px;
   font-family: Source Han Sans CN;
-  font-weight: 550;
+  font-weight: 500;
   /* color: #191616; */
   line-height: 32px;
   height: 80px;
@@ -167,10 +168,9 @@ export default {
 }
 .regist {
   position: relative;
-  font-size: 18px;
+  font-size: 24px;
   font-family: Source Han Sans CN;
-  font-weight: bold;
-  line-height: 32px;
+  font-weight: 500;
   margin-left: 10px;
   height: 80px;
 }

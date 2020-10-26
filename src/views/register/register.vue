@@ -1,17 +1,17 @@
 <template>
-  <div id="box">
+  <div class="box">
     <!-- 背景图片 -->
     <div class="main">
-      <!-- 右侧边框 -->
-      <div class="right-box">
-        <!-- 登录盒子 -->
-        <div v-if="isVisible == 0">
-          <regist-box @goForgetUpwd="goForgetUpwd" />
+      <container>
+        <div class="right-box">
+          <div v-if="isVisible == 0">
+            <regist-box @goForgetUpwd="goForgetUpwd" />
+          </div>
+          <div v-else>
+            <forget-upwd @backUpwdReg="backUpwdReg" />
+          </div>
         </div>
-        <div v-else>
-          <forget-upwd @backUpwdReg="backUpwdReg" />
-        </div>
-      </div>
+      </container>
     </div>
   </div>
 </template>
@@ -41,12 +41,23 @@ export default {
 };
 </script>
 <style scoped>
+.box {
+  width: 100%;
+  height: 100%;
+}
+.my-main {
+  width: 100px;
+  height: 100%;
+  background: red;
+}
 .main {
-  min-height: calc(100vh - 179px);
+  /* min-height: calc(100vh - 179px); */
+  height: 100%;
   background: url("~@/assets/img/bg_Img2.png") no-repeat;
   background-size: 100% 100%;
 }
 .right-box {
   position: relative;
+  height: 100%;
 }
 </style>

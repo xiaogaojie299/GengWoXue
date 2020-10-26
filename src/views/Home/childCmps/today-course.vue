@@ -64,8 +64,8 @@ export default {};
   padding: 19px 27px 19px 22px;
   display: flex;
   .left-img {
-    width: 88px;
-    height: 88px;
+    width: 142px;
+    height: 142px;
     border-radius: 50%;
     border: 1px solid blue;
     margin-right: 12px;
@@ -89,7 +89,7 @@ export default {};
         align-items: center;
 
         .right-content-top-group-title {
-          font-size: 15px;
+          font-size: 24px;
           font-family: Source Han Sans CN;
           font-weight: bold;
           color: #343434;
@@ -124,40 +124,40 @@ export default {};
 
     .right-content-bottom {
       width: 100%;
-      height: 80%;
-      margin-top: 4px;
+      height: 100%;
+      margin-top: 29px;
       //   老师名字
       .teacher-name {
-        font-size: 15px;
+        font-size: 24px;
         font-family: Source Han Sans CN;
         font-weight: 400;
         color: #343434;
+        // margin-bottom: 8px;
       }
       .start-times-box {
         .start-times-item {
-          font-size: 12px;
+          font-size: 20px;
           font-family: Source Han Sans CN;
           font-weight: 400;
           color: #343434;
           .icon_time {
-            width: 11px;
-            height: 11px;
+            width: 18px;
+            height: 18px;
           }
         }
         display: flex;
         justify-content: space-between;
         align-items: center;
         .btn-start {
-          width: 88px;
-          height: 30px;
-          background: linear-gradient(110deg, #f13131, #ef753b);
-          border-radius: 15px;
-
+          width: 141px;
+          height: 49px;
+          background: linear-gradient(110deg, #f13232, #ef753c);
+          border-radius: 25px;
           //字体颜色
           display: flex;
           justify-content: center;
           align-items: center;
-          font-size: 15px;
+          font-size: 24px;
           font-family: Source Han Sans CN;
           font-weight: bold;
           color: #ffffff;
