@@ -18,7 +18,7 @@ export default {
         font-weight: 500;
         color: #343434;
         line-height: 55px;
-        margin:20px 0;
+        // margin:20px 0;
         .less{
             margin:0 8px
         }

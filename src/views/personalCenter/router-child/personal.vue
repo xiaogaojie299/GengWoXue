@@ -7,36 +7,20 @@
     <el-menu :default-openeds="['2-1']">
 <el-menu-item index="1-1" @click="go_url('data')">个人资料</el-menu-item>
 
-      <el-submenu index="2">
-        <template slot="title">课件中心</template>
         <el-menu-item-group>
-          <el-menu-item index="2-1" @click="go_url('kejianku')">课件库</el-menu-item>
-          <el-menu-item index="2-2" @click="go_url('mykejian')">我的课件</el-menu-item>
+          <el-menu-item index="3-1" @click="go_url('wallet')">我的钱包</el-menu-item>
         </el-menu-item-group>
-        <el-menu-item-group title="分组2">
-          <el-menu-item index="2-3">选项3</el-menu-item>
+       <el-menu-item-group>
+          <el-menu-item index="4-1" @click="go_url('promotion')">推广中心</el-menu-item>
         </el-menu-item-group>
-      </el-submenu>
-      <el-submenu index="3">
-        <template slot="title">我的班级</template>
-        <el-menu-item-group>
-          <el-menu-item index="3-1" @click="go_url('myClass')">我的班级</el-menu-item>
-          <el-menu-item index="3-2" @click="go_url('evaluation')">班级测评</el-menu-item>
-        </el-menu-item-group>
-      </el-submenu>
       <!-- 我的学生 -->
-       <el-submenu index="4">
-        <template slot="title">我的学生</template>
         <el-menu-item-group>
-          <template slot="title">分组一</template>
-          <el-menu-item index="4-1" @click="go_url('student')">我的学生</el-menu-item>
-          <el-menu-item index="4-2">选项2</el-menu-item>
+          <el-menu-item index="5-1" @click="go_url('feedback')">问题反馈</el-menu-item>
         </el-menu-item-group>
-      </el-submenu>
     </el-menu>
   </el-aside>
 
-  <el-container style="border:1px solid black;min-height:100%">
+  <el-container style="border:1px solid black;min-height:100%;padding-left:47px">
       <router-view></router-view>
   </el-container>
 </el-container>

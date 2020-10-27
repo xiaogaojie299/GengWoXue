@@ -81,26 +81,26 @@ const routes = [
           },
           // 我的班级
           {
-            path:"myClass",
-            component:()=>import("../views/officeCenter/office-center-child/my-class.vue")
+            path: "myClass",
+            component: () => import("../views/officeCenter/office-center-child/my-class.vue")
           },
           // 班级评测
           {
-            path:"evaluation",
-            component:()=>import("../views/officeCenter/office-center-child/evaluation.vue")
+            path: "evaluation",
+            component: () => import("../views/officeCenter/office-center-child/evaluation.vue")
           },
 
-         // 我的学生
-         {
-          path:"student",
-            component:()=>import("../views/officeCenter/office-center-child/student.vue")
-        },
+          // 我的学生
+          {
+            path: "student",
+            component: () => import("../views/officeCenter/office-center-child/student.vue")
+          },
           // 学生详情页面
           {
-              path:"studentDetail",
-              component:()=>import("../views/officeCenter/office-center-child/student-detail.vue")
+            path: "studentDetail",
+            component: () => import("../views/officeCenter/office-center-child/student-detail.vue")
           }
-          
+
         ],
       },
       // 老师直播页面
@@ -117,8 +117,8 @@ const routes = [
       },
       // 测评详解
       {
-        path:"evaluationDetail",
-        component:()=>import("../views/officeCenter/evaluation-detail.vue")
+        path: "evaluationDetail",
+        component: () => import("../views/officeCenter/evaluation-detail.vue")
       }
     ],
   },
@@ -149,36 +149,65 @@ const routes = [
   },
   // 消息中心
   {
-    path:"/msgCenter",
-    name:"msgCenter",
-    component:()=>import("../views/messageCenter/index.vue")
+    path: "/msgCenter",
+    name: "msgCenter",
+    component: () => import("../views/messageCenter/index.vue")
   },
   // 个人中心
   {
-    path:"/personalCenter",
-    name:"personalCenter",
-    component:()=>import("../views/personalCenter/index.vue"),
-    children:[{
-      path:"personal",
-      name:"personal",
-      component:()=>import("../views/personalCenter/router-child/personal.vue"),
-      children:[{
-        path:"data",
-        name:"personal-data",
-        component:()=>import("../views/personalCenter/router-child/childCmps/personal-data.vue"),
-        children:[
+    path: "/personalCenter",
+    name: "personalCenter",
+    component: () => import("../views/personalCenter/index.vue"),
+    children: [{
+      path: "personal",
+      name: "personal",
+      component: () => import("../views/personalCenter/router-child/personal.vue"),
+      children: [{
+        path: "data",
+        name: "personal-data",
+        component: () => import("../views/personalCenter/router-child/childCmps/personal-data.vue"),
+        children: [
           {
-            path:"account-security",
-            name:"account-security",
-            component:()=>import("../views/personalCenter/router-child/childCmps/account-security.vue")
+            path: "account-security",
+            name: "account-security",
+            component: () => import("../views/personalCenter/router-child/childCmps/account-security.vue")
           },
           {
-            path:"personal-info",
-            name:"personal-info",
-            component:()=>import("../views/personalCenter/router-child/childCmps/personal-info.vue")
+            path: "personal-info",
+            name: "personal-info",
+            component: () => import("../views/personalCenter/router-child/childCmps/personal-info.vue")
           }
         ]
-      }]
+      }, 
+      {
+        path: "promotion",
+        name: "promotion",
+        component: () => import("../views/personalCenter/router-child/childCmps/promotion.vue")
+      },
+      // 反馈
+      {
+        path: "feedback",
+        name: "feedback",
+        component: () => import("../views/personalCenter/router-child/feedback/index.vue")
+      },
+      // 历史反馈
+      {
+        path: "historyFeedback",
+        name: "historyFeedback",
+        component: () => import("../views/personalCenter/router-child/feedback/history.vue")
+      },
+      // 我的钱包
+      {
+        path: "wallet",
+        name: "wallet",
+        component: () => import("../views/personalCenter/router-child/money/index.vue"),
+      },
+      {
+            path:"recharge",
+            name:"recharge",
+            component:() =>import("../views/personalCenter/router-child/money/router-child/money-recharge.vue")
+      }
+    ]
     }]
   },
 ];

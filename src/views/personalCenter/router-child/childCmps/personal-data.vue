@@ -1,14 +1,14 @@
 <template>
-    <div>
+    <div class="box">
         <!-- 头部个人资料 -->
-        <div class="title">我的班级</div>
+        <div class="title">个人资料</div>
         <!-- 中间内容 -->
         <div class="main">
             <!-- 基本信息 -->
             <div class="nav-bar">
                 <span
-                @click="go_url(item.path)" 
-                class="active"
+                @click="go_url(item.path),checkoutTitle(index)"
+                :class="{active:currentIndex==index}" 
                 v-for="(item,index) in navbarList"
                 :key="index"
                 >{{item.title}}</span>
@@ -25,15 +25,17 @@
 export default {
     data(){
         return {
-            navbarList:[{
-                path:"account-security",
-                title:"账号安全"
-            },
-            {
-                path:"personal-info",
-                title:"基本信息"
-            }
-            ]
+                navbarList:[
+                {
+                    path:"personal-info",
+                    title:"基本信息"
+                },{
+                    path:"account-security",
+                    title:"账号安全"
+                }
+            ],
+            // 默认选中基本信息
+            currentIndex:0
         }
     },
     methods:{
@@ -41,11 +43,17 @@ export default {
             this.$router.push({
                 path:"/personalCenter/personal/data/"+url
             })
+        },
+        checkoutTitle(index){
+            this.currentIndex=index;
         }
     }
 }
 </script>
 <style lang="scss" scoped>
+.box{
+    // padding-left: 44px;
+}
     .title {
   font-size: 24px;
   font-family: Source Han Sans CN;
@@ -63,7 +71,8 @@ color: #333333;
 }
 .main{
     width: 1014px;
-height: 1080px;
+// height: 1080px;
+  padding: 18px 23px;
 background: #F8F9F9;
 .nav-bar{
     width: 100%;
@@ -73,7 +82,6 @@ background: #F8F9F9;
     color: #7B7B7B;
     line-height: 54px;
     & >:first-child{
-        border: 1px solid red;
         margin-right: 25px;
     }
 }

@@ -82,7 +82,7 @@
         </div>
       </div>
       <!-- 个人简历 -->
-      <div class="row">
+      <div class="row"> 
         <div class="col1">
           <div class="left-box my-font">出生日期：</div>
           <!-- <div class="right-box">
@@ -149,7 +149,6 @@ input {
 }
 
 textarea {
-  border: 1px solid red;
   width: 100%;
   height: 113px;
   padding: 10px 20px;

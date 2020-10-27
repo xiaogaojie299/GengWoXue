@@ -7,7 +7,9 @@ import pageDevice from "@/components/page-device"
 import calendar from "@/components/calendar" 
 import tableFormat from "@/components/table-format"
 import crumbs from "@/components/crumbs"
-import myBox from "@/components/my-box"  
+import myBox from "@/components/my-box"
+import myTitle from "@/components/my-title"
+import radioButton from "@/components/radio-button"  
 function plugins(Vue){
         Vue.component("container",container)
         Vue.component("nav-bar",navBar)
@@ -19,5 +21,7 @@ function plugins(Vue){
         Vue.component("table-format",tableFormat)
         Vue.component("my-box",myBox)
 	Vue.component("crumbs",crumbs )
+        Vue.component("myTitle",myTitle)
+        Vue.component("radioButton",radioButton)
 }
 export default plugins
