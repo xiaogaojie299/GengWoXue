@@ -179,11 +179,13 @@ const routes = [
           }
         ]
       }, 
+
       {
         path: "promotion",
         name: "promotion",
         component: () => import("../views/personalCenter/router-child/childCmps/promotion.vue")
       },
+
       // 反馈
       {
         path: "feedback",
@@ -200,12 +202,24 @@ const routes = [
       {
         path: "wallet",
         name: "wallet",
-        component: () => import("../views/personalCenter/router-child/money/index.vue"),
+        component: () => import("../views/personalCenter/router-child/money/index.vue")
       },
+      // 充值金额
       {
             path:"recharge",
             name:"recharge",
-            component:() =>import("../views/personalCenter/router-child/money/router-child/money-recharge.vue")
+            component:() =>import("../views/personalCenter/router-child/money/router-child/money-recharge.vue"),
+            children:[
+              {
+                path:"detail",
+                name:"detail",
+                component:()=>import("../views/personalCenter/router-child/money/router-child/childCmps/pay-detail.vue")
+              },
+              {
+              path:"succee",
+              name:"succee",
+              component:()=>import("../views/personalCenter/router-child/money/router-child/childCmps/pay-success.vue")
+            }]
       }
     ]
     }]

@@ -1,13 +1,34 @@
 <template>
   <div class="box">
-    <div>
-      <my-title><span @click="go_back">我的钱包</span>>充值</my-title>
+    <!-- 中间内容 -->
+    <div class="main">
+      <div class="title">充值金额</div>
+      <input type="text" placeholder="请输入充值金额" />
+      <!-- 单选框 -->
+      <div>
+        <radio-button>
+          <span slot="radio1" class="my-font">微信支付</span>
+          <span slot="radio2" class="my-font">支付宝支付</span>
+        </radio-button>
+      </div>
+
+      <!-- 按钮 -->
+      <div class="footer">
+            <div class="btn" @click="go_pay">去支付</div>
+      </div>
     </div>
-    <router-view></router-view>
+    <!-- 遮罩层 -->
+    <el-dialog
+        :visible.sync="dialogVisible"
+        :show-close="false"
+        center
+        >
+    <pay @closeMask="closeMask()"></pay>
+</el-dialog>
   </div>
 </template>
 <script>
-import pay from "./childCmps/pay"
+import pay from "./pay"
 export default {
     data(){
         return{
@@ -23,10 +44,11 @@ export default {
         },
         closeMask(){
            this.dialogVisible=false;
-           this.$router.push({
+            this.$router.push({
             path:"/personalCenter/personal/recharge/succee"
           })
-        }
+        },
+       
     },
     components:{
         pay

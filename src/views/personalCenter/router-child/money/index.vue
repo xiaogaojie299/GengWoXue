@@ -18,7 +18,7 @@
 
       <!-- 按钮组 -->
       <div class="btn-groups">
-        <div class="btn1" @click="go_url('recharge')">充值</div>
+        <div class="btn1" @click="go_url('recharge/detail')">充值</div>
         <div class="btn2">提现</div>
         <div class="btn3">绑定支付宝</div>
       </div>
