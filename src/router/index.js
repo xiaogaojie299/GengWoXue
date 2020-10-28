@@ -160,6 +160,7 @@ const routes = [
     component: () => import("../views/personalCenter/index.vue"),
     children: [{
       path: "personal",
+      redirect: "personal/data/personal-info",
       name: "personal",
       component: () => import("../views/personalCenter/router-child/personal.vue"),
       children: [{
@@ -220,6 +221,18 @@ const routes = [
               name:"succee",
               component:()=>import("../views/personalCenter/router-child/money/router-child/childCmps/pay-success.vue")
             }]
+      },
+      // 绑定支付宝
+      {
+        path:"bind",
+        name:"bind",
+        component:()=>import("../views/personalCenter/router-child/money/router-child/bind.vue")
+      },
+      // 提现金额
+      {
+        path:"withdraw",
+        name:"withdraw",
+        component:()=>import("../views/personalCenter/router-child/money/router-child/withdraw.vue")
       }
     ]
     }]

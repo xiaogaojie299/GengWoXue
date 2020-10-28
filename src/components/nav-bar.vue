@@ -27,6 +27,7 @@
             }"
           ></span>
         </div>
+          <div @click="go_personalCenter()">个人中心</div>
       </div>
     </div>
 
@@ -75,13 +76,12 @@ export default {
       console.log("$router", this.$route);
       // this.activeRouter=this.$route.path;
     },
-    // 如果默认的/则转换成home
-    transformRouter() {
-      if (this.$router.path == "/") {
-        console.log("123");
-      }
+    go_personalCenter(){
+      console.log("跳转到个人中心");
+      this.$router.push({
+        path:"/personalCenter/personal"
+      })
     },
-
     // 点击跳转到登录注册页面
     go_register() {
       this.$router.push({
