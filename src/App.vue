@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <my-box class="my-box">
+    <my-box v-show="false" class="my-box">
       <div slot="my-header">
         <container>
           <nav-bar></nav-bar>
@@ -14,6 +14,9 @@
         <footers></footers>
       </div>
     </my-box>
+
+    <!-- 引入ifraim -->
+      <iframe id="iframe1" width="100%" height="800" frameborder="0" scrolling="auto" src="../public/test.html"></iframe> 
   </div>
 </template>
 <script>
@@ -24,11 +27,23 @@ export default {
   data() {
     return {};
   },
+  mounted(){
+    var iframe = document.getElementById("iframe1");
+    var iwindow = iframe.contentWindow;
+    var idoc = iwindow.document;
+    iframe.height = idoc.body.offsetHeight;
+    console.log('iwindow=',iframe.height);
+  },
   components: {},
 };
 </script>
 
 <style lang="scss">
+.test{
+  width: 100%;
+  height: 1000px;
+  border: 1px solid red;
+}
 @import "./assets/css/my-style.scss";
 // #box{
 //   min-height: calc(100vh - 179px);
