@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <el-carousel style="height:500px" :interval="5000" arrow="never">
+    <el-carousel style="height: 500px" :interval="5000" arrow="never">
       <el-carousel-item v-for="item in 4" :key="item">
         <h3>{{ item }}</h3>
       </el-carousel-item>
@@ -12,6 +12,19 @@
 export default {};
 </script>
 <style lang="scss" scoped>
+/deep/ .el-carousel__button {
+  width: 18px;
+  height: 18px;
+  background: #dddddd;
+  opacity: 0.3;
+  border-radius: 50%;
+}
+/deep/.is-active > button {
+  background: #ffffff;
+  width: 37px;
+  height: 18px;
+  border-radius: 9px;
+}
 .box {
   width: 100%;
   height: 506px;

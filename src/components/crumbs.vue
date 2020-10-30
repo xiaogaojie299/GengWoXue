@@ -8,12 +8,10 @@
         </div>
       </div>
     </container>
-  </div> 
+  </div>
 </template>
 <script>
-export default {
-  
-}
+export default {};
 </script>
 <style lang="scss" scoped>
 .crumb {
@@ -21,15 +19,15 @@ export default {
   align-items: center;
   margin: 18px 0;
   .long-string {
-    width: 5px;
-    height: 17px;
+    width: 8px;
+    height: 26px;
     background: #eb002a;
     border-radius: 4px;
   }
 }
 .crumb-title {
-  font-size: 15px;
-  margin-left: 8px;
+  font-size: 24px;
+  margin-left: 12px;
   font-family: Source Han Sans CN;
   font-weight: 550;
   color: #343434;

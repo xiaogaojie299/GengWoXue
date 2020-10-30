@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <my-box v-show="false" class="my-box">
+    <my-box v-show="true" class="my-box">
       <div slot="my-header">
         <container>
           <nav-bar></nav-bar>
@@ -16,7 +16,7 @@
     </my-box>
 
     <!-- 引入ifraim -->
-      <iframe id="iframe1" width="100%" height="800" frameborder="0" scrolling="auto" src="../public/test.html"></iframe> 
+      <!-- <iframe id="iframe1" width="100%" height="800" frameborder="0" scrolling="auto" src="../public/test.html"></iframe>  -->
   </div>
 </template>
 <script>
