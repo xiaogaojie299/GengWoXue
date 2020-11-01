@@ -117,7 +117,6 @@ input:-ms-input-placeholder {
   width: 504px;
   // height: 795px;
   height: 80%;
-  border: 1px solid red;
   background: #ffffff;
   box-shadow: 1px 13px 18px 0px rgba(158, 158, 158, 0.3);
   border-radius: 10px;

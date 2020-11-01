@@ -16,7 +16,7 @@
     </my-box>
 
     <!-- 引入ifraim -->
-      <!-- <iframe id="iframe1" width="100%" height="800" frameborder="0" scrolling="auto" src="../public/test.html"></iframe>  -->
+    <!-- <iframe id="iframe1" width="100%" height="800" frameborder="0" scrolling="auto" src="../public/test.html"></iframe>  -->
   </div>
 </template>
 <script>
@@ -27,19 +27,13 @@ export default {
   data() {
     return {};
   },
-  mounted(){
-    var iframe = document.getElementById("iframe1");
-    var iwindow = iframe.contentWindow;
-    var idoc = iwindow.document;
-    iframe.height = idoc.body.offsetHeight;
-    console.log('iwindow=',iframe.height);
-  },
+  mounted() {},
   components: {},
 };
 </script>
 
 <style lang="scss">
-.test{
+.test {
   width: 100%;
   height: 1000px;
   border: 1px solid red;
