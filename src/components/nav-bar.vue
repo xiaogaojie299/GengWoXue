@@ -27,7 +27,7 @@
             }"
           ></span>
         </div>
-          <div @click="go_personalCenter()">个人中心</div>
+        <div @click="go_personalCenter()">个人中心</div>
       </div>
     </div>
 
@@ -56,13 +56,14 @@
 <script>
 export default {
   data() {
+    const url = "/page";
     return {
       navBarList: [
-        { title: "首页", path: "/home" },
-        { title: "问答广场", path: "/answersPlaza" },
-        { title: "办公中心", path: "/officeCenter" },
-        { title: "APP下载", path: "/appInstall" },
-        { title: "关于我们", path: "/about" },
+        { title: "首页", path: url + "/home" },
+        { title: "问答广场", path: url + "/answersPlaza" },
+        { title: "办公中心", path: url + "/officeCenter" },
+        { title: "APP下载", path: url + "/appInstall" },
+        { title: "关于我们", path: url + "/about" },
       ],
     };
   },
@@ -76,16 +77,16 @@ export default {
       console.log("$router", this.$route);
       // this.activeRouter=this.$route.path;
     },
-    go_personalCenter(){
+    go_personalCenter() {
       console.log("跳转到个人中心");
       this.$router.push({
-        path:"/personalCenter/personal"
-      })
+        path: "/page/personalCenter/personal",
+      });
     },
     // 点击跳转到登录注册页面
     go_register() {
       this.$router.push({
-        path: "/register",
+        path: "/page/register",
       });
     },
   },

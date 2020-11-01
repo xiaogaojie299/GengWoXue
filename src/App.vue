@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <my-box v-show="true" class="my-box">
+    <!-- <my-box v-show="true" class="my-box">
       <div slot="my-header">
         <container>
           <nav-bar></nav-bar>
@@ -13,8 +13,8 @@
       <div slot="my-footer">
         <footers></footers>
       </div>
-    </my-box>
-
+    </my-box> -->
+    <router-view></router-view>
     <!-- 引入ifraim -->
     <!-- <iframe id="iframe1" width="100%" height="800" frameborder="0" scrolling="auto" src="../public/test.html"></iframe>  -->
   </div>
