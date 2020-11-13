@@ -106,7 +106,7 @@ export default {
     },
     methods: {
         goResultInfo(){
-            this.$router.push('/ResultInfo')
+            this.$router.push('/page/ResultInfo')
         }
     }
 };

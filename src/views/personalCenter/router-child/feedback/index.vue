@@ -36,7 +36,7 @@ export default {
       go_historyFeedback(){
           console.log("跳转历史反馈页面");
           this.$router.push({
-              path:"/personalCenter/personal/historyFeedback"
+              path:"/page/personalCenter/personal/historyFeedback"
           })
       }
   }

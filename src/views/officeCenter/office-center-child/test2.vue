@@ -62,7 +62,7 @@ export default {
   methods: {
     go_courseDetail() {
       this.$router.push({
-        path: "/officeCenter/OfficeCenterIndex/test1",
+        path: "/page/officeCenter/OfficeCenterIndex/test1",
       });
     },
   },

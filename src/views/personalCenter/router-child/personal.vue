@@ -27,7 +27,7 @@
     </div>
 </template>
 <script>
-let routerUrl='/personalCenter/personal/';
+let routerUrl='/page/personalCenter/personal/';
   export default {
     data() {
       const item = {

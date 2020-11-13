@@ -43,7 +43,7 @@
     </div>
 </template>
 <script>
-let routerUrl='/officeCenter/OfficeCenterIndex/';
+let routerUrl='/page/officeCenter/OfficeCenterIndex/';
   export default {
     data() {
       const item = {

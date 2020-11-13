@@ -48,11 +48,11 @@ export default {
   methods: {
     go_myStudent() {
       this.$router.push({
-        path: "/officeCenter/OfficeCenterIndex/myStudent",
+        path: "/page/officeCenter/OfficeCenterIndex/myStudent",
       });
     },
     go_url(path) {
-      let routerUrl='/officeCenter/OfficeCenterIndex/';
+      let routerUrl='/page/officeCenter/OfficeCenterIndex/';
       console.log('跳转成功');
       this.$router.push({
           path:routerUrl+path

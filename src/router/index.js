@@ -9,6 +9,7 @@ import test2 from "@/views/officeCenter/office-center-child/test2.vue";
 Vue.use(VueRouter);
 
 const routes = [
+  {path:'/',redirect: "/page/home"},
   {
     path: "/page",
     component: () => import("../views/Home1.vue"),

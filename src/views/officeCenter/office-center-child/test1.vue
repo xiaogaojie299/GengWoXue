@@ -129,7 +129,7 @@ export default {
   methods: {
     go_child() {
       this.$router.push({
-        path: "/officeCenter/teacherLive",
+        path: "/page/officeCenter/teacherLive",
       });
     },
   },

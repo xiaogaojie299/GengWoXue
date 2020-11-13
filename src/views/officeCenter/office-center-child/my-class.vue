@@ -59,7 +59,7 @@ export default {
   methods:{
       go_myStudent(){
            this.$router.push({
-                path: "/officeCenter/OfficeCenterIndex/myStudent",
+                path: "/page/officeCenter/OfficeCenterIndex/myStudent",
       });
       },
     //   关闭遮罩层

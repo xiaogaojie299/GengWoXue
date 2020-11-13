@@ -44,7 +44,7 @@ export default {
   methods: {
     go_url(url) {
       this.$router.push({
-        path: "/personalCenter/personal/" + url,
+        path: "/page/personalCenter/personal/" + url,
       });
     },
   },

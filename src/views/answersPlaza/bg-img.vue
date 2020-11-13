@@ -47,7 +47,7 @@ export default {
     go_myAnswer() {
       console.log("跳转到我的提问");
       this.$router.push({
-        path: "/answersPlaza/my-answer",
+        path: "/page/answersPlaza/my-answer",
       });
     },
   },

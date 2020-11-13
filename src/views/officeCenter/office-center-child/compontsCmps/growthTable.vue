@@ -64,7 +64,7 @@ export default {
     deleteRow(index, rows) {
       console.log(index, rows);
       this.$router.push({
-        path: "/officeCenter/OfficeCenterIndex/test2",
+        path: "/page/officeCenter/OfficeCenterIndex/test2",
       });
     },
   },

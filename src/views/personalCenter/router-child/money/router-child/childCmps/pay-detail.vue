@@ -45,7 +45,7 @@ export default {
         closeMask(){
            this.dialogVisible=false;
             this.$router.push({
-            path:"/personalCenter/personal/recharge/succee"
+            path:"/page/personalCenter/personal/recharge/succee"
           })
         },
        

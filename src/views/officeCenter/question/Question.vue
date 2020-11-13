@@ -98,10 +98,10 @@ export default {
   mounted() {},
   methods: {
       goExercise(){
-          this.$router.push('/DoExercise')
+          this.$router.push('/page/DoExercise')
       },
       goSearchResult(){
-        this.$router.push('/SearchResult')
+        this.$router.push('/page/SearchResult')
       }
   },
 };

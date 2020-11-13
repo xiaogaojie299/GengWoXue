@@ -59,7 +59,7 @@ export default {
   methods:{
       go_myStudent(){
            this.$router.push({
-                path: "/officeCenter/OfficeCenterIndex/myStudent",
+                path: "/page/officeCenter/OfficeCenterIndex/myStudent",
       });
       },
     //   关闭遮罩层
@@ -70,7 +70,7 @@ export default {
     //   跳转到测评页面
     go_evalDetails(){
         this.$router.push({
-                path: "/officeCenter/evaluationDetail",
+                path: "/page/officeCenter/evaluationDetail",
       });
     }
   },

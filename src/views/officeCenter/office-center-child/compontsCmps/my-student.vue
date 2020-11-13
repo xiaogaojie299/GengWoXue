@@ -107,7 +107,7 @@ export default {
     go_studentDetail() {
       console.log("跳转到学生详情成功");
       this.$router.push({
-        path: "/officeCenter/OfficeCenterIndex/studentDetail",
+        path: "/page/officeCenter/OfficeCenterIndex/studentDetail",
       });
     },
     close(){

@@ -66,7 +66,7 @@ export default {
     deleteRow(index, rows) {
         console.log(index,rows);
         this.$router.push({
-             path:"/officeCenter/readwork"
+             path:"/page/officeCenter/readwork"
         })
     },
   },

@@ -48,7 +48,7 @@ export default {
     go_exDetail() {
       console.log("跳转成功");
       this.$router.push({
-        path: "/answersPlaza/exercises-detail",
+        path: "/page/answersPlaza/exercises-detail",
       });
     },
   },

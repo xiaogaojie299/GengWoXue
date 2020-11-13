@@ -181,7 +181,7 @@ export default {
   },
   methods: {
     testEnd(){
-      this.$router.push('/Question')
+      this.$router.push('/page/Question')
     }
   }
 };
