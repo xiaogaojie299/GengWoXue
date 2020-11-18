@@ -13,31 +13,49 @@
       <!-- 下面主体 -->
       <div class="main-box">
         <!-- 登陆模板 -->
-        <input-template>
+        <input-template v-show="currentIndex==index" v-for="(item,index) in inputList" :key="index">
           <input
             slot="left-content"
             type="text"
-            placeholder="请输入您的验证码"
+            v-model="item.value"
+            :placeholder="item.placeholder"
           />
           <div slot="right-content">
-            <div class="select_Icon"></div>
+            <!-- <div class="select_Icon"></div> -->
+            <img
+              @click="remember"
+              class="select_Icon"
+              :src="
+                isSelect
+                  ? require('@/assets/img/register/selected.png')
+                  : require('@/assets/img/register/radiobutton@2x.png')
+              "
+              alt=""
+            />
             <div class="right-txt">记住登录名</div>
           </div>
         </input-template>
 
-        <input-template>
-          <input slot="left-content" type="text" placeholder="请输入您的密码" />
+        <input-template v-if="currentIndex==0">
+          <input slot="left-content" v-model="password" type="password" placeholder="请输入您的密码" />
           <div slot="right-content">
             <div style="color: #eb002a" class="right-txt">
-              <span @click="forfet_upwd" v-if="currentIndex == 0"
-                >忘记密码</span
-              >
-              <span v-else>获取验证码</span>
+              <span @click="forfet_upwd">忘记密码</span>
             </div>
-          </div>
+          </div> 
+        </input-template>
+
+         <input-template v-else>
+          <input slot="left-content" v-model="authcode" type="password" placeholder="请输入您的验证码" />
+          <div slot="right-content">
+            <div style="color:#eb002a" class="right-txt">
+              <button class="send-btn" :disabled="disabledBtn" @click="send_code">{{textCode}}</button>
+            </div>
+          </div> 
         </input-template>
 
         <!-- 登录按钮 -->
+        <!-- <div class="btn" @click="testRules">测试正则</div> -->
         <div class="btn" @click="go_home">登录</div>
         <!-- 还没有账号？ -->
         <div class="ling-title">
@@ -51,17 +69,40 @@
 </template>
 <script>
 import inputTemplate from "./input-template";
+import {validatePhone} from "@/utils/regular"
 export default {
   data() {
     return {
-      // 控制用户点击的是密码登录还是验证码登录
-      currentIndex: 0,
+      currentIndex: 0, // 控制用户点击的是密码登录还是验证码登录
+      isSelect: true,
+      userName: "", //用户名
+      password: "", //用户密码
+      userPhone:"111", //用户手机号
+      authcode:"", 
+      disabledBtn:false,
+      inputList: [
+        {placeholder:"请输入您的用户名",value:''},
+        {placeholder:"请输入您的手机号",value:''},
+      ], //选中ICON
+      testURL: "@/assets/img/register/selected.png",
+      textCode:"获取验证码"
     };
   },
+
   methods: {
+    testRules(){
+      let userPhone=this.inputList[1].value;
+      validatePhone(userPhone,this.upload);
+    },
+    upload(){
+      alert("上传成功")
+    },
     //   判断用户点击的密码登录还是验证码登录 0：密码登录。2：验证码登录
     checkout(i) {
-      this.currentIndex = i;
+      (this.userName = ""),
+        (this.password = ""),
+        (this.isSelect = true),
+        (this.currentIndex = i);
     },
     forfet_upwd() {
       console.log("忘记密码");
@@ -73,6 +114,28 @@ export default {
         path: "/",
       });
     },
+    remember() {
+      this.isSelect = !this.isSelect;
+    },
+    send_code(){
+      this.startTime()
+    },
+    startTime(){
+      let i =10;
+      let timer=null;
+     timer=setInterval(()=>{
+       i--;
+       if(i>=0){
+         this.textCode=`${i}秒后重发`;
+         this.disabledBtn=true;
+       }else{
+         clearInterval(timer)
+         i=9;
+         this.textCode=`重新发送`;
+         this.disabledBtn=false;
+       }
+      },1000)
+    }
   },
   components: {
     inputTemplate,
@@ -189,5 +252,12 @@ input:-ms-input-placeholder {
   font-weight: 400;
   color: #000000;
   border-top: 1px solid #cdcdcd;
+}
+.send-btn{
+        font-size: 16px;
+        font-family: Source Han Sans CN;
+        font-weight: 500;
+        color:#eb002a;
+        margin-left:4px;
 }
 </style>

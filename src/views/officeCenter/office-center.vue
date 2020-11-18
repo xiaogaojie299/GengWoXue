@@ -1,50 +1,62 @@
 <template>
-    <div style="height:100%">
-        <!-- <button @click="go_child()">跳转</button> -->
-        <!-- <router-view></router-view> -->
-        <el-container style="height: 100%; border: 1px solid #eee">
-  <el-aside width="200px">
-    <el-menu :default-openeds="['2-1']">
-<el-menu-item index="1-1" @click="go_url('test2')">课程中心</el-menu-item>
+  <container>
+  <el-container class="box banner">
+    <!-- 侧边栏 -->
+    <el-aside>
+      <el-menu
+      unique-opened
+      router
+        :default-active="activeIndex"
+        background-color="#EF753C"
+        text-color="#F1F1F1"
+        active-text-color="#ef753c"
+      >
+        <el-submenu index="1">
+          <template slot="title">
+            <i class="icons">
+            
+            </i>
+            <span>课程表</span>
+          </template>
+          <el-menu-item class="son-item" index="/page/officeCenter/OfficeCenterIndex/test2">课程表</el-menu-item>
+        </el-submenu>
+        <el-submenu index="2">
+          <template slot="title"> 
+            <i class="icons"></i>
+            <span>课件中心</span>
+          </template>
+          <el-menu-item class="son-item" :index="routerUrl+'kejianku'">课件库</el-menu-item>
+          <el-menu-item class="son-item" :index="routerUrl+'mykejian'">我的课件</el-menu-item>
+        </el-submenu>
+        <el-submenu index="3">
+          <template slot="title">
+            <i class="icons"></i>
+            <span>我的班级</span>
+          </template>
+          <el-menu-item class="son-item" :index="routerUrl+'myClass'">我的班级</el-menu-item>
+          <el-menu-item class="son-item" :index="routerUrl+'evaluation'">班级测评</el-menu-item>
+        </el-submenu>
+        <el-submenu index="4">
+          <template slot="title">
+            <i class="icons"></i>
+            <span>我的学生</span>
+          </template>
+          <el-menu-item class="son-item" :index="routerUrl+'student'">我的学生</el-menu-item>
+        </el-submenu>
+      </el-menu>
+    </el-aside>
 
-      <el-submenu index="2">
-        <template slot="title">课件中心</template>
-        <el-menu-item-group>
-          <el-menu-item index="2-1" @click="go_url('kejianku')">课件库</el-menu-item>
-          <el-menu-item index="2-2" @click="go_url('mykejian')">我的课件</el-menu-item>
-        </el-menu-item-group>
-        <el-menu-item-group title="分组2">
-          <el-menu-item index="2-3">选项3</el-menu-item>
-        </el-menu-item-group>
-      </el-submenu>
-      <el-submenu index="3">
-        <template slot="title">我的班级</template>
-        <el-menu-item-group>
-          <el-menu-item index="3-1" @click="go_url('myClass')">我的班级</el-menu-item>
-          <el-menu-item index="3-2" @click="go_url('evaluation')">班级测评</el-menu-item>
-        </el-menu-item-group>
-      </el-submenu>
-      <!-- 我的学生 -->
-       <el-submenu index="4">
-        <template slot="title">我的学生</template>
-        <el-menu-item-group>
-          <template slot="title">分组一</template>
-          <el-menu-item index="4-1" @click="go_url('student')">我的学生</el-menu-item>
-          <el-menu-item index="4-2">选项2</el-menu-item>
-        </el-menu-item-group>
-      </el-submenu>
-    </el-menu>
-  </el-aside>
-
-  <el-container style="border:1px solid black;max-height:100%">
-      <router-view></router-view>
-  </el-container>
-</el-container>
-    </div>
+    <!-- 主要显示区 -->
+      <el-main>
+        <router-view></router-view>
+      </el-main>
+    </el-container>
+  </container>
 </template>
 <script>
+
 let routerUrl='/page/officeCenter/OfficeCenterIndex/';
-  export default {
+  export default{
     data() {
       const item = {
         date: '2016-05-02',
@@ -52,7 +64,9 @@ let routerUrl='/page/officeCenter/OfficeCenterIndex/';
         address: '上海市普陀区金沙江路 1518 弄'
       };
       return {
-        tableData: Array(20).fill(item)
+        tableData: Array(20).fill(item),
+         activeIndex: "/page/officeCenter/OfficeCenterIndex/test2",
+         routerUrl:routerUrl
       }
     },
     methods:{
@@ -70,28 +84,44 @@ let routerUrl='/page/officeCenter/OfficeCenterIndex/';
 </script>
 
 <style lang="scss" scoped>
-/deep/ .el-menu-item.is-active{
-background: linear-gradient(110deg, #F13232, #EF763C);
-font-size: 10px;
-font-family: Source Han Sans CN;
-font-weight: 500;
-color: #FFFFFF;
+* {
+  box-sizing: border-box;
 }
-// 修改左侧导航栏选中时的样式
-    .el-menu-item:hover{
-        // background-color: #EF703C !important;
-        // color: #38B2FF !important;
-        
-    }
-
-  .el-header {
-    background-color: #B3C0D1;
-    color: #333;
-    line-height: 60px;
-  }
-  
+body {
+  background-color: #ccc !important;
+}
+.box {
   .el-aside {
-    color: #333;
-    
+    width: 200px !important;
+    .el-menu {
+      height: 754px;
+      .el-submenu {
+        /deep/.el-menu-item,
+        /deep/.el-submenu__title {
+          &:hover {
+            background-color: rgba(255, 255, 255, 0.5) !important;
+          }
+        }
+        /deep/.el-submenu__title {
+          border-top: 1px solid #E9E9E9 !important;
+
+        }
+        .son-item {
+          border-bottom: 1px solid #ef753c;
+          background-color: rgba(255,255,255,.5) !important;
+        }
+        /deep/.el-menu {
+          /deep/.is-active {
+            background-color: #fff !important;
+            color: #ef753c !important;
+          }
+        }
+      }
+    }
   }
+  .el-main {
+      margin-left: 13px;
+   padding: 0;
+  }
+}
 </style>

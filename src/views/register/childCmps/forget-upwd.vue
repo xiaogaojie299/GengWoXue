@@ -29,11 +29,11 @@
                 <input
                   style="width: 100%"
                   type="text"
-                  placeholder="请输入宁的验证码"
+                  placeholder="请输入您的验证码"
                 />
               </div>
               <div slot="right-content">
-                <span class="right-txt" style="color: #eb002a">获取验证码</span>
+                <button class="send-btn" :disabled="disabledBtn" @click="send_code">{{textCode}}</button>
               </div>
             </input-template>
           </div>
@@ -76,12 +76,34 @@
 import inputTemplate from "./input-template";
 export default {
   data() {
-    return {};
+    return {
+      textCode:"获取验证码",
+      disabledBtn:false
+    };
   },
   methods: {
     go_regist(){
       console.log('返回密码登录')
       this.$emit("backUpwdReg",0)
+    },
+    send_code(){
+      this.startTime()
+    },
+    startTime(){
+      let i =10;
+      let timer=null;
+     timer=setInterval(()=>{
+       i--;
+       if(i>=0){
+         this.textCode=`${i}秒后重发`;
+         this.disabledBtn=true;
+       }else{
+         clearInterval(timer)
+         i=9;
+         this.textCode=`重新发送`;
+         this.disabledBtn=false;
+       }
+      },1000)
     }
   },
   components: {
@@ -91,15 +113,26 @@ export default {
 </script>
 <style lang="scss" scoped>
 .right-box {
+  // padding: 0 20px;
+  // width: 400px;
+  // height: 564px;
+  // background: #ffffff;
+  // box-shadow: 1px 13px 18px 0px rgba(158, 158, 158, 0.3);
+  // border-radius: 10px;
+  // position: absolute;
+  // right: 0;
+  // top: 42px;
+
   padding: 0 20px;
-  width: 400px;
-  height: 564px;
+  width: 504px;
+  height: 80%;
   background: #ffffff;
   box-shadow: 1px 13px 18px 0px rgba(158, 158, 158, 0.3);
   border-radius: 10px;
   position: absolute;
   right: 0;
-  top: 42px;
+  top: 50%;
+  transform: translateY(-50%);
 
   .header {
     position: relative;
@@ -157,5 +190,12 @@ export default {
     // 距离上个边距
     margin-top: 40px;
   }
+  .send-btn{
+        font-size: 16px;
+        font-family: Source Han Sans CN;
+        font-weight: 500;
+        color:#eb002a;
+        margin-left:4px;
+}
 }
 </style>

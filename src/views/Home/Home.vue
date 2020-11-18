@@ -1,7 +1,6 @@
 <template>
   <div id="box">
     <div class="bannaer">
-
     <swiper></swiper>
     </div>
     <!-- 面包屑 -->

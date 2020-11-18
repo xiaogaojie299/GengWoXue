@@ -47,7 +47,7 @@ const routes = [
       // 办公中心
       {
         path: "officeCenter",
-        redirect: "officeCenter/OfficeCenterIndex",
+        redirect: "officeCenter/OfficeCenterIndex/test2",
         name: "OfficeCenter",
         component: () => import("../views/officeCenter/index.vue"),
         children: [

@@ -75,7 +75,6 @@ input:-ms-input-placeholder {
           text-align: right;
         width: 16px;
         height: 16px;
-        background: blue;
       }
       & .right-txt {
         font-size: 16px;

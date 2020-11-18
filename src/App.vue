@@ -53,6 +53,11 @@ input,
 textarea {
   box-sizing: border-box;
 }
+button {
+  background: #fff;
+  border: none;
+  outline: none;
+}
 // html {
 // overflow-y: scroll;
 // }

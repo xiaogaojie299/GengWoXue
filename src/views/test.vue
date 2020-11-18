@@ -13,7 +13,8 @@ export default {
   methods: {
     jump() {
       console.log("window", window.location);
-      window.location.href = "http://www.baidu.com";
+      // window.location.href = "http://www.xiaogaojie.vip:99/#/";
+      window.open("http://www.xiaogaojie.vip:99/#/");
     },
   },
 };

@@ -1,7 +1,7 @@
 <template>
   <div class="box">
-    <el-carousel style="height: 500px" :interval="5000" arrow="never">
-      <el-carousel-item v-for="item in 4" :key="item">
+    <el-carousel style="height: 500px;border:1px solid red;" :interval="5000" arrow="never">
+      <el-carousel-item style="height:100%" v-for="item in 4" :key="item">
         <h3>{{ item }}</h3>
       </el-carousel-item>
     </el-carousel>
@@ -12,6 +12,10 @@
 export default {};
 </script>
 <style lang="scss" scoped>
+//[data-v-de181ef8] .el-carousel__indicator--horizontal
+/deep/ .el-carousel__indicator--horizontal{
+  padding:12px 10px;
+}
 /deep/ .el-carousel__button {
   width: 18px;
   height: 18px;
