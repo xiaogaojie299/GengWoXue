@@ -12,28 +12,29 @@
         <!-- 内容详情 -->
         <div class="exercises-item">
           <!-- 顶部标题 -->
-          <div class="top-title">这道数学题如何解</div>
+          <div class="top-title">{{exercisesDetail.question}}</div>
           <!-- 中间内容 -->
           <div class="main-content">
             <!-- 题目详情 -->
-            <div class="timer">2020/04/24 14:20</div>
+            <div class="timer">{{exercisesDetail.insertTime}}</div>
             <div class="exercises-detail">
-              如图，若∠1=∠2，∠C=∠D，问∠A与∠F有什么关系，并说明理由？
+              <!-- 如图，若∠1=∠2，∠C=∠D，问∠A与∠F有什么关系，并说明理由？ -->
+              {{exercisesDetail.describe}}
             </div>
             <!-- 题目图片 -->
             <div class="exercises-img">
               <!-- <div class="exercises-img-item" v-for="i in 2" :key="i"></div> -->
+              <!-- :preview-src-list="[exercisesDetail.describe]" -->
               <el-image
                 style="width: 168px; height: 168px"
-                :src="url"
-                :preview-src-list="srcList"
+                :src="exercisesDetail.imgUrl"
               >
               </el-image>
             </div>
           </div>
           <!-- 底部详情 -->
           <div class="footer">
-            <span>5个回答</span>
+            <span>{{exercisesDetail.answerNum}}个回答</span>
           </div>
         </div>
         <!-- 回答列表 -->
@@ -49,7 +50,7 @@
                 <span class="answer-people-tag">{{
                   i == 1 ? "已采纳" : "我的回答"
                 }}</span>
-                <span class="answer-delete" v-show="i != 1">删除回答</span>
+                <span class="answer-delete" @click="deleteMyAswer" v-show="i!= 1">删除回答</span>
               </div>
               <div class="answer-people-time">2020/04/24 14:20</div>
             </div>
@@ -66,28 +67,73 @@
         <input
           type="text"
           placeholder="回答被采纳后将会获得奖励哦（100字内）"
+          v-model="myAnswer"
         />
-        <div class="btn">我来回答</div>
+        <div class="btn" @click="letMeAnswer">我来回答</div>
       </div>
     </container>
   </div>
 </template>
 <script>
+import {queryQuestionAnswerList,optAddAnswer,optDeleteAnswer} from "@/network/answersPlaza"
 export default {
   data() {
     return {
+      exercisesDetail:{},
       routeNme: "",
-      url:
-        "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
+      url:"https://xixisuxi.obs.cn-southwest-2.myhuaweicloud.com/16055437650.png",
       srcList: [
         "https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg",
         "https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg",
       ],
+      current:1,
+      size:10,
+      myAnswer:""
     };
   },
-  methods: {},
+  created() {
+    this.get_AnswerList();
+  },
+  methods: {
+  get_AnswerList(){
+    let data={
+      current:this.current,
+      size:this.size,
+      questionId:this.exercisesDetail.id
+    }
+    queryQuestionAnswerList(data).then(res=>{
+      console.log("问题详情加载成功",res);
+    })
+  },
+  // 删除我的回答
+  deleteMyAswer(){
+    let data={
+      answerId:"3",
+      questionId:"5"
+    }
+    optDeleteAnswer(data).then(res=>{
+      console.log("删除问题成功",res);
+    })
+  },
+  //我来回答
+  letMeAnswer(){
+    if(!this.myAnswer){
+        this.$myAlert("错误","回答问题不能为空");
+        return
+    }
+    let data={
+      questionId:this.exercisesDetail.id,
+      answer:this.myAnswer
+      }
+    optAddAnswer(data).then(res=>{
+        console.log("====回答问题成功",res);
+    })
+  }
+
+  },
   mounted() {
-    console.log("router=", this.$route);
+    console.log("router=", this.$route.query.exercisesDetail);
+    this.exercisesDetail=JSON.parse(this.$route.query.exercisesDetail);
     this.routeNme = this.$route.name;
   },
 };
@@ -234,6 +280,7 @@ export default {
   box-shadow: 1px 4px 51px 9px rgba(197, 197, 197, 0.27);
   border-radius: 4px;
   margin-top: 26px;
+  margin-bottom: 79px;
   display: flex;
   input {
     outline: none;

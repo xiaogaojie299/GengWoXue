@@ -30,9 +30,11 @@
         <span
           v-for="j in 7"
           :key="j"
+          @click="checkToday(visible[(i - 1) * 7 + (j - 1)])"
           :class="{
             notCurentMonth: !isCurrentMonth(visible[(i - 1) * 7 + (j - 1)]),
             today: isToday(visible[(i - 1) * 7 + (j - 1)]),
+            checkToday:visible[(i - 1) * 7 + (j - 1)].getTime()==activeDay
           }"
         >
           {{ visible[(i - 1) * 7 + (j - 1)].getDate() }}
@@ -51,6 +53,7 @@
             today: isToday(visible[(todayIndex - 1) * 7 + (j - 1)]),
           }"
         >
+          <!-- {{ visible[(todayIndex - 1) * 7 + (j - 1)].getDate() }} -->
           {{ visible[(todayIndex - 1) * 7 + (j - 1)].getDate() }}
           <span v-if="!isToday(visible[(todayIndex - 1) * 7 + (j - 1)])&&isCurrentMonth(visible[(todayIndex - 1) * 7 + (j - 1)])" class="inline"></span>
           <!-- {{ arr[(i - 1) * 7 + (j - 1)].getDate() }} -->
@@ -78,7 +81,8 @@ export default {
       time:{year,month,day},
       arr: [],
       todayIndex:43, //当前日的下标
-      switchMonthWeek:true  //用户点击月显示还是周显示的时候  默认true是月
+      switchMonthWeek:true,  //用户点击月显示还是周显示的时候  默认true是月
+      activeDay:""        //用户选择天的时间戳
     };
   },
   mounted() {
@@ -89,7 +93,6 @@ export default {
   computed: {
     formatDate() {
       let { year, month, day } = utils.getYearMonthDay(new Date());
-      console.log(year, month, day);
     //   return `${year}-${month + 1}-${day}`;
     return `${year}/${month + 1}`;
     },
@@ -138,21 +141,16 @@ export default {
     },
     // 跳转上一周
     previousWeek(){
-      console.log("跳转到上一周");
       this.todayIndex<=1?this.todayIndex=1:this.todayIndex--;
-      console.log("todayIndex=",this.todayIndex);
     },
     nextWeek(){
-      console.log("跳转到下一周",)
       this.todayIndex>4?this.todayIndex=5:this.todayIndex++;
-       console.log("todayIndex=",this.todayIndex);
     },
     // 计算当前日的下标是多少
     getTodayIndex(){
-      console.log("this.visible==",this.visible);
       this.visible.forEach((item,index)=>{
         if(this.isToday(item)){
-          item.getDate()<=7?this.todayIndex=item.getDate():this.todayIndex=index%7;
+          item.getDate()<=7?this.todayIndex=item.getDate():this.todayIndex=index%7-1;
           console.log('this.todayIndex=',this.todayIndex);
         }
       })
@@ -164,6 +162,13 @@ export default {
     swichMonth(){
       // 按月显示
       this.switchMonthWeek=true
+    },
+    // 点击选中样式
+    checkToday(timer){
+      this.activeDay=timer.getTime();
+      // let data=utils.getTimeType(timer);
+      //把选中的时间传给父元素
+      this.$emit("checkDay",timer);
     }
   },
 };
@@ -248,6 +253,10 @@ export default {
 .today {
   background: linear-gradient(110deg, #f13232, #ef753c);
   border-radius: 50%;
+}
+.checkToday{
+  border-radius: 50%;
+  border: 1px solid #ef753c;
 }
 .weekdays-box {
   width: 100%;

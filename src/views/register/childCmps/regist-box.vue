@@ -13,7 +13,11 @@
       <!-- 下面主体 -->
       <div class="main-box">
         <!-- 登陆模板 -->
-        <input-template v-show="currentIndex==index" v-for="(item,index) in inputList" :key="index">
+        <input-template
+          v-show="currentIndex == index"
+          v-for="(item, index) in inputList"
+          :key="index"
+        >
           <input
             slot="left-content"
             type="text"
@@ -36,22 +40,38 @@
           </div>
         </input-template>
 
-        <input-template v-if="currentIndex==0">
-          <input slot="left-content" v-model="password" type="password" placeholder="请输入您的密码" />
+        <input-template v-if="currentIndex == 0">
+          <input
+            slot="left-content"
+            v-model="password"
+            type="password"
+            placeholder="请输入您的密码"
+          />
           <div slot="right-content">
             <div style="color: #eb002a" class="right-txt">
               <span @click="forfet_upwd">忘记密码</span>
             </div>
-          </div> 
+          </div>
         </input-template>
 
-         <input-template v-else>
-          <input slot="left-content" v-model="authcode" type="password" placeholder="请输入您的验证码" />
+        <input-template v-else>
+          <input
+            slot="left-content"
+            v-model="phoneCode"
+            type="text"
+            placeholder="请输入您的验证码"
+          />
           <div slot="right-content">
-            <div style="color:#eb002a" class="right-txt">
-              <button class="send-btn" :disabled="disabledBtn" @click="send_code">{{textCode}}</button>
+            <div style="color: #eb002a" class="right-txt">
+              <button
+                class="send-btn"
+                :disabled="disabledBtn"
+                @click="send_code"
+              >
+                {{ textCode }}
+              </button>
             </div>
-          </div> 
+          </div>
         </input-template>
 
         <!-- 登录按钮 -->
@@ -69,7 +89,14 @@
 </template>
 <script>
 import inputTemplate from "./input-template";
-import {validatePhone} from "@/utils/regular"
+import {
+  passwordLogin,
+  captchaLogin,
+  queryCaptcha,
+  checkCaptcha,
+  test,
+} from "@/network/login";
+import { validatePhoneNumber } from "@/utils/regular";
 export default {
   data() {
     return {
@@ -77,26 +104,19 @@ export default {
       isSelect: true,
       userName: "", //用户名
       password: "", //用户密码
-      userPhone:"111", //用户手机号
-      authcode:"", 
-      disabledBtn:false,
+      disabledBtn: false,
       inputList: [
-        {placeholder:"请输入您的用户名",value:''},
-        {placeholder:"请输入您的手机号",value:''},
+        { placeholder: "请输入您的手机号", value: "" },
+        { placeholder: "请输入您的手机号", value: "" },
       ], //选中ICON
       testURL: "@/assets/img/register/selected.png",
-      textCode:"获取验证码"
+      textCode: "获取验证码",
+      phoneCode: "", //用户手机验证码
+      phoneCaptcha: "", // 后端返回的登录验证码
     };
   },
 
   methods: {
-    testRules(){
-      let userPhone=this.inputList[1].value;
-      validatePhone(userPhone,this.upload);
-    },
-    upload(){
-      alert("上传成功")
-    },
     //   判断用户点击的密码登录还是验证码登录 0：密码登录。2：验证码登录
     checkout(i) {
       (this.userName = ""),
@@ -108,34 +128,118 @@ export default {
       console.log("忘记密码");
       this.$emit("goForgetUpwd", 1);
     },
-    // 跳转到首页
-    go_home() {
-      this.$router.push({
-        path: "/",
+    // 获取手机验证码
+    get_queryCaptcha(phone, type, code) {
+      let data = { phone: phone, type: type };
+      queryCaptcha(data).then((res) => {
+        console.log("消息获取成功", res);
+        code = res.data;
       });
+    },
+    // 传给后端，后端校验验证码
+    get_checkCaptcha() {
+      let data = { phone: this.inputList[1].value, code: this.phoneCode };
+      return checkCaptcha(data);
+    },
+    // 用户密码登录
+    upwdLogin() {
+      if (!this.inputList[0].value) {
+        alert("手机号码不能为空");
+        return;
+      }
+      if (!this.password) {
+        alert("密码不能为空");
+        return;
+      }
+      if (!validatePhoneNumber(this.inputList[0].value)) {
+        alert("请输入正确的手机格式");
+        return;
+      }
+      let data = { password: this.password, phone: this.inputList[0].value };
+      passwordLogin(data).then((res) => {
+        console.log("密码登录成功", res);
+      });
+    },
+    //用户验证码登录
+    codeLogin() {
+      if (!this.inputList[1].value) {
+        alert("手机号码不能为空");
+        return;
+      }
+      if (!this.phoneCode) {
+        alert("验证码不能为空");
+        return;
+      }
+      if (!validatePhoneNumber(this.inputList[1].value)) {
+        alert("请输入正确的手机格式");
+        return;
+      }
+      let data = { code: this.phoneCode, phone: this.inputList[1].value };
+      captchaLogin(data).then((res) => {
+          localStorage.setItem("userInfo", JSON.stringify(res));
+          localStorage.setItem("token",res.token);
+          this.$router.push({
+            path: "/",
+          });
+      });
+    },
+    // 校验验证码
+
+    // 跳转到首页
+    async go_home() {
+      // this.$router.push({
+      //   path: "/",
+      // });
+      if (this.currentIndex == 0) {
+        this.upwdLogin();
+      } else {
+        //let result=await this.get_checkCaptcha();
+        //console.log("异步正常",result);
+        /* 
+        if(result.code==200){
+          //验证成功 
+          this.$router.push({
+        path: "/", 
+      });
+        }
+      */
+        this.codeLogin();
+      }
     },
     remember() {
       this.isSelect = !this.isSelect;
     },
-    send_code(){
-      this.startTime()
+    send_code() {
+      let phone = this.inputList[1].value;
+      if (!phone) {
+        alert("手机号码不能为空");
+        return;
+      }
+      if (!validatePhoneNumber(phone)) {
+        alert("请输入正确的手机格式");
+        return;
+      }
+      this.startTime(phone);
     },
-    startTime(){
-      let i =10;
-      let timer=null;
-     timer=setInterval(()=>{
-       i--;
-       if(i>=0){
-         this.textCode=`${i}秒后重发`;
-         this.disabledBtn=true;
-       }else{
-         clearInterval(timer)
-         i=9;
-         this.textCode=`重新发送`;
-         this.disabledBtn=false;
-       }
-      },1000)
-    }
+    startTime(phone) {
+      console.log(queryCaptcha);
+      // 调用函数
+      this.get_queryCaptcha(phone, "2", this.phoneCaptcha);
+      let i = 10;
+      let timer = null;
+      timer = setInterval(() => {
+        i--;
+        if (i >= 0) {
+          this.textCode = `${i}秒后重发`;
+          this.disabledBtn = true;
+        } else {
+          clearInterval(timer);
+          i = 9;
+          this.textCode = `重新发送`;
+          this.disabledBtn = false;
+        }
+      }, 1000);
+    },
   },
   components: {
     inputTemplate,
@@ -253,11 +357,11 @@ input:-ms-input-placeholder {
   color: #000000;
   border-top: 1px solid #cdcdcd;
 }
-.send-btn{
-        font-size: 16px;
-        font-family: Source Han Sans CN;
-        font-weight: 500;
-        color:#eb002a;
-        margin-left:4px;
+.send-btn {
+  font-size: 16px;
+  font-family: Source Han Sans CN;
+  font-weight: 500;
+  color: #eb002a;
+  margin-left: 4px;
 }
 </style>

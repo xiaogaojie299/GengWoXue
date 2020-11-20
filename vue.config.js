@@ -12,5 +12,19 @@ module.exports = {
   //     })
   //     .end();
   // },
-  // lintOnSave: false,
+  lintOnSave:false,
+//     configureWebpack: {
+//       devServer: {
+//           proxy: {
+//               '/proxy': {
+//                   target: 'http://192.168.0.80/teacher',
+//                   changeOrigin: true,//改变源
+//                   ws: true,//跨域
+//                   pathRewrite: {
+//                       '^/proxy':''
+//                   }
+//               }
+//           }
+//       }
+//   }
 };

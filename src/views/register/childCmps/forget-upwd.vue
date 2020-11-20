@@ -16,6 +16,7 @@
               <input-template>
                 <div slot="left-content">
                   <input
+                    v-model="upwdForm.userPhone"
                     style="width: 100%"
                     type="text"
                     placeholder="请输入宁的手机号码"
@@ -27,13 +28,20 @@
             <input-template>
               <div slot="left-content">
                 <input
+                  v-model="upwdForm.upwdCode"
                   style="width: 100%"
                   type="text"
                   placeholder="请输入您的验证码"
                 />
               </div>
               <div slot="right-content">
-                <button class="send-btn" :disabled="disabledBtn" @click="send_code">{{textCode}}</button>
+                <button
+                  class="send-btn"
+                  :disabled="disabledBtn"
+                  @click="send_code"
+                >
+                  {{ textCode }}
+                </button>
               </div>
             </input-template>
           </div>
@@ -45,6 +53,7 @@
               <input-template>
                 <div slot="left-content">
                   <input
+                    v-model="upwdForm.userUpwd"
                     style="width: 340px"
                     type="text"
                     placeholder="输入新密码（6-16位任意字符，区分大小写）"
@@ -58,6 +67,7 @@
                 <input
                   style="width: 100%"
                   type="text"
+                  v-model="upwdForm.redoUserUpwd"
                   placeholder="再次输入密码"
                 />
               </div>
@@ -65,45 +75,111 @@
           </div>
         </div>
         <!-- 底部按钮 -->
-        <div class="footer-btn">
-            确认重置
-        </div>
+        <div @click="submit" class="footer-btn">确认重置</div>
       </div>
     </container>
   </div>
 </template>
 <script>
 import inputTemplate from "./input-template";
+import { queryCaptcha,checkCaptcha,forgetPassword} from "@/network/login";
+import {validatePhoneNumber} from "@/utils/regular";
+let form = () => {
+  return {
+    userPhone: "", //用户手机号
+    upwdCode: "", //用户输入的验证码
+    upwdCatch: "", //后端返回的验证码
+    userUpwd: "", //用户输入的新密码
+    redoUserUpwd: "", //再次输入新密码
+  };
+};
 export default {
   data() {
     return {
-      textCode:"获取验证码",
-      disabledBtn:false
+      textCode: "获取验证码",
+      disabledBtn: false, //禁用按钮
+      upwdForm: form(),
     };
   },
   methods: {
-    go_regist(){
-      console.log('返回密码登录')
-      this.$emit("backUpwdReg",0)
+    go_regist() {
+      console.log("返回密码登录");
+      this.$emit("backUpwdReg", 0);
     },
-    send_code(){
-      this.startTime()
+    // 获取手机验证码
+    get_queryCaptcha(phone,type,code){
+      let data={phone,type}
+      queryCaptcha(data).then(res=>{
+        console.log("消息获取成功",res);
+        code=res.data;
+      })  
     },
-    startTime(){
-      let i =10;
-      let timer=null;
-     timer=setInterval(()=>{
-       i--;
-       if(i>=0){
-         this.textCode=`${i}秒后重发`;
-         this.disabledBtn=true;
-       }else{
-         clearInterval(timer)
-         i=9;
-         this.textCode=`重新发送`;
-         this.disabledBtn=false;
-       }
-      },1000)
+    // 发送验证码
+    send_code() {
+      let phone=this.upwdForm.userPhone;
+      this.startTime(phone);
+    },
+    // 传给后端，后端校验验证码
+    get_checkCaptcha(){
+      let data={phone:this.inputList[1].value,code:this.phoneCode}
+    return checkCaptcha(data);
+    },
+    // 开始倒计时
+    startTime(phone) {
+      this.get_queryCaptcha(phone,2,this.upwdForm.upwdCatch);
+      let i = 10;
+      let timer = null;
+      timer = setInterval(() => {
+        i--;
+        if (i >= 0) {
+          this.textCode = `${i}秒后重发`;
+          this.disabledBtn = true;
+        } else {
+          clearInterval(timer);
+          i = 9;
+          this.textCode = `重新发送`;
+          this.disabledBtn = false;
+        }
+      }, 1000);
+    },
+    async submit() {
+      console.log("upwdForm",this.upwdForm);
+      if(!this.upwdForm.userPhone){
+        alert('手机号码不能为空')
+        return 
+      }
+      if(!this.upwdForm.upwdCode){
+         alert('验证码不能为空')
+        return 
+      }
+      if(!this.upwdForm.userUpwd){
+        alert('新密码不能为空')
+        return 
+      }
+      if(!this.upwdForm.redoUserUpwd){
+        alert('请再次输入密码')
+        return 
+      }
+      if(validatePhoneNumber(this.upwdForm.userPhone)){
+        alert('请输入正确的手机格式')
+        return
+      }
+      // if(this.upwdForm.upwdCode!=this.upwdForm.upwdCatch){
+      //    alert('请输入正确的验证码')
+      //   return
+      // }
+      if(this.upwdForm.userUpwd!==this.upwdForm.redoUserUpwd){
+        alert('两次输入的密码不一致')
+        return
+      }
+      let result = await get_checkCaptcha(); 
+      this.forgetUpwd()
+    },
+    forgetUpwd(){
+      let data={code:this.upwdForm.upwdCode,password:this.upwdForm.userUpwd,phone:this.upwdForm.userPhone}
+      forgetPassword(data).then(res=>{
+        console.log('修改密码成功',res);
+      })
     }
   },
   components: {
@@ -139,8 +215,8 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top:46px;
-.back {
+    margin-top: 46px;
+    .back {
       position: absolute;
       left: 0;
       font-size: 22px;
@@ -170,11 +246,11 @@ export default {
     }
     .set-upwd-box {
       @extend .phone-box;
-      margin-top:24px;
+      margin-top: 24px;
     }
   }
-  .footer-btn{
-  display: flex;
+  .footer-btn {
+    display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
@@ -190,12 +266,12 @@ export default {
     // 距离上个边距
     margin-top: 40px;
   }
-  .send-btn{
-        font-size: 16px;
-        font-family: Source Han Sans CN;
-        font-weight: 500;
-        color:#eb002a;
-        margin-left:4px;
-}
+  .send-btn {
+    font-size: 16px;
+    font-family: Source Han Sans CN;
+    font-weight: 500;
+    color: #eb002a;
+    margin-left: 4px;
+  }
 }
 </style>

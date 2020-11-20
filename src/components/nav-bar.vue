@@ -34,6 +34,7 @@
 
       <!-- 右侧登陆注册 -->
       <div class="right-content">
+        <button @click="go_personalCenter">个人中心</button>
         <!-- 客服电话 -->
         <div class="kf-box">
           <!-- Icon -->
@@ -44,12 +45,12 @@
         <!-- 登录注册 -->
         <div
         v-if="true"
-          :class="{ regist: true, active1: '/register' == $route.path }"
+          :class="{ regist: true, active1: $route.path.indexOf('/register') != -1 }"
           @click="go_register"
         >
           登录/注册
           <span
-            :class="{ inline: true, active: '/register' == $route.path }"
+            :class="{ inline: true, active: $route.path.indexOf('/register') != -1 }"
           ></span>
         </div>
         <!-- 登录成功后端样式 -->

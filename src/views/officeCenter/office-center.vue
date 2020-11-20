@@ -7,9 +7,9 @@
       unique-opened
       router
         :default-active="activeIndex"
-        background-color="#EF753C"
-        text-color="#F1F1F1"
-        active-text-color="#ef753c"
+        background="linear-gradient(110deg, #F13232, #EF753C)"
+        text-color="#888888"
+        active-text-color="#fff"
       >
         <el-submenu index="1">
           <template slot="title">
@@ -87,6 +87,15 @@ let routerUrl='/page/officeCenter/OfficeCenterIndex/';
 * {
   box-sizing: border-box;
 }
+/deep/ .el-menu-item .son-item{
+  background: #EF6F3B !important;
+}
+/deep/ .el-menu{
+  background-color: #fff !important
+}
+/deep/ .el-submenu__title{
+background: #FAFAFA;
+}
 body {
   background-color: #ccc !important;
 }
@@ -107,13 +116,12 @@ body {
 
         }
         .son-item {
-          border-bottom: 1px solid #ef753c;
           background-color: rgba(255,255,255,.5) !important;
         }
         /deep/.el-menu {
           /deep/.is-active {
-            background-color: #fff !important;
-            color: #ef753c !important;
+            background-color: #ef753c !important;
+            color: #ffffff !important;
           }
         }
       }

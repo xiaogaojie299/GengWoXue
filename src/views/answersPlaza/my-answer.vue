@@ -11,13 +11,14 @@
         <div class="my-question">
           <span>*我的问题</span>
           <!-- 输入框 -->
-          <input type="text" placeholder="请输入您的问题（20字内）" />
+          <input type="text" v-model="problem" placeholder="请输入您的问题（20字内）" />
         </div>
         <!-- 问题描述 -->
         <div class="problem-description">
           <span>*问题描述</span>
           <textarea
             placeholder="请输入问题的详细描述（200字内）"
+            v-model="describe"
             name=""
             id=""
             cols="30"
@@ -27,10 +28,12 @@
         <!-- 图片上传 -->
         <div class="upload-img">
           <el-upload
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action="http://ip:80/student/base/uploadImg"
             list-type="picture-card"
             :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
+            :on-success="handleSuccess"
+            :on-progress="handleProgress"
           >
             <i class="el-icon-plus"></i>
           </el-upload>
@@ -44,7 +47,7 @@
             <div class="my-question">
           <span>*悬赏金额</span>
           <!-- 输入框 -->
-          <input type="text" placeholder="据说悬赏越高，回答的人越多哦" />
+          <input type="text" v-model="golds" placeholder="据说悬赏越高，回答的人越多哦" />
         </div>
         </div>
         <!-- 可用状元币 -->
@@ -52,17 +55,22 @@
       </div>
       <!-- 底部按钮 -->
       <div class="footer">
-          <div class="btn">提交</div>   
+          <div @click="submit" class="btn">提交</div>   
       </div>
     </container>
   </div>
 </template>
 <script>
+import {optAddQuestion} from "@/network/answersPlaza"
 export default {
     data(){
         return{
             dialogImageUrl: '',
-            dialogVisible: false
+            dialogVisible: false, //控制遮罩层开关
+            describe:"",     //问题描述
+            problem:"",      //输入问题
+            golds:"",       //状元币个数
+            imgUrl:"https://xixisuxi.obs.cn-southwest-2.myhuaweicloud.com/16055437650.png"       //图片上传的路径
         }
     },
     methods: {
@@ -70,8 +78,40 @@ export default {
         console.log(file, fileList);
       },
       handlePictureCardPreview(file) {
+        console.log("file",file);
         this.dialogImageUrl = file.url;
         this.dialogVisible = true;
+      },
+      handleSuccess(event, file, fileList){
+        console.log("上传中 event=",event)
+        console.log("上传 file",file)
+        console.log("上传 fileList",fileList)
+      },
+      handleProgress(){
+
+      },
+      // 提交提问
+      submit(){
+        if(!this.problem){
+          this.$myAlert("请输入您的问题");
+          return
+        }
+        if(!this.describe){
+          this.$myAlert("请输入您的问题描述");
+          return
+        }
+        if(!this.imgUrl){
+          this.$myAlert("请上传您的问题图片");
+        }
+        let data={
+          question:this.problem,
+          describe:this.describe,
+          golds:this.golds,
+          imgUrl:this.imgUrl 
+        };
+        optAddQuestion(data).then(res=>{
+          console.log("问题上传成功");
+        })
       }
     }
 };

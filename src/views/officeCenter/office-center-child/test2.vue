@@ -2,33 +2,33 @@
   <div class="box">
     <!-- 头部日历 -->
     <div class="header">
-      <calendar></calendar>
+      <calendar  @checkDay="checkDay"></calendar>
     </div>
     <!-- 底部详情 -->
     <div>
-      <div class="class-box" v-for="i in 3" :key="i">
-        <div class="class-title">一班</div>
+      <div class="class-box" v-for="(item,i) in timerCourse" :key="i">
+        <div class="class-title">{{item.className}}</div>
         <!-- 课程列表 -->
         <div class="course-item">
           <!-- 左侧图片 -->
-          <div class="left-img"></div>
+          <img class="left-img" :src="item.teacherAvater" />
           <!-- 右侧内容 -->
           <div class="right-content">
             <div class="right-content-top">
               <div class="right-content-top-group">
                 <div class="right-content-top-group-title">
-                  一年级英语清华培训
+                  {{item.courseName}}
                 </div>
-                <div class="tag">张三</div>
-                <div class="tag">高三</div>
-                <div class="tag">基础班</div>
+                <div class="tag">{{item.gradeName}}</div>
+                <div class="tag">{{item.courseNature}}</div>
+                <div class="tag">{{item.teachWay}}</div>
               </div>
               <!-- 右侧课时 -->
-              <div class="class-hour">7/32课时</div>
+              <div class="class-hour">{{item.indexNum	}}/{{item.schoolHour}}课时</div>
             </div>
             <div class="right-content-bottom">
               <!-- 老师名字 -->
-              <div class="teacher-name">Huik</div>
+              <div class="teacher-name">{{item.teacherName}}</div>
               <!-- 老师开课时间 -->
               <div class="start-times-box">
                 <div class="start-times-item">
@@ -37,11 +37,11 @@
                     src="@/assets/img/home/icon_time.png"
                     alt=""
                   />
-                  <span>14:30-16:30</span>
+                  <span>{{item.time}}</span>
                 </div>
 
                 <!-- 未开始或者开始按钮 -->
-                <div class="btn-start">未开始</div>
+                <div class="btn-start">{{item.status==1?"未开始":item.status==2?"进行中":"已结束"}}</div>
               </div>
             </div>
           </div>
@@ -55,16 +55,46 @@
   </div>
 </template>
 <script>
+import {queryDaySchedule} from '@/network/officeCenter'
+import * as utils from "@/utils/getData";
 export default {
   data() {
-    return {};
+  let {year,month,day}=utils.getYearMonthDay(new Date());
+    return {
+      timer:new Date(),
+      current:1,
+      size:10,
+      timerCourse:[]
+    };
+  },
+  created(){
+    this.getDaySchedule()
   },
   methods: {
+    // 按时间查询获取的时间
+    getDaySchedule(){
+     let day = utils.getTimeType(this.timer);
+    let data={
+        current:this.current,
+        size:this.size,
+        day:day
+      }
+      queryDaySchedule(data).then(res=>{
+        console.log("获取课程",res);
+        this.timerCourse=res;
+      })
+    },
+    // 跳转课程详情
     go_courseDetail() {
       this.$router.push({
         path: "/page/officeCenter/OfficeCenterIndex/test1",
       });
     },
+    checkDay(data){
+      console.log(data);
+        this.timer=data;
+        this.getDaySchedule();
+    }
   },
 };
 </script>

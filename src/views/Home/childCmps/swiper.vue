@@ -9,7 +9,19 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data(){
+    return {}
+  },
+  created(){
+  },
+  props:{
+    bannerList:{
+      type:Array,
+      default:["默认值"]
+    }
+  }
+};
 </script>
 <style lang="scss" scoped>
 //[data-v-de181ef8] .el-carousel__indicator--horizontal

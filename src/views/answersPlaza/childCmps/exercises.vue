@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div v-for="i in 2" :key="i">
-            <exercisesItem />
+        <div v-for="(item,index) in questionSquareList" :key="index">
+            <exercisesItem :item="item" />
         </div>
     </div>
 </template>
@@ -11,6 +11,12 @@ export default {
     data(){
         return {
             
+        }
+    },
+    props:{
+        questionSquareList:{
+            type:Array,
+            default:[]
         }
     },
     components:{

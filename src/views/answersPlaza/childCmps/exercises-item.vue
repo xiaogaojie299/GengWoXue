@@ -1,38 +1,57 @@
 <template>
   <div class="box">
     <div class="exercises-item" @click="go_exDetail()">
+      <!-- <div class="exercises-item"> -->
       <!-- 顶部标题 -->
-      <div class="top-title">这道数学题如何解</div>
+      <div class="top-title">{{item.question}}</div>
+      <div class="delete" @click.stop @click="deleteQuestion" v-show="item.setValue==3">删除提问</div>
       <!-- 中间内容 -->
       <div class="main-content">
         <!-- 题目详情 -->
         <div class="exercises-detail">
-          如图，若∠1=∠2，∠C=∠D，问∠A与∠F有什么关系，并说明理由？
+          <!-- 如图，若∠1=∠2，∠C=∠D，问∠A与∠F有什么关系，并说明理由？ -->{{item.describe}}
         </div>
         <!-- 题目图片 -->
         <div class="exercises-img">
           <!-- <div class="exercises-img-item" v-for="i in 2" :key="i"></div> -->
-          <el-image
-            style="width: 105px;height: 105px;"
+          <!-- 图片预览功能 -->
+          <!-- <el-image
+            style="width: 105px; height: 105px"
             :src="url"
             :preview-src-list="srcList"
           >
+          </el-image> -->
+          <el-image
+            v-if="!Array.isArray(item.imgUrl)"
+            style="width: 105px; height: 105px"
+            :src="item.imgUrl"
+          >
           </el-image>
+
+          <el-image
+            v-else
+            v-for="(it,index) in imgUrl" :key="index"
+            style="width: 105px; height: 105px"
+            :src="item.imgUrl"
+          >
+          </el-image>
+
         </div>
       </div>
       <!-- 底部详情 -->
       <div class="footer">
         <div class="footer-left">
           <img src="@/assets/img/answers/icon_coin.png" alt="" />
-          <span>1200</span>
+          <span>{{item.golds}}</span>
         </div>
-        <div class="footer-center">5个回答</div>
-        <div class="footer-right">2020/04/24 14:20</div>
+        <div class="footer-center">{{item.answerNum}}个回答</div>
+        <div class="footer-right">{{item.insertTime}}</div> 
       </div>
     </div>
   </div>
 </template>
 <script>
+import {optDeleteQuestion} from "@/network/answersPlaza"
 export default {
   data() {
     return {
@@ -44,14 +63,32 @@ export default {
       ],
     };
   },
+  props: {
+    item: {
+      type: Object,
+      default: {},
+    },
+  },
   methods: {
     go_exDetail() {
       console.log("跳转成功");
       this.$router.push({
         path: "/page/answersPlaza/exercises-detail",
+        query:{"exercisesDetail":JSON.stringify(this.item)}
       });
     },
+    deleteQuestion(){
+      let data={
+        questionId:this.item.id
+      };
+      optDeleteQuestion(data).then(res=>{
+        console.log("删除成功",res);
+      })
+    }
   },
+  created(){
+    console.log("this.item=",this.item);
+  }
 };
 </script>
 <style lang="scss" scoped>
@@ -66,9 +103,27 @@ export default {
 }
 .exercises-item {
   display: flex;
+  position: relative;
   flex-direction: column;
   justify-content: space-around;
   min-height: 100%;
+  .delete{
+    position: absolute;
+    right: 0;
+    width: 84px;
+    height: 26px;
+    background: #eb002a;
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: Source Han Sans CN;
+    font-weight: 400;
+    color: #ffffff;
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index:20;
+  }
   .top-title {
     font-size: 15px;
     font-family: Source Han Sans CN;
