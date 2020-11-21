@@ -28,7 +28,11 @@ instance.interceptors.response.use(res => {
     if(res.data.code==200||res.data.code==400){
         return res.data.data
     }else{
-      vue.$myAlert(res.data.msg)
+      vue.$myAlert(res.data.msg||res.data.message);
+      switch(res.data.code){
+        case 700:
+        vue.$router.push({path:"/page/register"})
+      }
     }
 }, err => {
   if (err && err.response) {

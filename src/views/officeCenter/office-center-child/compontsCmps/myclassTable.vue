@@ -26,11 +26,13 @@
           >
             图片
           </el-button> -->
+          <!-- :src="isActive==scope.$index?'@/assets/img/icon_radiobutton.png':'@/assets/img/icon_selected.png'" -->
+            <!-- src="@/assets/img/success.png" -->
           <img
             @click="selectRow(scope.$index, tableData)"
             style="width: 20px; height: 20px"
-            src="@/assets/img/icon_selected.png"
-            alt=""
+            :src="isActive==scope.$index?require('@/assets/img/success.png'):require('@/assets/img/icon_radiobutton.png')"
+            :alt="scope.$index+','+isActive"
           />
         </template>
       </el-table-column>
@@ -79,28 +81,6 @@
 
 <script>
 export default {
-  methods: {
-    tableRowClassName({ row, rowIndex }) {
-      console.log(row);
-      if (rowIndex % 2 == 0) {
-        return "warning-row";
-      } else {
-        return "success-row";
-      }
-    },
-    selectRow(index, rows) {
-      console.log(index, rows);
-      // this.$router.push({
-      //      path:"/officeCenter/OfficeCenterIndex/test2"
-      // })
-    },
-    deleteRow(index, rows) {
-      console.log(index, rows);
-      this.$router.push({
-        path: "/page/officeCenter/OfficeCenterIndex/test2",
-      });
-    },
-  },
   data() {
     return {
       tableData: [
@@ -129,7 +109,32 @@ export default {
           exercise: "未审批",
         },
       ],
+      isActive:0
     };
+  },
+  methods: {
+    tableRowClassName({ row, rowIndex }) {
+      console.log(row);
+      if (rowIndex % 2 == 0) {
+        return "warning-row";
+      } else {
+        return "success-row";
+      }
+    },
+    selectRow(index, rows) {
+      console.log("isActive=",this.isActive)
+      console.log(index, rows);
+      this.isActive=index;
+      // this.$router.push({
+      //      path:"/officeCenter/OfficeCenterIndex/test2"
+      // })
+    },
+    deleteRow(index, rows) {
+      console.log(index, rows);
+      this.$router.push({
+        path: "/page/officeCenter/OfficeCenterIndex/test2",
+      });
+    },
   },
 };
 </script>

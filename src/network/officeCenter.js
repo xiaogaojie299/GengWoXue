@@ -9,3 +9,28 @@ export function queryDaySchedule(data){
         url:api+"queryDaySchedule"+qs(data)
     })
 }
+// 获取教师每月中排课数量
+export function queryTeacherSchedule(data){
+    return request({
+        url:api+"queryTeacherSchedule"+qs(data)
+    })
+}
+// 获取所有年级
+export function queryAllGrade(){
+    return request({
+        url:api+"queryAllGrade"
+    })
+}
+// 获取所有科目
+export function queryAllSubjects(){
+    return request({
+        url:api+"queryAllSubjects"
+    })
+}
+// 获取课件库列表
+export function queryAllCourseware(data){
+    console.log("data",data);
+    return request({
+        url:api+"queryAllCourseware"+qs(data),
+    })
+}

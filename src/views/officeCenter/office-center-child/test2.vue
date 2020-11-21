@@ -2,7 +2,7 @@
   <div class="box">
     <!-- 头部日历 -->
     <div class="header">
-      <calendar  @checkDay="checkDay"></calendar>
+      <calendar @initCurrent="initCurrent" :MonthClass="MonthClass"  @checkDay="checkDay" @checkMonth="checkMonth"></calendar>
     </div>
     <!-- 底部详情 -->
     <div>
@@ -51,30 +51,49 @@
         </div>
       </div>
     </div>
-    <!--  -->
+    <!-- 分页 -->
+    <div class="page-device">
+      <page-device :current="current" @handleCurrentChange="handleCurrentChange"></page-device>
+    </div>
   </div>
 </template>
 <script>
-import {queryDaySchedule} from '@/network/officeCenter'
+import {queryDaySchedule,queryTeacherSchedule } from '@/network/officeCenter'
 import * as utils from "@/utils/getData";
 export default {
   data() {
   let {year,month,day}=utils.getYearMonthDay(new Date());
     return {
-      timer:new Date(),
+      dayTimer:new Date(),  //按天查询课程
+      monthTimer:new Date(),  //按月查询课程
+      isdayTimer:false,      //控制按月查询还是按日查询的开关
       current:1,
       size:10,
-      timerCourse:[]
+      timerCourse:[],     //课程表数据
+      MonthClass:[]
     };
   },
   created(){
-    this.getDaySchedule()
+    this.getDaySchedule()  //按时间查询课程
+    this.getMonthTeacherSchedule()  //查询这个月有那几天有课
+  },
+  watch:{
+    // 监听现在是按时间查询还是按月查询
+    dayTimer(){
+      this.isdayTimer=true;
+      this.current=1;
+    },
+    monthTimer(){
+      this.isdayTimer=false;
+      this.current=1;
+      this.getMonthTeacherSchedule()
+    }
   },
   methods: {
-    // 按时间查询获取的时间
+    // 按天查询获取的时间
     getDaySchedule(){
-     let day = utils.getTimeType(this.timer);
-    let data={
+     let day = utils.getTimeType(this.dayTimer);
+      let data={
         current:this.current,
         size:this.size,
         day:day
@@ -84,16 +103,56 @@ export default {
         this.timerCourse=res;
       })
     },
+    // 按月查询课程数
+    getMonthTeacherSchedule(){
+      let day=utils.getTimeType(this.monthTimer,true);
+      let data={
+        current:this.current,
+        size:this.size,
+        day:day
+      }
+      console.log("data=",data);
+      queryTeacherSchedule(data).then(res=>{
+        console.log("获取月课程",res);
+        if(res=="undefind"||res.length==0){
+            this.MonthClass=[{number:1,strTime:"2020-11-20"},{number:2,strTime:"2020-11-10"}]
+            console.log("MonthClass=",this.MonthClass);
+        }else{
+          this.MonthClass=res;
+        }
+      })
+    },
     // 跳转课程详情
     go_courseDetail() {
       this.$router.push({
         path: "/page/officeCenter/OfficeCenterIndex/test1",
       });
     },
+
+    // 日历组件自定义的方法传给这个页面
     checkDay(data){
       console.log(data);
-        this.timer=data;
+        this.dayTimer=data;
         this.getDaySchedule();
+    },
+
+    checkMonth(data){
+      let {year,month,day}=data;
+      let days=utils.getDate(year,month,day);
+      this.monthTimer=days
+      this.getMonthTeacherSchedule()
+    },
+
+    initCurrent(i){
+      this.current=1;
+    },
+
+    //分页页数
+    handleCurrentChange(data){
+      this.current=data;
+      console.log("this.current=",this.current);
+        this.getDaySchedule();  //按天查询 2020-09-09
+        this.getMonthTeacherSchedule()  //按月查询2020-09 有多少节课
     }
   },
 };
@@ -251,5 +310,12 @@ export default {
       }
     }
   }
+}
+//分页
+.page-device{
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

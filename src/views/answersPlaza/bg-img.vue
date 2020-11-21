@@ -222,8 +222,7 @@ input:-ms-input-placeholder {
   background: linear-gradient(110deg, #F13232, #EF753C);
   color: #fff;
 }
-/deep/ .el-select-dropdown__list{
-}
+
 .content {
   .input-border-box {
     padding-left:28px;

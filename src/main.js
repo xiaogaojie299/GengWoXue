@@ -8,6 +8,7 @@ import myAlert from "./utils/prototype"
 import "element-ui/lib/theme-chalk/index.css";
 Vue.config.productionTip = false;
 Vue.prototype.$myAlert=myAlert;
+Vue.prototype.$EventBus=new Vue()
 Vue.use(ElementUI);
 Vue.use(plugins)
 let vue= new Vue({

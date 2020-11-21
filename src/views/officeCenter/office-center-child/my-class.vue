@@ -3,12 +3,23 @@
     <div class="title">我的班级</div>
     <div class="box">
       <!-- 上面标签 -->
-      <div style="display: flex; border: 1px solid red">
+      <div style="display: flex;">
         <div class="header">
           <div class="header-tag">
             <div class="tag-left">班级:</div>
             <!-- 下拉多选框 -->
-            <div class="tag-right">选择班级</div>
+            <!-- <div class="tag-right"></div> -->
+            <div>
+              <el-select @change="change"  :popper-append-to-body="false" v-model="value" placeholder="请选择">
+                <el-option
+                  v-for="item in classList"
+                  :key="item.value"
+                  :label="item.name"
+                  :value="item.id"
+                >
+                </el-option>
+              </el-select>
+            </div>
           </div>
         </div>
         <!-- 下面按钮组 -->
@@ -50,18 +61,51 @@
 <script>
 import myclassTable from "./compontsCmps/myclassTable";
 import myStudent from "./compontsCmps/my-student"
+// import {queryAllGrade} from "@/network/officeCenter"
+import {mapState,mapGetters,mapActions} from "vuex"
 export default {
   data() {
     return {
      dialogVisible:false,
+    //  options: [
+    //     {
+    //       value: "1",
+    //       label: "问答广场",
+    //     },
+    //     {
+    //       value: "2",
+    //       label: "我的回答",
+    //     },
+    //     {
+    //       value: "3",
+    //       label: "我的提问",
+    //     },
+    //   ],
+      value:1,
     };
   },
+  computed:{
+    classList(){
+      return this.$store.state.classList
+    }
+  },
+  created(){
+    this.getAllGrade()
+  },
   methods:{
+      change(val){
+      console.log("val=",this.value);
+    },
+    // 跳转我的学生详情
       go_myStudent(){
            this.$router.push({
                 path: "/page/officeCenter/OfficeCenterIndex/myStudent",
       });
       },
+    // 获取所有年纪
+    getAllGrade(){
+      this.$store.dispatch("getClassList");
+    },
     //   关闭遮罩层
       closeMask(){
           console.log("调用成功");
@@ -75,6 +119,42 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+/deep/ .el-input__inner {
+  padding-left: 6px;
+  margin: 0;
+  outline: none;
+  border: none;
+  // width: 100%;
+  width: 121px;
+height: 32px;
+background: #FFFFFF;
+border: 1px solid #EFEFEF;
+border-radius: 3px;
+  font-size: 10px;
+        font-family: Source Han Sans CN;
+        font-weight: 400;
+        color: #343434;
+}
+/deep/ .el-input__icon {
+  display: none;
+}
+/deep/ .el-select-dropdown{
+   font-size: 16px;
+  font-family: Source Han Sans CN;
+  font-weight: 400;
+  color: #262626;
+}
+/deep/ .el-select-dropdown__list li{
+  font-size: 16px;
+  font-family: Source Han Sans CN;
+  font-weight: 400;
+  color: #484949;
+}
+  /deep/ .el-select-dropdown__item.hover{
+  background: linear-gradient(110deg, #F13232, #EF753C);
+  color: #fff;
+}
+
 .title {
   font-size: 24px;
   font-family: Source Han Sans CN;

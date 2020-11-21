@@ -3,6 +3,7 @@
         <el-pagination
             background
             layout="prev, pager, next"
+            :current-page="current"
             @size-change="test"
             @current-change="handleCurrentChange"
             :total="1000">
@@ -16,11 +17,18 @@ export default {
 
         }
     },
+    props:{
+        current:{
+            type:Number,
+            default:1
+        }
+    },
     methods:{
         test(i){
             console.log('i',i);
         },
         handleCurrentChange(val){
+            this.$emit("handleCurrentChange",val)
             console.log('val',val)
         }
     }
