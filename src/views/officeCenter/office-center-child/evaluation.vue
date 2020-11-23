@@ -9,7 +9,11 @@
             <div class="tag-left">学生:</div>
             <!-- 下拉多选框 -->
             <div class="tag-right">
-              <input type="text" placeholder="输入学生姓名进行检索" />
+              <input
+                type="text"
+                v-model="studentName"
+                placeholder="输入学生姓名进行检索"
+              />
             </div>
           </div>
           <!-- 班级 -->
@@ -17,7 +21,11 @@
             <div class="tag-left">班级:</div>
             <!-- 下拉多选框 -->
             <div class="tag-right">
-              <input type="text" v-model="className" placeholder="请输入班级名称进行检索" />
+              <input
+                type="text"
+                v-model="className"
+                placeholder="请输入班级名称进行检索"
+              />
             </div>
           </div>
           <!-- 班级 -->
@@ -29,12 +37,12 @@
                 <el-select
                   @change="change"
                   :popper-append-to-body="false"
-                  v-model="value"
+                  v-model="examStatusValue"
                   placeholder="请选择"
                 >
                   <el-option
-                    v-for="item in classList"
-                    :key="item.value"
+                    v-for="item in examStatus"
+                    :key="item.id"
                     :label="item.name"
                     :value="item.id"
                   >
@@ -49,15 +57,15 @@
             <div class="tag-left">阅卷状态:</div>
             <!-- 下拉多选框 -->
             <div class="tag-right">
-               <div>
+              <div>
                 <el-select
                   @change="change"
                   :popper-append-to-body="false"
-                  v-model="value"
+                  v-model="scoreValue"
                   placeholder="请选择"
                 >
                   <el-option
-                    v-for="item in classList"
+                    v-for="item in scoreList"
                     :key="item.value"
                     :label="item.name"
                     :value="item.id"
@@ -76,21 +84,28 @@
           <div class="header-tag">
             <div class="tag-left">考试试卷:</div>
             <!-- 下拉多选框 -->
-            <div class="tag-right"><input type="text" placeholder="请输入考试试卷" /></div>
+            <div class="tag-right">
+              <input
+                type="text"
+                v-model="examPaper"
+                placeholder="请输入考试试卷"
+              />
+            </div>
           </div>
 
           <div class="header-tag">
             <div class="tag-left">考试类别:</div>
             <!-- 下拉多选框 -->
-            <div class="tag-right"><div>
+            <div class="tag-right">
+              <div>
                 <el-select
                   @change="change"
                   :popper-append-to-body="false"
-                  v-model="value"
+                  v-model="testPaperTypeValue"
                   placeholder="请选择"
                 >
                   <el-option
-                    v-for="item in classList"
+                    v-for="item in testPaperType"
                     :key="item.value"
                     :label="item.name"
                     :value="item.id"
@@ -98,29 +113,32 @@
                   </el-option>
                 </el-select>
                 <img src="@/assets/img/answers/icon_arrow.png" alt="" />
-              </div></div>
+              </div>
+            </div>
           </div>
 
           <div class="header-tag">
             <div class="tag-left">成绩发布:</div>
             <!-- 下拉多选框 -->
-            <div class="tag-right"><div>
+            <div class="tag-right">
+              <div>
                 <el-select
                   @change="change"
                   :popper-append-to-body="false"
-                  v-model="value"
+                  v-model="pushAnswerValue"
                   placeholder="请选择"
                 >
                   <el-option
-                    v-for="item in classList"
-                    :key="item.value"
+                    v-for="item in pushAnswer"
+                    :key="item.id"
                     :label="item.name"
                     :value="item.id"
                   >
                   </el-option>
                 </el-select>
                 <img src="@/assets/img/answers/icon_arrow.png" alt="" />
-              </div></div>
+              </div>
+            </div>
           </div>
 
           <div class="header-tag">
@@ -130,15 +148,19 @@
           </div>
         </div>
       </div>
-
+      <div class="btn-groups">
+        <div class="btn1">重置</div>
+        <div class="btn2" @click="query">查询</div>
+      </div>
       <!-- 查看课表按钮组 -->
       <div class="btn-groups1">
         <div class="btn1" @click="go_evalDetails">测评详情</div>
-        <div class="btn1">查询</div>
+        <div class="btn1">阅卷</div>
+        <div class="btn1">测评详情</div>
       </div>
-      <!-- 顶部表格 -->
+      <!-- 底部表格 -->
       <div>
-        <myclass-table />
+        <evaluation-table :tableData="tableData" />
       </div>
     </div>
     <!-- 底部分页 -->
@@ -156,17 +178,57 @@
   </div>
 </template>
 <script>
-import myclassTable from "./compontsCmps/myclassTable";
+import evaluationTable from "./compontsCmps/evaluationTable";
 import myStudent from "./compontsCmps/my-student";
+
+import { queryClassEvaluation } from "@/network/officeCenter";
 export default {
   data() {
     return {
       dialogVisible: false,
-      className:"",
-      examStatus:[{id:1,name:"缺考"},{id:2,name:"完成"}]     //考试状态
+      className: "", //班级名称
+      studentName: "", //学生姓名
+      current: 1, //当前页码
+      size: 10, //当前条数
+      examStatus: [
+        { id: "", name: "全部" },
+        { id: 1, name: "缺考" },
+        { id: 2, name: "完成" },
+      ], //考试状态
+      examStatusValue: "",
+      scoreList: [
+        { id: "", name: "全部" },
+        { id: 1, name: "未阅卷" },
+        { id: 2, name: "已阅卷" },
+      ],
+      scoreValue: "", //选择的值
+      examPaper: "", //考试试卷
+      testPaperType: [
+        { id: "", name: "全部" },
+        { id: 1, name: "线上" },
+        { id: 2, name: "线下" },
+      ],
+      testPaperTypeValue: "",
+      pushAnswer: [
+        { id: "", name: "全部" },
+        { id: 1, name: "未发布" },
+        { id: 2, name: "已发布" },
+      ],
+      pushAnswerValue: "",
+      tableData: [], //表格数据
     };
   },
+  created() {
+    this.init();
+  },
   methods: {
+    init() {
+      this.get_ClassEvaluation();
+    },
+    // 查询
+    query() {
+      this.get_ClassEvaluation();
+    },
     go_myStudent() {
       this.$router.push({
         path: "/page/officeCenter/OfficeCenterIndex/myStudent",
@@ -183,9 +245,28 @@ export default {
         path: "/page/officeCenter/evaluationDetail",
       });
     },
+    //获取测评详情数据
+    async get_ClassEvaluation() {
+      let data = {
+        current: this.current,
+        size: this.size,
+        name: this.studentName,
+        pushAnswer: this.pushAnswerValue,
+        scoring: this.scoreValue,
+        status: this.examStatusValue,
+        testPaperName: this.examPaper, //试卷名称
+        testPaperType: this.testPaperTypeValue,
+      };
+      let res = await queryClassEvaluation(data);
+      this.tableData = res.lis;
+      console.log("测评列表", res);
+    },
+    change(val) {
+      console.log("val=", val);
+    },
   },
   components: {
-    myclassTable,
+    evaluationTable,
     myStudent,
   },
 };
@@ -199,8 +280,8 @@ export default {
   width: 100%;
   // width: 121px;
   height: 32px;
-  background: #FFFFFF;
-  border: 1px solid #EFEFEF;
+  background: #ffffff;
+  border: 1px solid #efefef;
   border-radius: 3px;
   font-size: 10px;
   font-family: Source Han Sans CN;
@@ -223,15 +304,15 @@ export default {
   color: #484949;
 }
 /deep/ .el-select-dropdown__item.hover {
-  background: linear-gradient(110deg, #F13232, #EF753C);
+  background: linear-gradient(110deg, #f13232, #ef753c);
   color: #fff;
 }
 input {
   padding: 0 6px;
   width: 100%;
   height: 100%;
-  background: #FFFFFF;
-  border: 1px solid #EFEFEF;
+  background: #ffffff;
+  border: 1px solid #efefef;
   border-radius: 3px;
   font-size: 9px;
   font-family: PingFang SC;
@@ -282,13 +363,13 @@ input {
         font-family: PingFang SC;
         font-weight: 400;
         color: #4d4d4d;
-        & img{
-           width: 10px;
+        & img {
+          width: 10px;
           height: 10px;
           position: absolute;
           right: 6px;
-          top:50%;
-          transform:translateY(-50%)
+          top: 50%;
+          transform: translateY(-50%);
         }
       }
     }
