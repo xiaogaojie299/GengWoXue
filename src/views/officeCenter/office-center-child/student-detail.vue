@@ -3,7 +3,7 @@
       <div style="margin-left:23px">
         <breadcrumb-nav>
         <span slot="nav-name">我的学生</span>
-        <span slot="nav-child">小王个人信息</span>
+        <span slot="nav-child">{{studyInfo.name}}个人信息</span>
         </breadcrumb-nav>
       </div>
 
@@ -15,51 +15,51 @@
         <div class="stu-Info-box">
           <div class="row-box">
             <div class="left-title mt-1 pt">头像:</div>
-            <div class="right-img"></div>
+            <img class="right-img" :src="studyInfo.avatar" />
           </div>
 
           <div class="row-box">
-            <div class="left-title">性别：</div>
-            <div class="right-content my-font">女</div>
+            <div class="left-title">姓名：</div>
+            <div class="right-content my-font">{{studyInfo.name}}</div>
           </div>
           <!-- 一行多个 -->
           <div class="rows">
             <div>
               <div class="row-box">
+                <div class="left-title">性别：</div>
+                <div class="right-content my-font">{{studyInfo.sex}}</div>
+              </div>
+            </div>
+            <div>
+              <div class="row-box">
                 <div class="left-title">生日：</div>
-                <div class="right-content my-font">2012-01-01</div>
+                <div class="right-content my-font">{{studyInfo.birthday}}</div>
               </div>
             </div>
             <div>
               <div class="row-box">
                 <div class="left-title">在读班级：</div>
-                <div class="right-content my-font">张三</div>
-              </div>
-            </div>
-            <div>
-              <div class="row-box">
-                <div class="left-title">在读班级：</div>
-                <div class="right-content my-font">张三</div>
+                <div class="right-content my-font">{{studyInfo.className}}</div>
               </div>
             </div>
           </div>
           <div class="rows">
             <div>
               <div class="row-box">
-                <div class="left-title">课程详情:</div>
-                <div class="right-content my-font">2012-01-01</div>
+                <div class="left-title">在读课程：</div>
+                <div class="right-content my-font">{{studyInfo.courseName}}</div>
               </div>
             </div>
             <div>
               <div class="row-box">
                 <div class="left-title">学员状态：</div>
-                <div class="right-content my-font">张三</div>
+                <div class="right-content my-font"> {{ studentType(studyInfo.studentState)}}</div>
               </div>
             </div>
             <div>
               <div class="row-box">
                 <div class="left-title">总课时：</div>
-                <div class="right-content my-font">张三</div>
+                <div class="right-content my-font">{{studyInfo.classHour}}</div>
               </div>
             </div>
           </div>
@@ -71,15 +71,70 @@
           <div class="table">
               <growth-table></growth-table>
           </div>
+          <div class="page-device">
+            <page-device @handleCurrentChange="handleCurrentChange" />
+          </div>
       </div>
     </div>
   </div>
 </template>
 <script>
 import growthTable from "./compontsCmps/growthTable"
+import {queryEvaluationList} from "@/network/officeCenter"
 export default {
   data() {
-    return {};
+    return {
+      studyInfo:{},
+      current:1,
+      size:10,
+      tableData:[]
+    };
+  },
+  created(){
+    this.studyInfo=JSON.parse(this.$route.query.stuInfo);
+    console.log("studyInfo=",this.studyInfo)
+    this.init()
+},
+  methods:{
+    init(){
+      this.get_EvaluationList()
+    },
+    studentType(i){
+      console.log("i",i);
+      switch(i){
+        case 1:
+        return "在读";
+         case 2:
+        return "未分班";
+         case 3:
+        return "转班";
+         case 4:
+        return "离班";
+        case 5:
+        return "已结课";
+        case 6:
+        return "停课";
+        case 7:
+        return "已退学";
+        default :
+        return "已转科"
+      }
+    },
+    // 获取学生详情
+    async get_EvaluationList(){
+      let data={
+        current:this.current,
+        size:this.size,
+        id:this.studyInfo.id||""
+      }
+    let res = await queryEvaluationList(data);
+      console.log("学生记录",res);
+    },
+    // 分页
+    handleCurrentChange(currenr){
+      this.current=currenr;
+      this.get_EvaluationList()
+    }
   },
   components:{
       growthTable
@@ -158,6 +213,11 @@ export default {
           width: 794px;
           margin-left: 75px;
           border: 1px solid black;
+      }
+      .page-device{
+        display: flex;
+        justify-content: center;
+        margin:20px 0;
       }
   }
 }

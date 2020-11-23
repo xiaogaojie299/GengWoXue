@@ -12,7 +12,7 @@
           <row-template>
             <span slot="title">直播课程:</span>
             <div class="course-information vertical-center" slot="content">
-              <span class="input-style">英语直播课</span>
+              <span class="input-style">{{couseDetail.courseName}}</span>
             </div>
           </row-template>
         </div>
@@ -21,7 +21,7 @@
           <row-template>
             <span slot="title">主讲人：</span>
             <div class="course-information vertical-center" slot="content">
-              <span class="input-style">张老师</span>
+              <span class="input-style">{{couseDetail.keynoteTeacher}}</span>
             </div>
           </row-template>
         </div>
@@ -29,7 +29,7 @@
           <row-template>
             <span slot="title">直播间:</span>
             <div class="course-information vertical-center" slot="content">
-              <span class="input-style">直播间AAAA</span>
+              <span class="input-style">{{couseDetail.liveBroadcastHome||'暂无直播间'}}</span>
             </div>
           </row-template>
         </div>
@@ -40,7 +40,7 @@
           <row-template>
             <span slot="title">授课班级:</span>
             <div class="course-information vertical-center" slot="content">
-              <span class="input-style">三班</span>
+              <span class="input-style">{{couseDetail.className}}</span>
             </div>
           </row-template>
         </div>
@@ -48,7 +48,7 @@
           <row-template>
             <span slot="title">授课时间：</span>
             <div class="course-information vertical-center" slot="content">
-              <span class="input-style">张老师</span>
+              <span class="input-style">{{couseDetail.classTime}}</span>
             </div>
           </row-template>
         </div>
@@ -56,7 +56,7 @@
           <row-template>
             <span slot="title">助教：</span>
             <div class="course-information vertical-center" slot="content">
-              <span class="input-style">张老师</span>
+              <span class="input-style">{{couseDetail.assistantTeacher}}</span>
             </div>
           </row-template>
         </div>
@@ -69,7 +69,7 @@
           <row-template>
             <span slot="title">直播课程:</span>
             <div slot="content">
-              <span class="input-style">英语第一课课件.p</span>
+              <span class="input-style">{{couseDetail.coursewareName}}</span>
             </div>
           </row-template>
         </div>
@@ -94,7 +94,7 @@
 
         <!-- 学生情况 -->
         <div class="student-info">
-            邀请参加（ <span>30</span> ） 参加直播（ <span>30</span> ）； 完成习题人数（ <span>30</span> ）批阅（30）；
+            邀请参加（ <span>{{couseDetail.invitation}}</span> ） 参加直播（ <span>{{couseDetail.invitation}}</span> ）； 完成习题人数（ <span>{{couseDetail.overTest}}</span> ）批阅（{{couseDetail.review}}）；
         </div>
 
         <!-- 学生表格 -->
@@ -117,21 +117,57 @@
 
 <script>
 import studentTable from "./compontsCmps/studentTable"
+import {queryCourseInfoDate,queryCourseInfo } from '@/network/officeCenter'
 export default {
     data(){
         return{
-
+          current:1,
+          size:10,
+          scheduleId:"",
+          couseDetail:{}
         }
     },
     components:{
         studentTable
     },
+    created() {
+      this.init()
+    },
   methods: {
+    // 初始化
+    init(){
+      let scheduleId=this.$route.query.scheduleId;
+      this.scheduleId=scheduleId;
+      this.getDaySchedule();
+      this.getCourseInfo();
+    },
     go_child() {
       this.$router.push({
         path: "/page/officeCenter/teacherLive",
       });
     },
+    // 获取课程详情
+    getDaySchedule(){
+      let data={
+        scheduleId:this.scheduleId
+      }
+      queryCourseInfoDate(data).then(res=>{
+        console.log("获取课程",res);
+        this.timerCourse=res;
+        this.couseDetail=res
+      })
+    },
+    // 获取排课详情中的列表数据
+    getCourseInfo(){
+      let data={
+        scheduleId:this.scheduleId,       //排课id
+        current:this.current, //当前页
+        size:this.size    //当前数据多少
+        };
+      queryCourseInfo(data).then(res=>{
+        console.log("获取table==",res)
+      })
+    }
   },
 };
 </script>

@@ -28,92 +28,126 @@
       >
         <el-table-column width="80" align="center">
           <template slot-scope="scope">
-            <img
-              @click="selectRow(scope.$index, tableData)"
-              style="width: 20px; height: 20px"
-              src="@/assets/img/icon_selected.png"
-              alt=""
-            />
-          </template>
+          <img
+            @click="selectRow(scope.$index, tableData)"
+            style="width: 20px; height: 20px"
+            :src="isActive==scope.$index?require('@/assets/img/success.png'):require('@/assets/img/icon_radiobutton.png')"
+            :alt="scope.$index+','+isActive"
+          />
+        </template>
         </el-table-column>
         <el-table-column
-          prop="date"
-          label="课件名称"
-          width="270"
+          label="序号"
+          width="160"
           align="center"
         >
+        <template slot-scope="scope">
+          <span>{{scope.$index+1}}</span>
+        </template>
         </el-table-column>
         <el-table-column
           prop="name"
-          label="课件类型"
+          label="姓名"
           align="center"
           width="160"
         >
         </el-table-column>
-        <el-table-column prop="address" align="center" label="课件科目">
+        <el-table-column prop="mailingInformation" align="center" label="是否邮寄资料">
+          <template slot-scope="scope">
+          <span>{{scope.row.mailingInformation==0?"否":"是"}}</span>
+        </template>
         </el-table-column>
       </el-table>
     </div>
-
+    <div class="page-device"><page-device /></div>
     <!-- 底部关闭按钮 -->
     <div class="footer-btn" @click="close">关闭</div>
   </div>
 </template>
 <script>
+import {queryClassStudent} from "@/network/officeCenter"
 export default {
   data() {
     return {
-      tableData: [
+      isActive:0,
+      current:1,
+      size:10,
+      tableData:[
+          {
+            id:4,
+            date: "2016-05-02",
+            name: "王小虎",
+            mailingInformation: 0,
+            studentState:2
+        },
         {
+          id:5,
           date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "已审批",
+          name: "张三",
+          mailingInformation: 0,
+          studentState:1
         },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "待审批",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "审批成功",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "未审批",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "未审批",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "未审批",
-        },
-      ],
+        ]
     };
   },
+  props:{
+    classId:{
+      type:Number,
+    }
+  },
+  watch:{
+    classId(){
+      this.get_classStudent()
+    }
+  },
+  created(){
+    console.log("传过来的id",this.classId)
+    this.get_classStudent()
+  },
   methods: {
+      tableRowClassName({ row, rowIndex }) {
+      console.log(row);
+      if (rowIndex % 2 == 0) {
+        return "warning-row";
+      } else {
+        return "success-row";
+      }
+    },
     go_studentDetail() {
       console.log("跳转到学生详情成功");
+
+      this.isActive
       this.$router.push({
         path: "/page/officeCenter/OfficeCenterIndex/studentDetail",
+        query:{
+          stuInfo:JSON.stringify(this.tableData[this.isActive])
+        }
       });
     },
     close(){
         // this.$root.closeMask()
         this.$emit("handleClose");
-    }
+    },
+    get_classStudent(){
+      let data={
+        id:this.classId,
+        size:this.size,
+        current:this.current
+      }
+      queryClassStudent(data).then(res=>{
+        console.log("获取班级成功呢",res);
+      })
+    },
+    handleCurrentChange(data){
+      // data   分页页数
+      this.current=data;
+      this.get_classStudent()
+    },
+    selectRow(index, rows) {
+      console.log("isActive=",this.isActive)
+      console.log(index, rows);
+      this.isActive=index;
+    },
   },
 };
 </script>
@@ -168,6 +202,12 @@ border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+  .page-device{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin:16px 0;
   }
 }
 </style>

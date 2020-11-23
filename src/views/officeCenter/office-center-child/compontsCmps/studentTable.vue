@@ -17,14 +17,25 @@
       }"
       :row-class-name="tableRowClassName"
     >
-      <el-table-column prop="date" label="日期" width="180" align="center">
+      <el-table-column align="center" label="考勤">
+        <template slot-scope="scope">
+          <span>{{scope.$index+1}}</span>
+       </template>
       </el-table-column>
-      <el-table-column prop="name" label="姓名" align="center" width="180">
-      </el-table-column>
-      <el-table-column prop="address" align="center" label="地址">
+      <el-table-column prop="studentName" align="center" label="姓名">
       </el-table-column>
       <!-- 课后习题 -->
-      <el-table-column prop="exercise" align="center" label="课后习题">
+      <!-- prop="work" -->
+      <el-table-column align="center" label="考勤">
+        <template slot-scope="scope">
+          <span>{{scope.row.work==0?"参加直播":"未参加"}}</span>
+       </template>
+      </el-table-column>
+      <!-- 课后习题 -->
+     <el-table-column align="center" label="课后习题">
+        <template slot-scope="scope">
+          <span>{{scope.row.state==0?"未做题":scope.row.state==1?"已完成":"已阅卷"}}</span>
+       </template>
       </el-table-column>
       <!-- 操作 -->
       <el-table-column fixed="right" label="操作" width="120">
@@ -34,7 +45,7 @@
             type="text"
             size="small"
           >
-            批阅作业
+            {{scope.row.state==0?"提醒做题":scope.row.state==1?"批阅作业":"查看作业"}}
           </el-button>
         </template>
       </el-table-column>
@@ -53,7 +64,47 @@
 </style>
 
 <script>
+import {remindTheProblem} from '@/network/officeCenter'
 export default {
+  data() {
+    return {
+      // tableData: [
+      //   {
+      //     id: "10",
+      //     studentName: "王小虎",
+      //     state: "0",
+      //     work: "0",
+      //   },
+      //   {
+      //     id: "10",
+      //     studentName: "王虎",
+      //     state: "1",
+      //     work: "1",
+      //   },
+      // ],
+    };
+  },
+  props:{
+    tableData:{
+      type:Array,
+      default:()=>{
+        return [
+        {
+          id: "1",
+          studentName: "王小虎",
+          state: "0",
+          work: "0",
+        },
+        {
+          id: "2",
+          studentName: "王虎",
+          state: "1",
+          work: "1",
+        },
+      ]
+      }
+    }
+  },
   methods: {
     tableRowClassName({ row, rowIndex }) {
       console.log(row);
@@ -65,41 +116,21 @@ export default {
     },
     deleteRow(index, rows) {
         console.log(index,rows);
-        this.$router.push({
-             path:"/page/officeCenter/readwork"
-        })
+        if(rows[index].state==0){
+          //提醒学生做题
+          let data={
+            id:rows[index].id
+          }
+          remindTheProblem(data).then(res=>{
+            console.log("提醒学生做题成功");
+          })
+        }
+        // this.$router.push({
+        //      path:"/page/officeCenter/readwork"
+        // })
     },
   },
-  data() {
-    return {
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "已审批",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "待审批",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "审批成功",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "未审批",
-        },
-      ],
-    };
-  },
+  
  
 };
 </script>

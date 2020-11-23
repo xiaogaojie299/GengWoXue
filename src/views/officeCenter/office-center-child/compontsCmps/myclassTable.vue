@@ -17,17 +17,9 @@
       }"
       :row-class-name="tableRowClassName"
     >
+    <!-- :row-class-name="tableRowClassName" -->
       <el-table-column width="40" align="center">
         <template slot-scope="scope">
-          <!-- <el-button
-            @click.native.prevent="deleteRow(scope.$index, tableData)"
-            type="text"
-            size="small"
-          >
-            图片
-          </el-button> -->
-          <!-- :src="isActive==scope.$index?'@/assets/img/icon_radiobutton.png':'@/assets/img/icon_selected.png'" -->
-            <!-- src="@/assets/img/success.png" -->
           <img
             @click="selectRow(scope.$index, tableData)"
             style="width: 20px; height: 20px"
@@ -36,22 +28,32 @@
           />
         </template>
       </el-table-column>
-      <el-table-column prop="date" label="课件名称" width="180" align="center">
+      <el-table-column prop="name" label="班级名称" align="center">
       </el-table-column>
-      <el-table-column prop="name" label="课件类型" align="center" width="180">
+      <el-table-column prop="courseName" label="授课课程" align="center">
       </el-table-column>
-      <el-table-column prop="address" align="center" label="课件科目">
+      <el-table-column prop="responsibilityTeacher" align="center" label="责任老师">
       </el-table-column>
-      <el-table-column prop="address" align="center" label="课件科目">
+      <el-table-column prop="assistantTeacher" align="center" label="助教老师">
       </el-table-column>
-      <el-table-column prop="address" align="center" label="课件科目">
+      <el-table-column prop="studentNum" align="center" label="学生人数">
       </el-table-column>
-      <el-table-column prop="address" align="center" label="课件科目">
+      <el-table-column prop="courseNum" align="center" label="课次">
       </el-table-column>
-      <el-table-column prop="address" align="center" label="课件科目">
+      <el-table-column prop="overCourseNum" align="center" label="已开课">
+       
       </el-table-column>
       <!-- 课后习题 -->
-      <el-table-column prop="exercise" align="center" label="课后习题">
+      <el-table-column align="center" label="是否邮寄资料" width="150">
+         <template slot-scope="scope">
+          <span>{{scope.row.mailingInformationNum==0?"否":"是"}}</span>
+       </template>
+      </el-table-column>
+       <el-table-column prop="mailingInformationNum" align="center" label="已邮寄数">
+      </el-table-column>
+       <el-table-column prop="startTime" align="center" label="有效期起日" width="180">
+      </el-table-column>
+       <el-table-column prop="endTime" align="center" label="有效期止日" width="180">
       </el-table-column>
       <!-- 操作 -->
       <el-table-column fixed="right" label="操作" width="120">
@@ -83,34 +85,16 @@
 export default {
   data() {
     return {
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "已审批",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "待审批",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "审批成功",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "未审批",
-        },
-      ],
       isActive:0
     };
+  },
+  props:{
+    tableData:{
+      type:Array,
+      default:()=>{
+        return []
+      }
+    }
   },
   methods: {
     tableRowClassName({ row, rowIndex }) {
@@ -123,11 +107,9 @@ export default {
     },
     selectRow(index, rows) {
       console.log("isActive=",this.isActive)
-      console.log(index, rows);
       this.isActive=index;
-      // this.$router.push({
-      //      path:"/officeCenter/OfficeCenterIndex/test2"
-      // })
+      this.$emit("selectClass",index)
+      // this.$EventBus("selectClassId",rows[index].id)
     },
     deleteRow(index, rows) {
       console.log(index, rows);

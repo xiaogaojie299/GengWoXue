@@ -29,8 +29,44 @@ export function queryAllSubjects(){
 }
 // 获取课件库列表
 export function queryAllCourseware(data){
-    console.log("data",data);
     return request({
         url:api+"queryAllCourseware"+qs(data),
+    })
+}
+// 获取排课详情
+export function queryCourseInfoDate(data){
+    return request({
+        url:api+"queryCourseInfoDate"+qs(data),
+    })
+}
+// 获取排课详情中的列表数据
+export function queryCourseInfo(data){
+    return request({
+        url:api+"queryCourseInfo"+qs(data)
+    })
+}
+// 提醒学生做题操作
+export function remindTheProblem(data){
+    return request({
+        url:api+"remindTheProblem"+qs(data)
+    })
+}
+//获取我的班级的列表数据
+export function queryMyAllClassList(data){
+    console.log(data);
+    return request({
+        url:api+"queryMyAllClassList"+qs(data)
+    })
+}
+//获取班级学生列表数据
+export function queryClassStudent(data){
+    return request({
+        url:api+"queryClassStudent"+qs(data)
+    })
+}
+// 获取学生成长纪录列表
+export function queryEvaluationList(data){
+    return request({
+        url:api+"queryEvaluationList"+qs(data)
     })
 }

@@ -47,7 +47,7 @@
           </div>
           <!-- 课程详情 -->
           <div class="course-detail"></div>
-          <div class="course-detail1" @click="go_courseDetail">课程详情</div>
+          <div class="course-detail1" @click="go_courseDetail(item.scheduleId)">课程详情</div>
         </div>
       </div>
     </div>
@@ -115,7 +115,7 @@ export default {
       queryTeacherSchedule(data).then(res=>{
         console.log("获取月课程",res);
         if(res=="undefind"||res.length==0){
-            this.MonthClass=[{number:1,strTime:"2020-11-20"},{number:2,strTime:"2020-11-10"}]
+            this.MonthClass=[{number:1,strTime:"2020-11-25"},{number:2,strTime:"2020-11-22"}]
             console.log("MonthClass=",this.MonthClass);
         }else{
           this.MonthClass=res;
@@ -123,9 +123,10 @@ export default {
       })
     },
     // 跳转课程详情
-    go_courseDetail() {
+    go_courseDetail(id,day) {
       this.$router.push({
         path: "/page/officeCenter/OfficeCenterIndex/test1",
+        query:{scheduleId:id}
       });
     },
 

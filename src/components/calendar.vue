@@ -93,10 +93,7 @@
           <!-- {{ visible[(todayIndex - 1) * 7 + (j - 1)].getDate() }} -->
           {{ visible[(todayIndex - 1) * 7 + (j - 1)].getDate() }}
           <span
-            v-if="
-              !isToday(visible[(todayIndex - 1) * 7 + (j - 1)]) &&
-              isCurrentMonth(visible[(todayIndex - 1) * 7 + (j - 1)])
-            "
+            v-if="isMonthClass(visible[(todayIndex - 1) * 7 + (j - 1)])"
             class="inline"
           ></span>
           <!-- {{ arr[(i - 1) * 7 + (j - 1)].getDate() }} -->
@@ -119,7 +116,7 @@ export default {
     MonthClass: {
       type: Array,
       default: () => {
-        return {};
+        return [{number:1,strTime:"2020-11-20"},{number:2,strTime:"2020-11-10"}];
       },
     },
   },
@@ -211,7 +208,6 @@ export default {
     getTodayIndex() {
       this.visible.forEach((item, index) => {
         if (this.isToday(item)) {
-          console.log("item.getDate()=", item.getDate());
           item.getDate() <= 7
             ? (this.todayIndex = item.getDate())
             : (this.todayIndex = parseInt(index / 7) + 1);
@@ -239,9 +235,10 @@ export default {
     // 判断当前月哪天有课
     isMonthClass(data) {
       let day = utils.getTimeType(data);
-      this.MonthClass.forEach((item, index) => {
+     let isDay = this.MonthClass.some((item, index) => {
         return item.strTime==day
       });
+      return isDay
     },
   },
 };
