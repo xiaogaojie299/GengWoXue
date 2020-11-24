@@ -179,6 +179,7 @@ const routes = [
             children: [
               {
                 path: "data",
+                redirect: "data/personal-info",
                 name: "personal-data",
                 component: () =>
                   import(

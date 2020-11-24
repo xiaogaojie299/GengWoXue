@@ -33,6 +33,12 @@ export function queryAllCourseware(data) {
     url: api + "queryAllCourseware" + qs(data),
   });
 }
+//获取我的课件库列表
+export function queryMyAllCourseware(data){
+  return request({
+    url:api+"queryMyAllCourseware"+qs(data)
+  })
+}
 // 获取排课详情
 export function queryCourseInfoDate(data) {
   return request({
@@ -75,4 +81,10 @@ export function queryClassEvaluation(data) {
   return request({
     url: api + "queryClassEvaluation" + qs(data),
   });
+}
+//获取我的学生列表(按学生名字查询)
+export function queryAllMyStudent(data){
+  return request({
+    url:api+"queryAllMyStudent"+qs(data)
+  })
 }

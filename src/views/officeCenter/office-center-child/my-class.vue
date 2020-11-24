@@ -32,7 +32,7 @@
 
       <!-- 查看课表按钮组 -->
       <div class="btn-groups1">
-        <div class="btn1" @click="courseTimetable()">查看课表</div>
+        <div class="btn1" @click="courseTimetable">查看课表</div>
         <div class="btn1" @click="watchStudent">查看学生</div>
       </div>
       <!-- 顶部表格 -->
@@ -55,7 +55,6 @@
         <myStudent :classId="classId" @handleClose="closeMask" />
         
 </el-dialog>
-    <button @click="closeMask">打卡</button>
   </div>
 </template>
 <script>
@@ -124,7 +123,16 @@ export default {
 
     // 查看班级课表
     courseTimetable(){
-
+      let that=this;
+      let classIndex=that.classIndex||0;
+      that.classId=that.tableData[classIndex].id;
+      console.log("classId===>",that.tableData[classIndex])
+      that.$router.push({
+        path: "/page/officeCenter/OfficeCenterIndex/test2",
+        query:{
+          classInfo:JSON.stringify(that.tableData[classIndex])
+        }
+      });
     },
     // 查询班级列表
     query(){

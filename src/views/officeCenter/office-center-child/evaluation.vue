@@ -155,8 +155,7 @@
       <!-- 查看课表按钮组 -->
       <div class="btn-groups1">
         <div class="btn1" @click="go_evalDetails">测评详情</div>
-        <div class="btn1">阅卷</div>
-        <div class="btn1">测评详情</div>
+        <div class="btn1" @click="go_readWork">阅卷</div>
       </div>
       <!-- 底部表格 -->
       <div>
@@ -166,7 +165,7 @@
     <!-- 底部分页 -->
 
     <div class="footer">
-      <page-device />
+      <page-device @handleCurrentChange="handleCurrentChange" :total="total" />
     </div>
     <!-- 遮罩层弹框 -->
 
@@ -174,7 +173,6 @@
       <myStudent @handleClose="closeMask" />
     </el-dialog>
 
-    <button @click="closeMask">打卡</button>
   </div>
 </template>
 <script>
@@ -190,6 +188,7 @@ export default {
       studentName: "", //学生姓名
       current: 1, //当前页码
       size: 10, //当前条数
+      total:0, //总数
       examStatus: [
         { id: "", name: "全部" },
         { id: 1, name: "缺考" },
@@ -245,6 +244,12 @@ export default {
         path: "/page/officeCenter/evaluationDetail",
       });
     },
+    //跳转到阅卷页面
+    go_readWork(){
+      this.$router.push({
+        path:"/page/officeCenter/readwork"
+      })
+    },
     //获取测评详情数据
     async get_ClassEvaluation() {
       let data = {
@@ -258,12 +263,19 @@ export default {
         testPaperType: this.testPaperTypeValue,
       };
       let res = await queryClassEvaluation(data);
-      this.tableData = res.lis;
-      console.log("测评列表", res);
+      this.tableData = res.list;
+      this.total=res.total
+      console.log("测评列表", res.total);
     },
+    // 下拉框
     change(val) {
       console.log("val=", val);
     },
+    // 分页
+    handleCurrentChange(data){
+      this.current=data;
+      this.get_ClassEvaluation()
+    }
   },
   components: {
     evaluationTable,

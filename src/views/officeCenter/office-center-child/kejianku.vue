@@ -73,16 +73,14 @@
           <!-- 下面按钮组 -->
         </div>
 
-        <div class="header-tag">
+        <div class="header-tag w-100">
           <div class="tag-left">课件名称:</div>
           <div>
             <input class="kjName" type="text" />
           </div>
-          <div></div>
-          <!-- 下面按钮组 -->
         </div>
       </div>
-
+          <!-- 下面按钮组 -->
       <div class="btn-groups">
         <div class="btn1">重置</div>
         <div @click="query" class="btn2">查询</div>
@@ -108,7 +106,7 @@ export default {
       kejianTypeValue: "",
       subjectValue: "",
       classValue: "",
-      kejianName: "",
+      // kejianName: "",
       current:1,
       size:10
     };
@@ -220,6 +218,7 @@ export default {
   width: 1054px;
   padding: 10px 20px;
   .header {
+    width: 100%;
     display: flex;
     justify-content: space-between;
     .header-tag {
@@ -229,7 +228,7 @@ export default {
       justify-content: space-between;
       align-items: center;
       .tag-left {
-        width: 45%;
+        width: 60px;
         white-space: nowrap;
         font-size: 10px;
         font-family: Source Han Sans CN;
@@ -242,7 +241,7 @@ export default {
         outline: none;
         border: none;
         width: 100%;
-        // width: 121px;
+        width: 180px;
         height: 32px;
         background: #FFFFFF;
         border: 1px solid #EFEFEF;
@@ -269,6 +268,9 @@ export default {
         font-weight: 400;
         color: #4d4d4d;
       }
+    }
+    .w-100{
+      width: 250px;
     }
   }
 }

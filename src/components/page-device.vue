@@ -6,7 +6,7 @@
             :current-page="current"
             @size-change="test"
             @current-change="handleCurrentChange"
-            :total="1000">
+            :total="total">
         </el-pagination>
     </div>
 </template>
@@ -21,6 +21,10 @@ export default {
         current:{
             type:Number,
             default:1
+        },
+        total:{
+            type:Number,
+            default:0
         }
     },
     methods:{

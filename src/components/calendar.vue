@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <div class="w1">课程表</div>
+    <!-- <div class="w1">课程表</div> -->
     <div class="Calendar-title w1">
       <!-- 左边点击上一个月 -->
       <div v-if="switchMonthWeek" class="top-data-box">

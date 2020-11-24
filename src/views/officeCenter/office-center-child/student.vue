@@ -8,62 +8,121 @@
           <div class="header-tag">
             <div class="tag-left">学生:</div>
             <!-- 下拉多选框 -->
-            <div class="tag-right">选择班级</div>
+            <input class="tag-right" v-model="inputStudentName" placeholder="请输入学生姓名" />
+          </div>
+        </div>
+
+        <div class="header">
+          <div class="header-tag">
+            <div class="tag-left">班级:</div>
+            <!-- 下拉多选框 -->
+            <input class="tag-right" v-model="inputClassName" placeholder="请输入班级" />
           </div>
         </div>
         <!-- 下面按钮组 -->
         <div class="btn-groups">
           <div class="btn1">重置</div>
-          <div class="btn2">查询</div>
+          <div class="btn2" @click="query">查询</div>
         </div>
       </div>
 
       <!-- 查看课表按钮组 -->
       <div class="btn-groups1">
-        <div class="btn1">查看课表</div>
-        <div class="btn1" @click="go_url('studentDetail')">学生详情</div>
+        <div class="btn1" @click="look_student">查看课表</div>
+        <div class="btn1" @click="go_stuDetail">学生详情</div>
       </div>
       <!-- 顶部表格 -->
       <div>
-        <myclass-table />
+        <my-studentTable @selectRow="selectRow" :tableData="tableData" />
       </div>
     </div>
     <!-- 底部分页 -->
 
     <div class="footer">
-      <page-device />
+      <page-device :total="total" />
     </div>
 
-    <button @click="closeMask">打卡</button>
   </div>
 </template>
 <script>
-import myclassTable from "./compontsCmps/myclassTable";
+import myStudentTable from "./compontsCmps/my-studentTable";
+import {queryAllMyStudent} from "@/network/officeCenter.js"
 export default {
   data() {
     return {
       dialogVisible: false,
+      inputStudentName:"",
+      inputClassName:"",
+      current:1,
+      size:10,
+      tableData:[],
+      total:1,
+      classIndex:0,
     };
   },
+  created() {
+    this.init();
+  },
   methods: {
+    init(){
+      this.get_AllMyStudent()
+    },
+    // 查询
+    query(){
+      this.get_AllMyStudent()
+    },
+    // 查看课表
+    look_student(){
+      console.log("查看课表",this.tableData[this.classIndex])
+      this.$router.push({
+        path: "/page/officeCenter/OfficeCenterIndex/test2",
+        query:{
+          studentInfo:JSON.stringify(this.tableData[this.classIndex])
+        }
+      });
+    },
+    //选中的学生信息
+    selectRow(data){
+      this.classIndex = data;
+      console.log("classIndex=",this.classIndex)
+    },
+    // 跳转到学生详情
+    go_stuDetail(){
+      let studyInfo=this.tableData[this.classIndex];
+      console.log("studyInfo=",studyInfo);
+      this.go_url('studentDetail',studyInfo)
+    },
     go_myStudent() {
       this.$router.push({
         path: "/page/officeCenter/OfficeCenterIndex/myStudent",
       });
     },
-    go_url(path) {
+    go_url(path,data) {
       let routerUrl='/page/officeCenter/OfficeCenterIndex/';
       console.log('跳转成功');
       this.$router.push({
-          path:routerUrl+path
+          path:routerUrl+path,
+          query:{stuInfo:JSON.stringify(data)}
       })
     //   this.$router.push({
     //     path: "/officeCenter/OfficeCenterIndex/studentDetail",
     //   });
     },
+    async get_AllMyStudent(){
+        let data={
+          className:this.inputClassName,
+          studentName:this.inputStudentName,
+          current:this.current,
+          size:this.size
+        }
+        let res= await queryAllMyStudent(data);
+        this.tableData=res.list;
+        this.total=res.total;
+
+}
   },
   components: {
-    myclassTable,
+    myStudentTable,
   },
 };
 </script>
@@ -84,6 +143,7 @@ export default {
     display: flex;
     justify-content: space-between;
     .header-tag {
+      margin-right: 44px;
       width: 150px;
       display: flex;
       justify-content: space-between;
@@ -97,6 +157,8 @@ export default {
         color: #343434;
       }
       .tag-right {
+        outline: none;
+        padding-left:6px;
         width: 98px;
         height: 34px;
         background: #ffffff;

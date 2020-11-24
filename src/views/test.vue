@@ -1,46 +1,82 @@
 <template>
-    <div style="height:100%">
-        <!-- <button @click="go_child()">跳转</button> -->
-        <!-- <router-view></router-view> -->
-        <el-container style="height: 100%; border: 1px solid #eee">
-  <el-aside width="200px">
-    <el-menu :default-openeds="['2-1']">
-<el-menu-item index="1-1" @click="go_url('test2')">课程中心</el-menu-item>
+    <div class="header">
+        <div class="header-tag">
+          <div class="tag-left">课件类型:</div>
+          <!-- 下拉多选框 -->
+          <div>
+            <el-select
+              @change="change"
+              :popper-append-to-body="false"
+              v-model="kejianTypeValue"
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="item in kejianType"
+                :key="item.value"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </div>
+          <img src="@/assets/img/answers/icon_arrow.png" alt="" />
+          <!-- 下面按钮组 -->
+        </div>
 
-      <el-submenu index="2">
-        <template slot="title">课件中心</template>
-        <el-menu-item-group>
-          <el-menu-item index="2-1" @click="go_url('kejianku')">课件库</el-menu-item>
-          <el-menu-item index="2-2" @click="go_url('mykejian')">我的课件</el-menu-item>
-        </el-menu-item-group>
-        <el-menu-item-group title="分组2">
-          <el-menu-item index="2-3">选项3</el-menu-item>
-        </el-menu-item-group>
-      </el-submenu>
-      <el-submenu index="3">
-        <template slot="title">我的班级</template>
-        <el-menu-item-group>
-          <el-menu-item index="3-1" @click="go_url('myClass')">我的班级</el-menu-item>
-          <el-menu-item index="3-2" @click="go_url('evaluation')">班级测评</el-menu-item>
-        </el-menu-item-group>
-      </el-submenu>
-      <!-- 我的学生 -->
-       <el-submenu index="4">
-        <template slot="title">我的学生</template>
-        <el-menu-item-group>
-          <template slot="title">分组一</template>
-          <el-menu-item index="4-1" @click="go_url('student')">我的学生</el-menu-item>
-          <el-menu-item index="4-2">选项2</el-menu-item>
-        </el-menu-item-group>
-      </el-submenu>
-    </el-menu>
-  </el-aside>
+        <div class="header-tag">
+          <div class="tag-left">科目:</div>
+          <!-- 下拉多选框 -->
+          <div>
+            <el-select
+              @change="change"
+              :popper-append-to-body="false"
+              v-model="subjectValue"
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="item in subjectList"
+                :key="item.value"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </div>
+          <img src="@/assets/img/answers/icon_arrow.png" alt="" />
+          <!-- 下面按钮组 -->
+        </div>
 
-  <el-container style="border:1px solid black;max-height:100%">
-      <router-view></router-view>
-  </el-container>
-</el-container>
-    </div>
+        <div class="header-tag">
+          <div class="tag-left">年级:</div>
+          <!-- 下拉多选框 -->
+          <div>
+            <el-select
+              @change="change"
+              :popper-append-to-body="false"
+              v-model="classValue"
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="item in classList"
+                :key="item.value"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </div>
+          <img src="@/assets/img/answers/icon_arrow.png" alt="" />
+          <!-- 下面按钮组 -->
+        </div>
+
+        <div class="header-tag">
+          <div class="tag-left">课件名称:</div>
+          <div>
+            <input class="kjName" type="text" />
+          </div>
+          <div></div>
+        </div>
+      </div>
 </template>
 <script>
 let routerUrl='/page/officeCenter/OfficeCenterIndex/';

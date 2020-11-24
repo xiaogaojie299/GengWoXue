@@ -1,6 +1,10 @@
 <template>
   <div class="box">
     <!-- 头部日历 -->
+    <breadcrumb-nav v-if="Object.keys(classInfo).length !== 0">
+      <div slot="nav-name">我的班级</div>
+      <div slot="nav-child">{{classInfo.name}}</div>
+    </breadcrumb-nav>
     <div class="header">
       <calendar @initCurrent="initCurrent" :MonthClass="MonthClass"  @checkDay="checkDay" @checkMonth="checkMonth"></calendar>
     </div>
@@ -70,13 +74,14 @@ export default {
       current:1,
       size:10,
       timerCourse:[],     //课程表数据
-      MonthClass:[]
+      MonthClass:[],
+      classInfo:[],       //班级数据 从我的班级课程表传入
+      studentInfo:[]      //学生数据，从我的学生课程表传入
     };
   },
   created(){
-    this.getDaySchedule()  //按时间查询课程
-    this.getMonthTeacherSchedule()  //查询这个月有那几天有课
-  },
+    this.init()
+  },  
   watch:{
     // 监听现在是按时间查询还是按月查询
     dayTimer(){
@@ -90,13 +95,25 @@ export default {
     }
   },
   methods: {
+    init(){
+      // 判断当前传过来的是班级信息还是学生信息
+    if(Object.keys(this.$route.query).indexOf('classInfo')!=-1){
+      this.classInfo=JSON.parse(this.$route.query.classInfo);
+    }else{
+      this.studentInfo=JSON.parse(this.$route.query.studentInfo);
+    }
+    this.getDaySchedule()  //按时间查询课程
+    this.getMonthTeacherSchedule()  //查询这个月有那几天有课
+    },
     // 按天查询获取的时间
     getDaySchedule(){
      let day = utils.getTimeType(this.dayTimer);
       let data={
         current:this.current,
         size:this.size,
-        day:day
+        day:day,
+        classId:this.classInfo.id||"",
+        studentId:this.studentInfo.id||""
       }
       queryDaySchedule(data).then(res=>{
         console.log("获取课程",res);

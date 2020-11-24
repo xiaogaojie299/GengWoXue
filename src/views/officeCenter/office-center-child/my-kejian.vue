@@ -70,7 +70,6 @@
             </el-select>
           </div>
           <img src="@/assets/img/answers/icon_arrow.png" alt="" />
-          <!-- 下面按钮组 -->
         </div>
 
         <div class="header-tag">
@@ -80,6 +79,28 @@
           </div>
           <div></div>
           <!-- 下面按钮组 -->
+        </div>
+
+        <div class="header-tag">
+          <div class="tag-left">审核状态:</div>
+          <!-- 下拉多选框 -->
+          <div>
+            <el-select
+              @change="change"
+              :popper-append-to-body="false"
+              v-model="auditValue"
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="item in auditList"
+                :key="item.value"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </div>
+          <img src="@/assets/img/answers/icon_arrow.png" alt="" />
         </div>
       </div>
 
@@ -92,8 +113,28 @@
         <mykejiankuTable />
       </div>
       <div class="btn-groups">
+        <div class="page-device">
+          <page-device />
+        </div>
+        <!-- 分页 -->
         <div class="btn1">删除</div>
-        <div class="btn2">上传</div>
+        <!-- 分割开始 -->
+        <el-upload
+          class="upload-demo"
+          action="http://ip:80/teacher/base/uploadFile"
+          :headers="header"
+          :on-preview="handlePreview"
+          :on-remove="handleRemove"
+          :on-error="handleFail"
+          :before-remove="beforeRemove"
+          multiple
+          :limit="3"
+          :on-exceed="handleExceed"
+        >
+          <div class="btn2">上传</div>
+        </el-upload>
+        <!-- 分割结束 -->
+        <!-- <div class="btn2" @click="upload">上传</div> -->
       </div>
     </div>
   </div>
@@ -101,16 +142,25 @@
 <script>
 import mykejiankuTable from "./compontsCmps/my-kejiankuTable";
 import { state, actions } from "vuex";
-import {queryAllCourseware} from "@/network/officeCenter"
+import { queryMyAllCourseware } from "@/network/officeCenter";
 export default {
   data() {
     return {
       kejianTypeValue: "",
       subjectValue: "",
       classValue: "",
+      auditValue: "",
       kejianName: "",
-      current:1,
-      size:10
+      current: 1,
+      size: 10,
+      fileList: [
+        {
+          name: "food.jpeg",
+          url:
+            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
+        },
+      ],
+      headerObj:{ContentType:'multipart/form-data'}
     };
   },
   computed: {
@@ -122,7 +172,7 @@ export default {
     },
     kejianType() {
       return [
-        {name:"全部",id:""},
+        { name: "全部", id: "" },
         { name: "视频", id: 1 },
         { name: "PPT", id: 2 },
         { name: "文档", id: 3 },
@@ -130,6 +180,14 @@ export default {
     },
     kejianName() {
       return "";
+    },
+    auditList() {
+      return [
+        { name: "全部", id: "" },
+        { name: "待审核", id: 1 },
+        { name: "审核通过", id: 2 },
+        { name: "审核拒绝", id: 3 },
+      ];
     },
   },
   created() {
@@ -140,29 +198,56 @@ export default {
     init() {
       this.subjectList = this.$store.dispatch("getSubjectList");
       this.classList = this.$store.dispatch("getClassList");
-      this.get_AllCourseware()
+      this.get_AllCourseware();
     },
-    query(){
-      this.get_AllCourseware()
+    query() {
+      this.get_AllCourseware();
       // http://139.9.154.145/teacher-server/api/officeCenter/queryAllCourseware?current=1&gradeId=1&name=1&size=10&subjectsId=1&type=1
-
     },
-    // 查询课件列表
-    get_AllCourseware(){
-      let data={
-        current:this.current, //当前页码
-        size:this.size,       //每页多少条数据
-        gradeId:this.classValue,  //班级id
-        name:this.kejianName,    //课件名称
-        subjectsId:this.subjectValue,  //科目id
-        type:this.kejianTypeValue   //课件类型
-      }
-      queryAllCourseware(data).then(res=>{
-        console.log("课件库列表");
-      })
+    // 分页
+    handleCurrentChange(data) {
+      this.current = data;
+      this.get_AllCourseware();
+    },
+    // 查询我的课件列表
+    get_AllCourseware() {
+      let data = {
+        current: this.current, //当前页码
+        size: this.size, //每页多少条数据
+        gradeId: this.classValue, //班级id
+        name: this.kejianName, //课件名称
+        subjectsId: this.subjectValue, //科目id
+        type: this.kejianTypeValue, //课件类型
+        status: this.auditValue, //课件类型
+      };
+      queryMyAllCourseware(data).then((res) => {
+        console.log("我的课件库", res);
+      });
     },
     change(val) {
       console.log("val=", val);
+    },
+    // 上传文件API
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(
+        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+          files.length + fileList.length
+        } 个文件`
+      );
+    },
+    handleFail(err,file,fileList){
+      console.log("err=",err)
+      console.log("file=",file)
+      console.log("fileList=",fileList)
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
     },
   },
   components: {
@@ -187,8 +272,8 @@ export default {
   // width: 100%;
   width: 101px;
   height: 32px;
-  background: #FFFFFF;
-  border: 1px solid #EFEFEF;
+  background: #ffffff;
+  border: 1px solid #efefef;
   border-radius: 3px;
   font-size: 10px;
   font-family: Source Han Sans CN;
@@ -211,7 +296,7 @@ export default {
   color: #484949;
 }
 /deep/ .el-select-dropdown__item.hover {
-  background: linear-gradient(110deg, #F13232, #EF753C);
+  background: linear-gradient(110deg, #f13232, #ef753c);
   color: #fff;
 }
 
@@ -244,8 +329,8 @@ export default {
         width: 100%;
         // width: 121px;
         height: 32px;
-        background: #FFFFFF;
-        border: 1px solid #EFEFEF;
+        background: #ffffff;
+        border: 1px solid #efefef;
         border-radius: 3px;
         font-size: 10px;
         font-family: Source Han Sans CN;
@@ -279,6 +364,11 @@ export default {
   font-size: 9px;
   font-family: Source Han Sans CN;
   font-weight: 500;
+  .page-device {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
   .btn1 {
     margin-left: auto;
     width: 80px;

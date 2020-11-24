@@ -4,12 +4,12 @@
       <!-- 验证手机号 -->
       <div class="verify">验证手机号：</div>
       <!-- input框输入手机号 -->
-      <input type="text" placeholder="输入手机号" />
+      <input type="number" v-model="phone" placeholder="输入手机号" />
       <!-- 验证码 -->
       <div class="verify-code">
         <!-- 输入验证码 -->
-        <input type="text" placeholder="输入验证码" />
-        <div class="btn">发送验证码</div>
+        <input type="text" v-model="code" placeholder="输入验证码" />
+        <button class="btn" :disabled="disabledBtn" @click="send_code">{{textCode}}</button>
       </div>
       <!-- 下方多选框 -->
       <div class="radio-box">
@@ -71,14 +71,50 @@ export default {
         // 选中icon
         selected:require("@/assets/img/personalCenter/icon_radiobutton_selected.png"),
         // 未选中icon
-        unselect:require("@/assets/img/personalCenter/icon_radiobutton.png")
+        unselect:require("@/assets/img/personalCenter/icon_radiobutton.png"),
+        //发送验证码
+        textCode: "获取验证码",
+        disabledBtn:false,  //是否禁用按钮
+        phone:"",  //用户手机号
+        code:""    //输入验证码
     };
   },
   methods:{
       checkoutBtn(i){
           this.currentActive=i;
           console.log("this.currentActive",this.currentActive)
+      },
+      // 发送验证码
+      send_code() {
+      let phone = this.inputList[1].value;
+      if (!phone) {
+        alert("手机号码不能为空");
+        return;
       }
+      if (!validatePhoneNumber(phone)) {
+        alert("请输入正确的手机格式");
+        return;
+      }
+      this.startTime();
+    },
+    // 启动定时器
+     startTime() {
+      // 调用函数
+      let i = 10;
+      let timer = null;
+      timer = setInterval(() => {
+        i--;
+        if (i >= 0) {
+          this.textCode = `${i}秒后重发`;
+          this.disabledBtn = true;
+        } else {
+          clearInterval(timer);
+          i = 9;
+          this.textCode = `重新发送`;
+          this.disabledBtn = false;
+        }
+      }, 1000);
+    }
   }
 };
 </script>

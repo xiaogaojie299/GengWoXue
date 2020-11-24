@@ -122,7 +122,7 @@ export default {
             id:rows[index].id
           }
           remindTheProblem(data).then(res=>{
-            console.log("提醒学生做题成功");
+            this.$myAlert("提醒学生做题成功")
           })
         }
         // this.$router.push({

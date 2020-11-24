@@ -52,19 +52,22 @@
       <!-- 课后习题 -->
       <el-table-column align="center" label="是否邮寄资料" width="150">
         <template slot-scope="scope">
-          <span>{{ scope.row.release == 1 ? "未发布" : "已发布" }}</span>
+          <!-- <span>{{ scope.row.release == 1 ? "未发布" : "已发布" }}</span> -->
+          <span>{{ scope.row.release }}</span>
         </template>
       </el-table-column>
       <!-- 考试状态 -->
       <el-table-column align="center" label="是否邮寄资料" width="150">
         <template slot-scope="scope">
-          <span>{{ scope.row.status == 1 ? "缺考" : "完成" }}</span>
+          <!-- <span>{{ scope.row.status == 1 ? "缺考" : "完成" }}</span> -->
+          <span>{{ scope.row.status }}</span>
         </template>
       </el-table-column>
       <!-- 阅卷状况scoring -->
-      <el-table-column align="center" label="是否邮寄资料" width="150">
+      <el-table-column align="center" label="阅卷状态" width="150">
         <template slot-scope="scope">
-          <span>{{ scope.row.scoring == 1 ? "未阅卷" : "已阅卷" }}</span>
+          <!-- <span>{{ scope.row.scoring == 1 ? "未阅卷" : "已阅卷" }}</span> -->
+          <span>{{ scope.row.scoring }}</span>
         </template>
       </el-table-column>
       <!-- 考试成绩 -->
