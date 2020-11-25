@@ -9,7 +9,7 @@
       <div class="verify-code">
         <!-- 输入验证码 -->
         <input type="text" v-model="code" placeholder="输入验证码" />
-        <button class="btn" :disabled="disabledBtn" @click="send_code">
+        <button class="btn" :disabled="disabledBtn" @click="send_code(2)">
           {{ textCode }}
         </button>
       </div>
@@ -40,23 +40,27 @@
     <div v-if="currentActive == 0" class="reset-paswd">
       <div class="title">重置密码</div>
       <input
-        type="text"
+        type="password"
         v-model="userUpwd"
         placeholder="输入新密码（6-16位任意字符，区分大小写）"
       />
       <div style="margin-top: 10px">
-        <input type="text" v-model="redoUserUpwd" placeholder="再次输入密码" />
+        <input
+          type="password"
+          v-model="redoUserUpwd"
+          placeholder="再次输入密码"
+        />
       </div>
     </div>
     <!-- 更换手机号 -->
     <div v-else class="change">
       <div class="title">验证手机号：</div>
-      <input type="text" placeholder="输入更换的手机号" />
+      <input type="number" v-model="newPhone" placeholder="输入更换的手机号" />
       <!-- 验证码 -->
       <div class="verify-code">
         <!-- 输入验证码 -->
-        <input type="text" placeholder="输入验证码" />
-        <div class="btn">发送验证码</div>
+        <input type="text" v-model="newCode" placeholder="输入验证码" />
+        <div class="btn" @click="send_code(3)">{{ newTextCode }}</div>
       </div>
     </div>
     <!-- footer提交按钮 -->
@@ -87,11 +91,16 @@ export default {
       //发送验证码
       textCode: "获取验证码",
       disabledBtn: false, //是否禁用按钮
+      newTextCode: "获取验证码", //获取验证码文本
+      newDisabledBtn: false, //是否禁用按钮
       phone: 15828353333, //用户手机号
       code: 1234, //用户输入验证码
-      serverCode: "", //服务器返回来的验证码
+      newCode: "", //用户更换新手机出现验证手机号
+      serverCode: "", //验证手机服务器返回来的验证码
+      newServerCode: "", //更换手机服务器返回来的验证码
       userUpwd: "", //用户重置的密码
       redoUserUpwd: "", //用户重复输入密码
+      newPhone: "", //用户更换的新手机号
     };
   },
   methods: {
@@ -99,35 +108,61 @@ export default {
       this.currentActive = i;
       console.log("this.currentActive", this.currentActive);
     },
+    // 清空form
+
     // 发送验证码
-    send_code() {
+    send_code(type) {
+      /* type判断是验证手机号 还是更换手机号 2：验证手机号 3：更换手机号  跟后台返回的接口一致*/
       let phone = this.phone;
-      if (!phone) {
-        this.$myAlert("手机号码不能为空");
-        return;
+      let newPhone = this.newPhone;
+      if (type == 2) {
+        if (!phone) {
+          this.$myAlert("手机号码不能为空");
+          return;
+        }
+        if (!validatePhoneNumber(phone)) {
+          this.$myAlert("请输入正确的手机格式");
+          return;
+        }
+      } else {
+        if (!newPhone) {
+          this.$myAlert("手机号码不能为空");
+          return;
+        }
+        if (!validatePhoneNumber(newPhone)) {
+          this.$myAlert("请输入正确的手机格式");
+          return;
+        }
       }
-      if (!validatePhoneNumber(phone)) {
-        this.$myAlert("请输入正确的手机格式");
-        return;
-      }
-      this.startTime();
+      type == 2 ? this.startTime(phone, type) : this.startTime(newPhone, type);
     },
     // 启动定时器
-    startTime() {
+    startTime(phone, type) {
+      console.log(phone, type);
       // 调用函数
       let i = 10;
       let timer = null;
-      this.get_queryCaptcha(this.phone, 2);
+      this.get_queryCaptcha(phone, type);
       timer = setInterval(() => {
         i--;
         if (i >= 0) {
-          this.textCode = `${i}秒后重发`;
-          this.disabledBtn = true;
+          if (type == 2) {
+            this.textCode = `${i}秒后重发`;
+            this.disabledBtn = true;
+          } else {
+            this.newTextCode = `${i}秒后重发`;
+            this.newDisabledBtn = true;
+          }
         } else {
           clearInterval(timer);
           i = 9;
-          this.textCode = `重新发送`;
-          this.disabledBtn = false;
+          if (type == 2) {
+            this.textCode = `获取验证码`;
+            this.disabledBtn = false;
+          } else {
+            this.newTextCode = `获取验证码`;
+            this.newDisabledBtn = false;
+          }
         }
       }, 1000);
     },
@@ -136,48 +171,85 @@ export default {
       let data = { phone: phone, type: type };
       let res = await queryCaptcha(data);
       console.log("消息获取成功", res);
-      this.serverCode = res;
+      type == 2 ? (this.serverCode = res) : (this.newServerCode = res);
     },
     // 传给后端，后端校验验证码
-    async get_checkCaptcha() {
-      let data = { phone: this.phone, code: this.code };
-      let res = await checkCaptcha(data);
+    get_checkCaptcha(phone,code) {
+      let data = { phone,code };
+      return checkCaptcha(data);
     },
     // 提交表单给后台
-    async submit() {
-      if (!this.userPhone) {
-        alert("手机号码不能为空");
-        return;
+    async submit(type = 2) {
+      if (type == 2) {
+        if (!this.phone) {
+          alert("手机号码不能为空");
+          return;
+        }
+        if (!this.code) {
+          alert("验证码不能为空");
+          return;
+        }
+        if (!this.userUpwd) {
+          alert("新密码不能为空");
+          return;
+        }
+        if (!this.redoUserUpwd) {
+          alert("请再次输入密码");
+          return;
+        }
+        if (!validatePhoneNumber(this.phone)) {
+          alert("请输入正确的手机格式");
+          return;
+        }
+        if (this.userUpwd !== this.redoUserUpwd) {
+          alert("两次输入的密码不一致");
+          return;
+        }
+        let result = await this.get_checkCaptcha(this.phone,this.code);
+        // 后端校验验证码，如果正确，调用修改密码接口，否则return 重新输入验证码
+        let data = {
+          code: this.code,
+          newPassword: this.userUpwd,
+          phone: this.phone,
+        };
+        let res = await optResetPassword(data);
+        this.$myAlert("重置密码成功");
+      }else{
+        if (!this.phone) {
+          alert("手机号码不能为空");
+          return;
+        }
+        if (!this.code) {
+          alert("验证码不能为空");
+          return;
+        }
+        if (!this.newPhone) {
+          alert("新密码不能为空");
+          return;
+        }
+        if (!this.newCode) {
+          alert("验证码不能为空");
+          return;
+        }
+        if (!validatePhoneNumber(this.phone)) {
+          alert("请输入正确的手机格式");
+          return;
+        }
+        if (!validatePhoneNumber(this.newPhone)) {
+          alert("请输入正确的手机格式");
+          return;
+        }
+        let result = await this.get_checkCaptcha(this.newPhone,this.newCode);
+        // 后端校验验证码，如果正确，调用修改密码接口，否则return 重新输入验证码
+        let data = {
+          code: this.code,    //原手机号验证码
+          newCode: this.newCode, //新手机号验证码
+          newPhone: this.newPhone,  //新手机号码
+          phone:this.phone    //原手机号码
+        };
+        let res = await optResetPassword(data);
+        // this.$myAlert("重置密码成功");
       }
-      if (!this.code) {
-        alert("验证码不能为空");
-        return;
-      }
-      if (!this.userUpwd) {
-        alert("新密码不能为空");
-        return;
-      }
-      if (!this.redoUserUpwd) {
-        alert("请再次输入密码");
-        return;
-      }
-      if (validatePhoneNumber(this.upwdForm.userPhone)) {
-        alert("请输入正确的手机格式");
-        return;
-      }
-      if (this.upwdForm.userUpwd !== this.upwdForm.redoUserUpwd) {
-        alert("两次输入的密码不一致");
-        return;
-      }
-      let result = await get_checkCaptcha();
-      // 后端校验验证码，如果正确，调用修改密码接口，否则return 重新输入验证码
-      let data = {
-        code: this.code,
-        newPassword: this.userUpwd,
-        phone: this.phone,
-      };
-      let res = await optResetPassword(data);
-      console.log("获取重置密码的结果", res);
     },
   },
 };

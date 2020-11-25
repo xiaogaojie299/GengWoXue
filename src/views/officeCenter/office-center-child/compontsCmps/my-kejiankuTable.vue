@@ -96,6 +96,7 @@ export default {
       console.log("isActive=",this.isActive)
       console.log(index, rows);
       this.isActive=index;
+      this.$emit("selectRow",rows[index].id);
       // this.$router.push({
       //      path:"/officeCenter/OfficeCenterIndex/test2"
       // })
@@ -115,24 +116,28 @@ export default {
           name: "王小虎",
           address: "上海市普陀区",
           exercise: "已审批",
+          id:1,
         },
         {
           date: "2016-05-04",
           name: "王小虎",
           address: "上海市普陀区",
           exercise: "待审批",
+          id:2,
         },
         {
           date: "2016-05-01",
           name: "王小虎",
           address: "上海市普陀区",
           exercise: "审批成功",
+           id:3
         },
         {
           date: "2016-05-03",
           name: "王小虎",
           address: "上海市普陀区",
           exercise: "未审批",
+           id:4
         },
       ],
       isActive:0
@@ -140,3 +145,8 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+  /deep/ .cell{
+  color:#666666;
+}
+</style>

@@ -39,25 +39,24 @@
         </div>
         <!-- 回答列表 -->
 
-        <div class="answer" v-for="i in 3" :key="i">
+        <div class="answer" v-for="(it,i) in answer" :key="i">
           <div class="answer-info">
             <!-- 回答人头像 -->
             <div class="answer-people-img"></div>
             <!-- 回答人回复时间和姓名 -->
             <div class="answer-people">
               <div class="right-box">
-                <span class="answer-people-name">张三</span>
-                <span class="answer-people-tag">{{
-                  i == 1 ? "已采纳" : "我的回答"
-                }}</span>
-                <span class="answer-delete" @click="deleteMyAswer" v-show="i!= 1">删除回答</span>
+                <span class="answer-people-name">{{it.answerUserName}}</span>
+                <span class="answer-people-tag" v-show="it.isAdopt == 1">已采纳</span>
+               <span class="answer-people-tag" v-show="it.state==2">我的回答</span>
+                <span class="answer-delete" @click="deleteMyAswer" v-show="it.state==2">删除回答</span>
               </div>
               <div class="answer-people-time">2020/04/24 14:20</div>
             </div>
           </div>
           <!-- 回答内容 -->
           <div class="answer-content">
-            这个问题应该是这样的，已知∠1=∠2，那么应该是这样，已知∠C=∠D,那么应该给是这样，所以∠A=∠F
+            {{it.answer}}
           </div>
         </div>
       </div>
@@ -86,13 +85,20 @@ export default {
         "https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg",
         "https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg",
       ],
+      answer:[],
       current:1,
       size:10,
       myAnswer:""
     };
   },
   created() {
+         console.log("router=", this.$route.query.exercisesDetail);
+    this.exercisesDetail=JSON.parse(this.$route.query.exercisesDetail);
     this.get_AnswerList();
+  },
+  mounted() {
+
+    this.routeNme = this.$route.name;
   },
   methods: {
   get_AnswerList(){
@@ -101,8 +107,10 @@ export default {
       size:this.size,
       questionId:this.exercisesDetail.id
     }
+    console.log("data=====>",data);
     queryQuestionAnswerList(data).then(res=>{
       console.log("问题详情加载成功",res);
+      this.answer=res;
     })
   },
   // 删除我的回答
@@ -131,11 +139,7 @@ export default {
   }
 
   },
-  mounted() {
-    console.log("router=", this.$route.query.exercisesDetail);
-    this.exercisesDetail=JSON.parse(this.$route.query.exercisesDetail);
-    this.routeNme = this.$route.name;
-  },
+  
 };
 </script>
 <style lang="scss" scoped>

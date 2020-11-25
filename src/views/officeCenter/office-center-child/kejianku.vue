@@ -91,7 +91,7 @@
       </div>
       <div class="btn-groups">
         <div class="btn1">预览</div>
-        <div class="btn2">下载</div>
+        <a class="btn2" @click="downloadFile(file.url,file.originalFilename, file.id, file.fileTye)">下载</a>
       </div>
     </div>
   </div>
@@ -140,10 +140,10 @@ export default {
       this.classList = this.$store.dispatch("getClassList");
       this.get_AllCourseware()
     },
+    // 查询
     query(){
       this.get_AllCourseware()
       // http://139.9.154.145/teacher-server/api/officeCenter/queryAllCourseware?current=1&gradeId=1&name=1&size=10&subjectsId=1&type=1
-
     },
     // 查询课件列表
     get_AllCourseware(){
@@ -159,6 +159,15 @@ export default {
         console.log("课件库列表");
       })
     },
+    // 下载
+    downloadFile(url, fileName, flieId, type) {
+      // 参数分别是：文件的路径 文件的名字 文件的id 文件的类型
+     let link = document.createElement('a');
+     link.style.display = 'none';
+     link.href = baseUrl + '/xxx/xxx/xxx?flieId=' + flieId;
+     document.body.appendChild(link);
+     link.click();
+   },
     change(val) {
       console.log("val=", val);
     },

@@ -140,3 +140,8 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+  /deep/ .cell{
+  color:#666666;
+}
+</style>

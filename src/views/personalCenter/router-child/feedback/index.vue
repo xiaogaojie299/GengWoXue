@@ -6,6 +6,7 @@
     <!-- 留言板 -->
     <div class="msg-border">
       <textarea
+        v-model="textarea"
         placeholder="请输入您的宝贵意见："
         name=""
         id=""
@@ -23,23 +24,39 @@
       >
       </el-input>
     </div> -->
+
+    <!-- 底部提交按钮 -->
+    <div class="footer"><button class="btn" @click="submit">提交</button></div>
   </div>
 </template>
 <script>
+import {optFeedback} from "@/network/personalCenter"
 export default {
   data() {
     return {
       textarea: "",
     };
   },
-  methods:{
-      go_historyFeedback(){
-          console.log("跳转历史反馈页面");
-          this.$router.push({
-              path:"/page/personalCenter/personal/historyFeedback"
-          })
+  methods: {
+    go_historyFeedback() {
+      console.log("跳转历史反馈页面");
+      this.$router.push({
+        path: "/page/personalCenter/personal/historyFeedback",
+      });
+    },
+    submit(){
+      if(!this.textarea){
+        return this.$myAlert("留言板不能为空")
       }
-  }
+      let data={
+        content:this.textarea
+      }
+      console.log("optFeedback=",optFeedback);
+      optFeedback(data).then(res=>{
+        console.log("提交成功",res)
+      });
+    }
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -70,7 +87,7 @@ textarea {
     font-family: Source Han Sans CN;
     font-weight: 500;
     color: #ef743c;
-    line-height: 54px;
+    line-height:44px;
     position: absolute;
     right: 0;
     top: 2px;
@@ -79,6 +96,7 @@ textarea {
     width: 100%;
     height: 347px;
     background: #f8f9f9;
+    padding:12px;
     .char {
       margin-right: auto;
       text-align: right;
@@ -86,6 +104,26 @@ textarea {
       font-family: Source Han Sans CN;
       font-weight: 500;
       color: #a5a5a5;
+    }
+  }
+  .footer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 16px 0;
+    & button {
+      width: 274px;
+      height: 45px;
+      background: linear-gradient(110deg, #f13232, #ef753c);
+      box-shadow: 0px 6px 9px 0px rgba(68, 5, 5, 0.32);
+      border-radius: 4px;
+      font-size: 18px;
+      font-family: Source Han Sans CN;
+      font-weight: 400;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 }

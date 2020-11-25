@@ -5,7 +5,6 @@ let api="/api/web/index/"
 export function queryBanner(data){
     return request({
          url:base+"queryBannerListByType"+qs(data)
-        // url:"http://139.9.154.145/teacher-server/base/web/agreement/queryGradeList"
     })
 }
 // 获取所有科目
@@ -15,9 +14,9 @@ export function queryAllSubjects(data){
     })
 }
 // 获取老师课时数排行
-export function queryClassHourRand(data){
+export function queryClassHourRand(){
     return request({
-        url:api+"queryClassHourRand"+qs(data)
+        url:api+"queryClassHourRand"
     })
 }
 // 查询今日课程

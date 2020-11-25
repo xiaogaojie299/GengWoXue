@@ -2,7 +2,7 @@
   <div>
     <container>
       <breadcrumb-nav>
-        <span slot="nav-name">问答广场</span>
+        <span slot="nav-name" @click="go_black">问答广场</span>
         <span slot="nav-child">我要提问</span>
       </breadcrumb-nav>
       <!-- 主题内容 -->
@@ -90,6 +90,12 @@ export default {
       handleProgress(){
 
       },
+      // 初始化
+      init(){
+        this.describe="";
+        this.describe="";
+        this.golds="";
+      },
       // 提交提问
       submit(){
         if(!this.problem){
@@ -111,7 +117,13 @@ export default {
         };
         optAddQuestion(data).then(res=>{
           console.log("问题上传成功");
+          this.init();
+          this.$myAlert("提交问题成功");
         })
+      },
+      // 返回上一页
+      go_black(){
+        this.$router.go(-1);
       }
     }
 };

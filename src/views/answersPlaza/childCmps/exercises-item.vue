@@ -52,7 +52,9 @@
 </template>
 <script>
 import {optDeleteQuestion} from "@/network/answersPlaza"
+import {myMixin} from "../mixins/mixins"
 export default {
+  mixins:[myMixin],
   data() {
     return {
       url:
@@ -63,7 +65,7 @@ export default {
       ],
     };
   },
-  props: {
+  props: { 
     item: {
       type: Object,
       default: {},
@@ -78,12 +80,14 @@ export default {
       });
     },
     deleteQuestion(){
-      let data={
-        questionId:this.item.id
-      };
-      optDeleteQuestion(data).then(res=>{
-        console.log("删除成功",res);
-      })
+      // let data={
+      //   questionId:this.item.id
+      // };
+      // optDeleteQuestion(data).then(res=>{
+      //   this.isDel=!this.isDel;
+      // })
+      this.isDel=!this.isDel;
+      this.test1()
     }
   },
   created(){

@@ -146,7 +146,7 @@
           </div> -->
           <div class="my-jianji">
             <textarea
-              :value="form.introduction"
+              v-model="form.introduction"
               name=""
               id=""
               cols="30"
@@ -156,17 +156,17 @@
         </div>
       </div>
       <!-- 资质 -->
-      <div>
+      <div v-for="(item,index) in form.qualificationType" :key="index">
         <div class="row">
           <div class="col1">
-            <div class="left-box my-font">资质：</div>
+            <div class="left-box my-font">{{index==0?'资质：':''}}</div>
             <div class="right-box">
-              <input type="text" :value="info.qualificationType" />
+              <input type="text" v-model="form.qualificationType[index]" />
             </div>
-            <div class="btn-group">
+            <!-- <div class="btn-group">
               <div class="add" @click="add">添加</div>
               <div class="delete" @click="del(item)">删除</div>
-            </div>
+            </div> -->
           </div>
         </div>
 
@@ -175,7 +175,8 @@
           <div class="left-title my-font"></div>
           <!-- 右边内容 -->
           <div class="right-content">
-            <img :src="info.qualificationImg" alt="" />
+            <img v-for="(it,i) in form.qualificationImg" :key="i" 
+            :src="it" alt="" />
             <img
               style="margin-left: 12px"
               src="@/assets/img/icon_photo_update.png"
@@ -185,16 +186,16 @@
         </div>
       </div>
 
-      <div v-for="item in rotate" :key="item">
+      <div v-for="(item,index) in rotate" :key="index">
         <div class="row">
           <div class="col1">
             <div class="left-box my-font"></div>
             <div class="right-box">
-              <input type="text" :value="form.qualificationType" />
+              <input type="text" v-model="rotate[index]" />
             </div>
             <div class="btn-group">
               <div class="add" @click="add">添加</div>
-              <div class="delete" @click="del(item)">删除</div>
+              <div class="delete" @click="del">删除</div>
             </div>
           </div>
         </div>
@@ -231,7 +232,7 @@ export default {
         { name: "男", sex: 1 },
         { name: "女", sex: 2 },
       ], //选择性别list
-      rotate: 0,
+      rotate: [],
       info: {},
     };
   },
@@ -260,8 +261,8 @@ export default {
       this.form.sex = res.sex;
       this.form.avatar = res.avatar;
       this.form.introduction = res.introduction;
-      this.form.qualificationImg = res.qualificationImg;
-      this.form.qualificationType = res.qualificationType;
+      this.form.qualificationImg = res.qualificationImg.indexOf(",")==-1?res.qualificationImg.split(" "):res.qualificationImg.split(",")
+      this.form.qualificationType = res.qualificationType.indexOf(",")==-1?res.qualificationType.split(" "):res.qualificationType.split(",");
       if (res.coursesubjectsIds.indexOf(",") != -1) {
         this.form.subjectValue = res.coursesubjectsIds.split(",").map(Number);
       } else {
@@ -271,8 +272,14 @@ export default {
     },
     // 修改个人资料
     async setPersonalData() {
+      if(this.rotate.length>0){
+        this.form.qualificationType=this.form.qualificationType.concat(this.rotate);
+      }
+      this.form.qualificationImg=this.form.qualificationImg.concat(['https://xixisuxi.obs.cn-southwest-2.myhuaweicloud.com/16055437650.png'],['https://xixisuxi.obs.cn-southwest-2.myhuaweicloud.com/16055437650.png'])
+      console.log("this.form=",this.form);
       let res=await optPersonalData(qs(this.form));
-      this.$myAlert("修改成功")
+      this.$myAlert("修改成功");
+      this.rotate=[];
       this.getPersonalData()
     },
     // 保存
@@ -281,8 +288,8 @@ export default {
     },
     // 点击添加
     add() {
-      console.log("add", this.rotate);
-      this.rotate++;
+      console.log("add");
+      this.rotate.push("")
     },
     del() {},
     // 用户点击选择

@@ -4,6 +4,8 @@
     <div class="bg-img"></div>
     <!-- 内容 -->
     <div class="content">
+      <div>{{   questionSquareList }}</div>
+      <button @click="test1">测试</button>
       <!-- 顶上搜索框 -->
       <container>
         <div class="input-border-box">
@@ -52,13 +54,15 @@
 <script>
 import exercises from "./childCmps/exercises";
 import { queryQuestionSquareList,queryMeAnswerList,queryMeQuestionList } from "@/network/answersPlaza";
+import {myMixin} from "./mixins/mixins"
 export default {
+  mixins:[myMixin],
   data() {
     return {
       seachTitle: "",
       current: 1, //当前页
       size: 10, //分页条数
-      questionSquareList: [],
+   
       elTitle: "回答广场",
       options: [
         {
@@ -79,6 +83,11 @@ export default {
   },
   components: {
     exercises,
+  },
+  watch: {
+    questionSquareList(){
+      console.log("在主页面中刷新了");
+    }
   },
   created() {
     this.get_QuestionSquareList();
@@ -110,8 +119,8 @@ export default {
       }
       */
     },
-    //查询我的回答
-    get_MeAnswerList(){
+    //查询我的问题
+    get_MeQuestionList(){
       let data={
         current: this.current,
         size: this.size,
@@ -129,8 +138,9 @@ export default {
         this.questionSquareList = res;
       })
     },
-    // 查询我的问题
-    get_MeQuestionList(){
+    // 查询我的回答
+    //get_MeQuestionList
+    get_MeAnswerList(){
       let data={
         current: this.current,
         size: this.size,

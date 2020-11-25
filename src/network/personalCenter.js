@@ -19,3 +19,15 @@ export function optResetPassword(data){
         url:api+"optResetPassword"+qs(data)
     })
 }
+// 获取我的反馈记录
+export function queryFeedbackList(data){
+    return request({
+        url:api+"queryFeedbackList"+qs(data)
+    })
+}
+// 提交反馈
+export function optFeedback(data){
+    return request({
+        url:api+"optFeedback"+qs(data)
+    })
+}

@@ -67,6 +67,7 @@ export default {
   width: 100%;
   height: 566px;
   background: #f8f9f9;
+  padding: 16px 20px;
   .row1 {
     display: flex;
     align-items: center;

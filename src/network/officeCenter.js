@@ -39,6 +39,12 @@ export function queryMyAllCourseware(data){
     url:api+"queryMyAllCourseware"+qs(data)
   })
 }
+// 删除我的课件
+export function delMyCourseware(data){
+  return request({
+    url:api+"delMyCourseware"+qs(data)
+  })
+}
 // 获取排课详情
 export function queryCourseInfoDate(data) {
   return request({

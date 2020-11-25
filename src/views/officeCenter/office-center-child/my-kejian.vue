@@ -110,19 +110,19 @@
       </div>
       <!-- 顶部表格 -->
       <div>
-        <mykejiankuTable />
+        <mykejiankuTable @selectRow="selectRow" />
       </div>
       <div class="btn-groups">
         <div class="page-device">
           <page-device />
         </div>
         <!-- 分页 -->
-        <div class="btn1">删除</div>
+        <div class="btn1" @click="del">删除</div>
         <!-- 分割开始 -->
         <el-upload
           class="upload-demo"
           action="http://ip:80/teacher/base/uploadFile"
-          :headers="header"
+          :headers="headerObj"
           :on-preview="handlePreview"
           :on-remove="handleRemove"
           :on-error="handleFail"
@@ -141,8 +141,9 @@
 </template>
 <script>
 import mykejiankuTable from "./compontsCmps/my-kejiankuTable";
+import { queryMyAllCourseware,delMyCourseware} from "@/network/officeCenter";
+
 import { state, actions } from "vuex";
-import { queryMyAllCourseware } from "@/network/officeCenter";
 export default {
   data() {
     return {
@@ -153,6 +154,8 @@ export default {
       kejianName: "",
       current: 1,
       size: 10,
+      tableData:[{id:0}],
+      kjId:"",  //课件id
       fileList: [
         {
           name: "food.jpeg",
@@ -160,7 +163,7 @@ export default {
             "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
         },
       ],
-      headerObj:{ContentType:'multipart/form-data'}
+      // headerObj:{'ContentType':'multipart/form-data'}
     };
   },
   computed: {
@@ -189,6 +192,7 @@ export default {
         { name: "审核拒绝", id: 3 },
       ];
     },
+ 
   },
   created() {
     this.init();
@@ -200,6 +204,7 @@ export default {
       this.classList = this.$store.dispatch("getClassList");
       this.get_AllCourseware();
     },
+    // 查询
     query() {
       this.get_AllCourseware();
       // http://139.9.154.145/teacher-server/api/officeCenter/queryAllCourseware?current=1&gradeId=1&name=1&size=10&subjectsId=1&type=1
@@ -222,10 +227,26 @@ export default {
       };
       queryMyAllCourseware(data).then((res) => {
         console.log("我的课件库", res);
+        this.kjId = res.list[0].id||0
       });
     },
+    // 选择状态
     change(val) {
       console.log("val=", val);
+    },
+    // 删除课件
+    del(){
+      console.log("kjId",this.kjId);
+      let data={id:this.kjId}
+      console.log("delMyCourseware",delMyCourseware);
+      delMyCourseware(data).then(res=>{
+        console.log("删除成功");
+      })
+    },
+       selectRow(id){
+      // 监听哪个课件的id
+      this.kjId=id;
+      console.log("this.kjId================>",this.kjId)
     },
     // 上传文件API
     handleRemove(file, fileList) {

@@ -16,6 +16,8 @@ instance.interceptors.request.use(config => {
   // 2.某一些请求要求用户必须携带token, 如果没有携带, 那么直接跳转到登录页面
   if(token){
       config.headers.Authorization="Bearer"+' '+token
+  }else{
+    vue.$router.push({path:"/page/register"})
   }
   // 3.params/data序列化的操作
   return config;
@@ -30,9 +32,9 @@ instance.interceptors.response.use(res => {
     }else{
       vue.$myAlert(res.data.msg||res.data.message);
       switch(res.data.code){
-        case 700:
-        vue.$router.push({path:"/page/register"})
-      }
+        case 700: 
+          vue.$router.push({path:"/page/register"})
+        }
     }
 }, err => {
   if (err && err.response) {

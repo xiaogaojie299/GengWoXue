@@ -10,8 +10,7 @@ export function queryQuestionSquareList(data) {
 // 获取问题详情列表
 export function queryQuestionAnswerList(data){
     return request({
-        url:api+"queryQuestionAnswerList",
-        data:data
+        url:api+"queryQuestionAnswerList"+qs(data),
     })
 }
 // 回答问题

@@ -56,7 +56,7 @@ export default {
       time: ""               //上课时间段
     }] 
     return{
-      bannerList:["1"], //轮播图列表
+      bannerList:[], //轮播图列表
       TodayCourseList:TodayCourseList  //今日课程     
     }
   },
@@ -66,20 +66,24 @@ export default {
     rankList
   },
   created(){
-    this.init();
+  this.init();
   },
   methods:{
+    async init(){
+      this.getBanner();  //获取首页轮播页面
+      this.getClassHourRand();  //获取老师课时数排行
+      this.getTodayCourse()
+    },
     // 获取首页轮播图
-    getBanner(){
-      let data={type:2} //1=学生APP端，2=学生网页端，3=老师端
-      queryBanner(data).then(res=>{
-        this.bannerList=res;
-      })
+    async getBanner(){
+      let data={type:1} //1=学生APP端，2=学生网页端，3=老师端
+      let res =await queryBanner(data)
+      this.bannerList=res;
     },
     // 获取老师课时数排行
     getClassHourRand(){
       queryClassHourRand().then(res=>{
-        console.log("res=",res);
+        console.log(res);
 })
     },
     getTodayCourse(){
@@ -91,11 +95,6 @@ export default {
         this.TodayCourseList=res;
         console.log("TodayCourseList",this.TodayCourseList)
       })
-    },
-    init(){
-      // this.getBanner();  //获取首页轮播页面
-      this.getClassHourRand();  //获取老师课时数排行
-      this.getTodayCourse()
     }
   }
 };
