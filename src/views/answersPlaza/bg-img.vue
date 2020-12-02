@@ -4,8 +4,6 @@
     <div class="bg-img"></div>
     <!-- 内容 -->
     <div class="content">
-      <button @click="test1">测试</button>
-      <div>{{   questionSquareList1 }}</div>
       <!-- 顶上搜索框 -->
       <container>
         <div class="input-border-box">
@@ -13,7 +11,12 @@
           <div class="left-content">
             <!-- <span>问答内容</span> -->
             <div>
-              <el-select @change="change"  :popper-append-to-body="false" v-model="value" placeholder="请选择">
+              <el-select
+                @change="change"
+                :popper-append-to-body="false"
+                v-model="value"
+                placeholder="请选择"
+              >
                 <el-option
                   v-for="item in options"
                   :key="item.value"
@@ -49,14 +52,22 @@
         <!-- 解析答案 -->
       </container>
     </div>
+    <!-- 底部分页按钮 -->
+    <div class="footer">
+      <page-device></page-device>
+    </div>
   </div>
 </template>
 <script>
 import exercises from "./childCmps/exercises";
-import { queryQuestionSquareList,queryMeAnswerList,queryMeQuestionList } from "@/network/answersPlaza";
-import {myMixin} from "./mixins/mixins"
+import {
+  queryQuestionSquareList,
+  queryMeAnswerList,
+  queryMeQuestionList,
+} from "@/network/answersPlaza";
+import { myMixin } from "./mixins/mixins";
 export default {
-  mixins:[myMixin],
+  mixins: [myMixin],
 
   data() {
     return {
@@ -82,33 +93,32 @@ export default {
     };
   },
   components: {
-    exercises, 
-
+    exercises,
   },
-  provide(){
-    return{
-      _this:this,
-      name:this.name
-    }
+  provide() {
+    return {
+      _this: this,
+      name: this.name,
+    };
   },
   watch: {
-    questionSquareList1(e){
-      console.log(e)
-      return this.questionSquareList 
-    }
+    questionSquareList1(e) {
+      console.log(e);
+      return this.questionSquareList;
+    },
   },
   created() {
     this.get_QuestionSquareList();
-    console.log(this.questionSquareList)
+    console.log(this.questionSquareList);
   },
   methods: {
-    change(val){
-      console.log("val=",this.value);
-      if(this.value==1){
+    change(val) {
+      console.log("val=", this.value);
+      if (this.value == 1) {
         this.get_QuestionSquareList();
-      }else if(this.value==2){
+      } else if (this.value == 2) {
         this.get_MeAnswerList();
-      }else{
+      } else {
         this.get_MeQuestionList();
       }
 
@@ -131,20 +141,20 @@ export default {
 
     // 查询我的回答
     //get_MeQuestionList
-    get_MeAnswerList(){
-      let data={
+    get_MeAnswerList() {
+      let data = {
         current: this.current,
         size: this.size,
-      }
-      queryMeAnswerList(data).then(res=>{
-        console.log("查询我的问题",res);
+      };
+      queryMeAnswerList(data).then((res) => {
+        console.log("查询我的问题", res);
         //  判断返回的图片是否含有逗号，如果有，转为数组
         if (res.imgUrl && res.imgUrl.indexOf(",") != -1) {
           res.imgUrl = res.imgUrl.split(",");
         }
-        res[0].setValue=this.value;
+        res[0].setValue = this.value;
         this.questionSquareList = res;
-      })
+      });
     },
     //跳转我的提问
     go_myAnswer() {
@@ -154,6 +164,7 @@ export default {
       });
     },
     get_QuestionSquareList() {
+      //搜索问题
       let data = {
         conditions: this.seachTitle,
         current: this.current,
@@ -163,8 +174,8 @@ export default {
         //  判断返回的图片是否含有逗号，如果有，转为数组
         if (res.imgUrl && res.imgUrl.indexOf(",") != -1) {
           res.imgUrl = res.imgUrl.split(",");
+          res[0].setValue = this.value;
         }
-        res[0].setValue=this.value;
         this.questionSquareList = res;
         console.log("this.questionSquareList", this.questionSquareList);
       });
@@ -205,13 +216,13 @@ input:-ms-input-placeholder {
 /deep/ .el-input__icon {
   display: none;
 }
-/deep/ .el-select-dropdown{
-   font-size: 26px;
+/deep/ .el-select-dropdown {
+  font-size: 26px;
   font-family: Source Han Sans CN;
   font-weight: 400;
   color: #262626;
 }
-/deep/ .el-select-dropdown__list li{
+/deep/ .el-select-dropdown__list li {
   font-size: 26px;
   font-family: Source Han Sans CN;
   font-weight: 400;
@@ -219,14 +230,14 @@ input:-ms-input-placeholder {
   height: 68px;
   line-height: 68px;
 }
-  /deep/ .el-select-dropdown__item.hover{
-  background: linear-gradient(110deg, #F13232, #EF753C);
+/deep/ .el-select-dropdown__item.hover {
+  background: linear-gradient(110deg, #f13232, #ef753c);
   color: #fff;
 }
 
 .content {
   .input-border-box {
-    padding-left:28px;
+    padding-left: 28px;
     width: 100%;
     height: 107px;
     background: #ffffff;
@@ -238,7 +249,7 @@ input:-ms-input-placeholder {
     justify-content: space-between;
     & .left-content {
       width: 146px;
-      margin-right:20px;
+      margin-right: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -306,5 +317,12 @@ input:-ms-input-placeholder {
   width: 100%;
   height: 389px;
   border: 1px solid blue;
+}
+.footer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
 }
 </style>

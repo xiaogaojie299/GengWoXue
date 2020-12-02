@@ -2,8 +2,12 @@
   <div>
     <container>
       <!-- 班级 -->
-      <div class="class-box" v-for="(item,index) in TodayCourseList" :key="index">
-        <div class="class-title">{{item.className}}</div>
+      <div
+        class="class-box"
+        v-for="(item, index) in TodayCourseList"
+        :key="index"
+      >
+        <div class="class-title">{{ item.className }}</div>
         <!-- 课程列表 -->
         <div class="course-item">
           <!-- 左侧图片 -->
@@ -13,18 +17,20 @@
             <div class="right-content-top">
               <div class="right-content-top-group">
                 <div class="right-content-top-group-title">
-                  {{item.courseName}}
+                  {{ item.courseName }}
                 </div>
                 <!-- <div class="tag">张三</div>
                 <div class="tag">高三</div> -->
-                <div class="tag">{{item.courseNature}}</div>
+                <div class="tag">{{ item.courseNature }}</div>
               </div>
               <!-- 右侧课时 -->
-              <div class="class-hour">{{item.indexNum}}/{{item.schoolHour}}课时</div>
+              <div class="class-hour">
+                {{ item.indexNum }}/{{ item.schoolHour }}课时
+              </div>
             </div>
             <div class="right-content-bottom">
               <!-- 老师名字 -->
-              <div class="teacher-name">{{item.teacherName}}</div>
+              <div class="teacher-name">{{ item.teacherName }}</div>
               <!-- 老师开课时间 -->
               <div class="start-times-box">
                 <div class="start-times-item">
@@ -33,11 +39,19 @@
                     src="@/assets/img/home/icon_time.png"
                     alt=""
                   />
-                  <span>{{item.time}}</span>
+                  <span>{{ item.time }}</span>
                 </div>
 
                 <!-- 未开始或者开始按钮 -->
-                <div class="btn-start">{{item.status==1?"未开始":item.status==2?"进行中":"已结束"}}</div>
+                <div class="btn-start">
+                  {{
+                    item.status == 1
+                      ? "未开始"
+                      : item.status == 2
+                      ? "进行中"
+                      : "已结束"
+                  }}
+                </div>
               </div>
             </div>
           </div>
@@ -48,17 +62,17 @@
 </template>
 <script>
 export default {
-  data(){
-    return {}
+  data() {
+    return {};
   },
-  props:{
-    TodayCourseList:{
-      type:Array,
-      default:[]
-    }
+  props: {
+    TodayCourseList: {
+      type: Array,
+      default: [],
+    },
   },
   created() {
-    console.log(this.TodayCourseList) 
+    console.log(this.TodayCourseList);
   },
 };
 </script>

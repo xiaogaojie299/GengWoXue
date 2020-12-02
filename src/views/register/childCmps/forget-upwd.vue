@@ -82,8 +82,8 @@
 </template>
 <script>
 import inputTemplate from "./input-template";
-import { queryCaptcha,checkCaptcha,forgetPassword} from "@/network/login";
-import {validatePhoneNumber} from "@/utils/regular";
+import { queryCaptcha, checkCaptcha, forgetPassword } from "@/network/login";
+import { validatePhoneNumber } from "@/utils/regular";
 let form = () => {
   return {
     userPhone: "", //用户手机号
@@ -107,26 +107,26 @@ export default {
       this.$emit("backUpwdReg", 0);
     },
     // 获取手机验证码
-    get_queryCaptcha(phone,type,code){
-      let data={phone,type}
-      queryCaptcha(data).then(res=>{
-        console.log("消息获取成功",res);
-        code=res.data;
-      })  
+    get_queryCaptcha(phone, type, code) {
+      let data = { phone, type };
+      queryCaptcha(data).then((res) => {
+        console.log("消息获取成功", res);
+        code = res.data;
+      });
     },
     // 发送验证码
     send_code() {
-      let phone=this.upwdForm.userPhone;
+      let phone = this.upwdForm.userPhone;
       this.startTime(phone);
     },
     // 传给后端，后端校验验证码
-    get_checkCaptcha(){
-      let data={phone:this.inputList[1].value,code:this.phoneCode}
-    return checkCaptcha(data);
+    get_checkCaptcha() {
+      let data = { phone: this.inputList[1].value, code: this.phoneCode };
+      return checkCaptcha(data);
     },
     // 开始倒计时
     startTime(phone) {
-      this.get_queryCaptcha(phone,2,this.upwdForm.upwdCatch);
+      this.get_queryCaptcha(phone, 2, this.upwdForm.upwdCatch);
       let i = 10;
       let timer = null;
       timer = setInterval(() => {
@@ -143,44 +143,48 @@ export default {
       }, 1000);
     },
     async submit() {
-      console.log("upwdForm",this.upwdForm);
-      if(!this.upwdForm.userPhone){
-        alert('手机号码不能为空')
-        return 
+      console.log("upwdForm", this.upwdForm);
+      if (!this.upwdForm.userPhone) {
+        this.$Alert("手机号码不能为空");
+        return;
       }
-      if(!this.upwdForm.upwdCode){
-         alert('验证码不能为空')
-        return 
+      if (!this.upwdForm.upwdCode) {
+        $this.$Alert("验证码不能为空");
+        return;
       }
-      if(!this.upwdForm.userUpwd){
-        alert('新密码不能为空')
-        return 
+      if (!this.upwdForm.userUpwd) {
+        this.$Alert("新密码不能为空");
+        return;
       }
-      if(!this.upwdForm.redoUserUpwd){
-        alert('请再次输入密码')
-        return 
+      if (!this.upwdForm.redoUserUpwd) {
+        this.$Alert("请再次输入密码");
+        return;
       }
-      if(validatePhoneNumber(this.upwdForm.userPhone)){
-        alert('请输入正确的手机格式')
-        return
+      if (validatePhoneNumber(this.upwdForm.userPhone)) {
+        this.$Alert("请输入正确的手机格式");
+        return;
       }
       // if(this.upwdForm.upwdCode!=this.upwdForm.upwdCatch){
-      //    alert('请输入正确的验证码')
+      //    this.$Alert('请输入正确的验证码')
       //   return
       // }
-      if(this.upwdForm.userUpwd!==this.upwdForm.redoUserUpwd){
-        alert('两次输入的密码不一致')
-        return
+      if (this.upwdForm.userUpwd !== this.upwdForm.redoUserUpwd) {
+        this.$Alert("两次输入的密码不一致");
+        return;
       }
-      let result = await get_checkCaptcha(); 
-      this.forgetUpwd()
+      let result = await get_checkCaptcha();
+      this.forgetUpwd();
     },
-    forgetUpwd(){
-      let data={code:this.upwdForm.upwdCode,password:this.upwdForm.userUpwd,phone:this.upwdForm.userPhone}
-      forgetPassword(data).then(res=>{
-        console.log('修改密码成功',res);
-      })
-    }
+    forgetUpwd() {
+      let data = {
+        code: this.upwdForm.upwdCode,
+        password: this.upwdForm.userUpwd,
+        phone: this.upwdForm.userPhone,
+      };
+      forgetPassword(data).then((res) => {
+        console.log("修改密码成功", res);
+      });
+    },
   },
   components: {
     inputTemplate,

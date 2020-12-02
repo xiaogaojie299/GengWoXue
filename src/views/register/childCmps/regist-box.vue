@@ -89,6 +89,7 @@
 </template>
 <script>
 import inputTemplate from "./input-template";
+import { state, actions } from "vuex";
 import {
   passwordLogin,
   captchaLogin,
@@ -144,15 +145,15 @@ export default {
     // 用户密码登录
     upwdLogin() {
       if (!this.inputList[0].value) {
-        alert("手机号码不能为空");
+        this.$Alert("手机号码不能为空");
         return;
       }
       if (!this.password) {
-        alert("密码不能为空");
+        this.$Alert("密码不能为空");
         return;
       }
       if (!validatePhoneNumber(this.inputList[0].value)) {
-        alert("请输入正确的手机格式");
+        this.$Alert("请输入正确的手机格式");
         return;
       }
       let data = { password: this.password, phone: this.inputList[0].value };
@@ -163,24 +164,28 @@ export default {
     //用户验证码登录
     codeLogin() {
       if (!this.inputList[1].value) {
-        alert("手机号码不能为空");
+        this.$Alert("手机号码不能为空");
         return;
       }
       if (!this.phoneCode) {
-        alert("验证码不能为空");
+        this.$Alert("验证码不能为空");
         return;
       }
       if (!validatePhoneNumber(this.inputList[1].value)) {
-        alert("请输入正确的手机格式");
+        this.$Alert("请输入正确的手机格式");
         return;
       }
       let data = { code: this.phoneCode, phone: this.inputList[1].value };
+      let pamars = { data: data, $router: this.$router };
+      // this.$store.dispatch("getToken", pamars, this.$router);
       captchaLogin(data).then((res) => {
-          localStorage.setItem("userInfo", JSON.stringify(res));
-          localStorage.setItem("token",res.token);
+        localStorage.setItem("userInfo", JSON.stringify(res));
+        localStorage.setItem("token", res.token);
+        setTimeout(() => {
           this.$router.push({
             path: "/page/home",
           });
+        }, 2000);
       });
     },
     // 校验验证码
@@ -212,11 +217,11 @@ export default {
     send_code() {
       let phone = this.inputList[1].value;
       if (!phone) {
-        alert("手机号码不能为空");
+        this.$Alert("手机号码不能为空");
         return;
       }
       if (!validatePhoneNumber(phone)) {
-        alert("请输入正确的手机格式");
+        this.$Alert("请输入正确的手机格式");
         return;
       }
       this.startTime(phone);

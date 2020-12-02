@@ -3,7 +3,7 @@
     <!-- 顶部面包屑 -->
     <container>
       <breadcrumb-nav>
-        <span slot="nav-name">问答广场</span>
+        <span slot="nav-name" @click="go_black">问答广场</span>
         <span slot="nav-child">{{ routeNme }}</span>
       </breadcrumb-nav>
 
@@ -12,14 +12,14 @@
         <!-- 内容详情 -->
         <div class="exercises-item">
           <!-- 顶部标题 -->
-          <div class="top-title">{{exercisesDetail.question}}</div>
+          <div class="top-title">{{ exercisesDetail.question }}</div>
           <!-- 中间内容 -->
           <div class="main-content">
             <!-- 题目详情 -->
-            <div class="timer">{{exercisesDetail.insertTime}}</div>
+            <div class="timer">{{ exercisesDetail.insertTime }}</div>
             <div class="exercises-detail">
               <!-- 如图，若∠1=∠2，∠C=∠D，问∠A与∠F有什么关系，并说明理由？ -->
-              {{exercisesDetail.describe}}
+              {{ exercisesDetail.describe }}
             </div>
             <!-- 题目图片 -->
             <div class="exercises-img">
@@ -34,30 +34,43 @@
           </div>
           <!-- 底部详情 -->
           <div class="footer">
-            <span>{{exercisesDetail.answerNum}}个回答</span>
+            <span>{{ exercisesDetail.answerNum }}个回答</span>
           </div>
         </div>
         <!-- 回答列表 -->
 
-        <div class="answer" v-for="(it,i) in answer" :key="i">
+        <div class="answer" v-for="(it, i) in answer" :key="i">
           <div class="answer-info">
             <!-- 回答人头像 -->
             <div class="answer-people-img"></div>
             <!-- 回答人回复时间和姓名 -->
             <div class="answer-people">
               <div class="right-box">
-                <span class="answer-people-name">{{it.answerUserName}}</span>
-                <span class="answer-people-tag" v-show="it.isAdopt == 1">已采纳</span>
-               <span class="answer-people-tag" v-show="it.state==2">我的回答</span>
-                <span class="answer-delete" @click="deleteMyAswer" v-show="it.state==2">删除回答</span>
+                <span class="answer-people-name">{{ it.answerUserName }}</span>
+                <span class="answer-people-tag" v-show="it.isAdopt == 1"
+                  >已采纳</span
+                >
+                <span class="answer-people-tag" v-show="it.state == 2"
+                  >我的回答</span
+                >
+                <span
+                  class="answer-delete"
+                  @click="deleteMyAswer(i)"
+                  v-show="it.state == 2"
+                  >删除回答</span
+                >
               </div>
               <div class="answer-people-time">2020/04/24 14:20</div>
             </div>
           </div>
           <!-- 回答内容 -->
           <div class="answer-content">
-            {{it.answer}}
+            {{ it.answer }}
           </div>
+        </div>
+
+        <div class="page-device">
+          <page-device @handleCurrentChange="handleCurrentChange" />
         </div>
       </div>
 
@@ -74,72 +87,89 @@
   </div>
 </template>
 <script>
-import {queryQuestionAnswerList,optAddAnswer,optDeleteAnswer} from "@/network/answersPlaza"
+import {
+  queryQuestionAnswerList,
+  optAddAnswer,
+  optDeleteAnswer,
+} from "@/network/answersPlaza";
 export default {
   data() {
     return {
-      exercisesDetail:{},
+      exercisesDetail: {},
       routeNme: "",
-      url:"https://xixisuxi.obs.cn-southwest-2.myhuaweicloud.com/16055437650.png",
+      url:
+        "https://xixisuxi.obs.cn-southwest-2.myhuaweicloud.com/16055437650.png",
       srcList: [
         "https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg",
         "https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg",
       ],
-      answer:[],
-      current:1,
-      size:10,
-      myAnswer:""
+      answer: [],
+      current: 1,
+      size: 10,
+      myAnswer: "",
     };
   },
   created() {
-         console.log("router=", this.$route.query.exercisesDetail);
-    this.exercisesDetail=JSON.parse(this.$route.query.exercisesDetail);
+    console.log("router=", this.$route.query.exercisesDetail);
+    this.exercisesDetail = JSON.parse(this.$route.query.exercisesDetail);
     this.get_AnswerList();
   },
   mounted() {
-
     this.routeNme = this.$route.name;
   },
   methods: {
-  get_AnswerList(){
-    let data={
-      current:this.current,
-      size:this.size,
-      questionId:this.exercisesDetail.id
-    }
-    console.log("data=====>",data);
-    queryQuestionAnswerList(data).then(res=>{
-      console.log("问题详情加载成功",res);
-      this.answer=res;
-    })
-  },
-  // 删除我的回答
-  deleteMyAswer(){
-    let data={
-      answerId:"3",
-      questionId:"5"
-    }
-    optDeleteAnswer(data).then(res=>{
-      console.log("删除问题成功",res);
-    })
-  },
-  //我来回答
-  letMeAnswer(){
-    if(!this.myAnswer){
-        this.$myAlert("错误","回答问题不能为空");
-        return
-    }
-    let data={
-      questionId:this.exercisesDetail.id,
-      answer:this.myAnswer
-      }
-    optAddAnswer(data).then(res=>{
-        console.log("====回答问题成功",res);
-    })
-  }
+    go_black() {
+      //返回上一页面
+      this.$router.go(-1);
+    },
 
+    get_AnswerList() {
+      let data = {
+        current: this.current,
+        size: this.size,
+        questionId: this.exercisesDetail.id,
+      };
+      console.log("data=====>", data);
+      queryQuestionAnswerList(data).then((res) => {
+        console.log("问题详情加载成功", res);
+        this.answer = res;
+      });
+    },
+    // 删除我的回答
+    deleteMyAswer(index) {
+      console.log(index, "====>", this.answer);
+      let data = {
+        answerId: this.answer[index].id,
+        questionId: this.exercisesDetail.id,
+      };
+      optDeleteAnswer(data).then((res) => {
+        console.log("删除问题成功", res);
+        this.get_AnswerList();
+      });
+    },
+    //我来回答
+    letMeAnswer() {
+      if (!this.myAnswer) {
+        this.$myAlert("错误", "回答问题不能为空");
+        return;
+      }
+      let data = {
+        questionId: this.exercisesDetail.id,
+        answer: this.myAnswer,
+      };
+      optAddAnswer(data).then((res) => {
+        console.log("====回答问题成功", res);
+        this.myAnswer = "";
+        this.get_AnswerList();
+      });
+    },
+
+    handleCurrentChange(data) {
+      //分页传过来的值
+      this.current = data;
+      this.get_AnswerList();
+    },
   },
-  
 };
 </script>
 <style lang="scss" scoped>
@@ -275,6 +305,13 @@ export default {
       margin-top: 19px;
     }
   }
+  .page-device {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+  }
 }
 
 .footer-input {
@@ -293,7 +330,7 @@ export default {
     font-size: 24px;
     font-family: Source Han Sans CN;
     font-weight: 400;
-    padding-left:21px;
+    padding-left: 21px;
     border: none;
   }
   .btn {
