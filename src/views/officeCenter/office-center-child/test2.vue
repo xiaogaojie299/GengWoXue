@@ -10,10 +10,10 @@
     </div>
     <!-- 底部详情 -->
     <div>
-      <div class="class-box" v-for="(item,i) in timerCourse" :key="i">
-        <div class="class-title">{{item.className}}</div>
+      <div class="class-box" v-for="(it,i) in timerCourse" :key="i">
+        <div class="class-title">{{it.className}}</div>
         <!-- 课程列表 -->
-        <div class="course-item">
+        <div v-for="(item,index) in it.list" :key="index" class="course-item">
           <!-- 左侧图片 -->
           <img class="left-img" :src="item.teacherAvater" />
           <!-- 右侧内容 -->
@@ -96,11 +96,14 @@ export default {
   },
   methods: {
     init(){
+      console.log("this.$route.query==>",this.$route.query);
       // 判断当前传过来的是班级信息还是学生信息
     if(Object.keys(this.$route.query).indexOf('classInfo')!=-1){
       this.classInfo=JSON.parse(this.$route.query.classInfo);
-    }else{
+    }else if(Object.keys(this.$route.query).indexOf('studentInfo')!=-1){
       this.studentInfo=JSON.parse(this.$route.query.studentInfo);
+    }else{
+      
     }
     this.getDaySchedule()  //按时间查询课程
     this.getMonthTeacherSchedule()  //查询这个月有那几天有课

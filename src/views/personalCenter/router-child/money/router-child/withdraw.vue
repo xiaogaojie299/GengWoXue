@@ -9,14 +9,29 @@
       <div class="row">
         <div class="left-title left-font">选择提现类别：</div>
         <div class="right-box">
-          <!-- 如果已绑定，则出现重新绑定的按钮 -->
+            <div>
+            <el-select
+              :popper-append-to-body="false"
+              v-model="moneyTypeValue"
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="item in moneyType"
+                :key="item.value"
+                :label="item.name"
+                :value="item.type"
+              >
+              </el-option>
+            </el-select>
+          </div>
+          <img src="@/assets/img/answers/icon_arrow.png" alt="" />
         </div>
       </div>
       <!-- 支付宝 -->
       <div class="row">
         <div class="left-title left-font">输入提现金币：</div>
         <div class="right-box">
-          <input type="text" :disabled="isdisable" placeholder="18328510362" />
+          <input type="number" v-model="money" placeholder="100（折算金额100）" />
         </div>
       </div>
 
@@ -24,25 +39,98 @@
       <div class="row">
         <div class="left-title left-font">可提现余额：</div>
         <div class="right-box">
-          <span class="student-gold">1180 学习币（个）</span>
+          <span class="student-gold">{{infoList.balance}} 学习币（个）</span>
         </div>
       </div>
       <!-- 底部按钮 -->
-      <div class="footer">提交</div>
+      <div class="footer" @click="submit">提交</div>
     </div>
   </div>
 </template>
 <script>
+import {withdrawal} from "@/network/personalCenter"
+import {mapState} from "vuex"
 export default {
   data() {
     return {
       isdisable: true,
+      moneyTypeValue:1,
+      money:""
     };
   },
-  methods: {},
+  computed:{
+    moneyType() {
+      return [
+        { name: "金币", type: 1 },
+        { name: "人民币", type: 2 }
+      ];
+    },
+    infoList(){
+      return this.$store.state.infoList
+    }
+  },
+  methods: {
+       go_back() {
+      this.$router.back(-1);
+    },
+    // 提交订单
+    async submit(){
+      if(!this.money){
+        this.$myAlert("提现金额不能为0");
+        return 
+      }
+      //  if(this.money>this.infoList.balance){
+      //   this.$myAlert("提现金额不能大于余额");
+      //   return 
+      // }
+      let data={
+        number:this.money,
+        type:this.moneyTypeValue
+      }
+    let res =await withdrawal(data);
+    console.log("res==>",res);
+    }
+  },
 };
 </script>
 <style lang="scss" scoped>
+
+/deep/ .el-input__inner {
+  padding-left: 6px;
+  margin: 0;
+  outline: none;
+  border: none;
+  // width: 100%;
+  width: 101px;
+  height: 32px;
+  background: #FFFFFF;
+  border: 1px solid #EFEFEF;
+  border-radius: 3px;
+  font-size: 10px;
+  font-family: Source Han Sans CN;
+  font-weight: 400;
+  color: #343434;
+}
+/deep/ .el-input__icon {
+  display: none;
+}
+/deep/ .el-select-dropdown {
+  font-size: 16px;
+  font-family: Source Han Sans CN;
+  font-weight: 400;
+  color: #262626;
+}
+/deep/ .el-select-dropdown__list li {
+  font-size: 16px;
+  font-family: Source Han Sans CN;
+  font-weight: 400;
+  color: #484949;
+}
+/deep/ .el-select-dropdown__item.hover {
+  background: linear-gradient(110deg, #F13232, #EF753C);
+  color: #fff;
+}
+
 .left-font {
   font-size: 18px;
   font-family: Source Han Sans CN;
@@ -68,6 +156,13 @@ export default {
       .right-box {
         display: flex;
         align-items: center;
+        position: relative;
+        img{
+          position: absolute;
+          right:4px;
+          width: 9px;
+          height: 12px;
+        }
         .isbind {
           color: #ef753c;
           margin-right: 30px;

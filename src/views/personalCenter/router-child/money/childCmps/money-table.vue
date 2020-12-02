@@ -2,7 +2,7 @@
   <div>
     <el-table
       :data="tableData"
-      style="width: 100%"
+      style="width: 100%;"
       stripe
       :header-cell-style="{
         color: '#FFFFFF',
@@ -15,17 +15,20 @@
         color: '#666',
         fontFamily: 'SourceHanSansCN-Medium',
       }"
-      :row-class-name="tableRowClassName"
     >
-      <el-table-column prop="date" label="课件名称" width="180" align="center">
+      <el-table-column prop="id" label="订单编号" width="180" align="center">
       </el-table-column>
-      <el-table-column prop="name" label="课件类型" align="center" width="180">
+      <el-table-column prop="reason" label="变动事由" align="center" width="180">
       </el-table-column>
 
-      <el-table-column prop="address" align="center" label="课件科目">
+      <el-table-column prop="insertTime" align="center" label="变动时间">
       </el-table-column>
       <!-- 课后习题 -->
-      <el-table-column prop="exercise" align="center" label="课后习题">
+      <el-table-column prop="balance" align="center" label="余额">
+      </el-table-column>
+       <el-table-column prop="withdrawal" align="center" label="提现审核">
+      </el-table-column>
+      <el-table-column prop="remark" align="center" label="审核说明">
       </el-table-column>
     </el-table>
   </div>
@@ -34,34 +37,17 @@
 export default {
   data() {
     return {
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "已审批",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "待审批",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "审批成功",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "未审批",
-        },
-      ],
+    
     };
   },
+  props:{
+    tableData:{
+      type:Array,
+      default:()=>{
+        return []
+      }
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>

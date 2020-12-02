@@ -4,7 +4,7 @@
     <div><button @click="go_studentDetail">学生详情</button></div> -->
     <div class="header">
       <span class="title">查看学生</span>
-      <span class="right-title" @click="go_studentDetail">学生详情</span>
+      <span class="right-title1" @click="go_studentDetail">学生详情</span>
     </div>
     <!-- 中间表格 -->
     <div class="main">
@@ -151,7 +151,7 @@ export default {
   },
 };
 </script>
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .box1 {
   width: 100%;
   height: 600px;
@@ -169,7 +169,7 @@ export default {
       // align-items: center;
       justify-content: center;
     }
-    .right-title {
+    .right-title1 {
       position: absolute;
       top: 20px;
       right: 0;
@@ -182,7 +182,6 @@ export default {
   }
   .main {
     width: 100%;
-    height: 455px;
     background: #f8f8f8;
     border: 1px solid #dde7f0;
     margin-bottom: 21px;;

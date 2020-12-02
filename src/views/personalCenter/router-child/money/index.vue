@@ -10,10 +10,10 @@
         <!-- icon -->
         <img src="@/assets/img/answers/icon_coin.png" alt="" />
         <!-- 我的学习币 -->
-        <div><span>1180 </span> 学习币（个）</div>
+        <div><span>{{peopelInfo.balance}} </span> 学习币（个）</div>
       </div>
       <div class="row2 my-font">
-        <div><span>80</span> 人民币（元）</div>
+        <div><span>{{peopelInfo.money ||0}}</span> 人民币（元）</div>
       </div>
 
       <!-- 按钮组 -->
@@ -26,10 +26,10 @@
       <!-- 表格数据 -->
       <div>
         <!-- 表格数据 -->
-        <div><money-table></money-table></div>
+        <div><money-table :tableData="tableData"></money-table></div>
         <!-- 分页 -->
         <div class="page-next">
-          <page-device></page-device>
+          <page-device @handleCurrentChange="handleCurrentChange" :total="total"></page-device>
         </div>
       </div>
     </div>
@@ -37,11 +37,47 @@
 </template>
 <script>
 import moneyTable from "./childCmps/money-table";
+import {queryMyBalanceChange,withdrawal} from "@/network/personalCenter"
+import {mapState,mapActions} from "vuex";
 export default {
   data() {
-    return {};
+    return {
+      current:1,
+      size:10,
+      tableData:[],
+      total:9
+    };
+  },
+  computed:{
+    peopelInfo(){
+      return this.$store.state.infoList
+    }
+  },
+  created(){
+    this.init();
   },
   methods: {
+    init(){
+      this.$store.dispatch("getPersonalData");
+      this.get_MyBalanceChange()
+    },
+    //分页
+    handleCurrentChange(data){
+      console.log("分页==>",data);
+      this.current=data;
+      this.get_MyBalanceChange()
+    },
+    // 获取金额变动列表
+    async get_MyBalanceChange(){
+      let data={
+        current:this.current,
+        size:10
+      }
+     let res =await queryMyBalanceChange(data);
+     console.log("res===>",res);
+     this.tableData=res.list;
+     this.total=res.total;
+    },
     go_url(url) {
       this.$router.push({
         path: "/page/personalCenter/personal/" + url,
@@ -65,7 +101,6 @@ export default {
 }
 .main {
   width: 100%;
-  height: 566px;
   background: #f8f9f9;
   padding: 16px 20px;
   .row1 {

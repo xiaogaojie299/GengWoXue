@@ -3,12 +3,27 @@
     <div class="banner1"></div>
     <div class="company-box">
       <div class="company-profile">
-        <div class="company"></div>
-        <div class="profile"></div>
+        <div class="company">
+          <img style="height:100%;width:100%" :src="titleList[2]" alt="">
+        </div>
+        <div class="profile">
+          <!-- 头部主副标题 -->
+          <div class="company-title">
+            <div>{{titleList[0]}}</div>
+            <div>{{titleList[1]}}</div>
+          </div>
+          <!-- 内容 -->
+          <!-- <div class="company-content" v-html="textContent"></div> -->
+          <div class="company-content">
+            <div v-for="(item,index) in textContent" :key="index">
+              {{item}}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="banner2">
-      <div class="company-think">企业理念</div>
+      <div class="company-think">{{incidentList[0]}}</div>
       <div class="cut-off">
         <div></div>
         <i class="icon-school"></i>
@@ -18,13 +33,13 @@
       <div>
         <div class="row">
           <div class="left-row">
-            <div v-for="(item, index) in timeList" :key="index">{{ item }}</div>
+            <div v-for="(item, index) in timerArr" :key="index">{{ item }}</div>
           </div>
           <!-- 中间圆球加线 -->
           <div class="center-row">
             <div
               class="center-row-item"
-              v-for="(item, index) in timeList"
+              v-for="(item, index) in timerArr"
               :key="index"
             >
               <div class="center-row-item-circle"></div>
@@ -32,7 +47,7 @@
             </div>
           </div>
           <div class="right-row">
-            <div v-for="(item, index) in textList" :key="index">{{ item }}</div>
+            <div v-for="(item, index) in valueArr" :key="index">{{ item }}</div>
           </div>
         </div>
       </div>
@@ -49,22 +64,22 @@
           <div class="info-img">
             <img src="~@/assets/img/about/jiazhi@2x.png" alt="" />
           </div>
-          <h5>企业价值观</h5>
-          <p>成就员工，成就客户，拼搏创新，社会喜欢。</p>
+          <h5>{{this.ideaList[0].split("&&")[0]}}</h5>
+          <p>{{this.ideaList[0].split("&&")[1]}}</p>
         </div>
         <div class="info-box">
           <div class="info-img">
             <img src="~@/assets/img/about/xinnian@2x.png" alt="" />
           </div>
-          <h5>企业信念</h5>
-          <p>奋斗改变人生</p>
+          <h5>{{this.ideaList[1].split("&&")[0]}}</h5>
+          <p>{{this.ideaList[1].split("&&")[1]}}</p>
         </div>
         <div class="info-box">
           <div class="info-img">
             <img src="~@/assets/img/about/yuanjing@2x.png" alt="" />
           </div>
-          <h5>企业愿景</h5>
-          <p>成为受人尊重的教育机构品牌</p>
+         <h5>{{this.ideaList[2].split("&&")[0]}}</h5>
+          <p>{{this.ideaList[2].split("&&")[1]}}</p>
         </div>
       </div>
     </div>
@@ -72,22 +87,44 @@
 </template>
 
 <script>
+import { queryAboutUs } from '@/network/officeCenter'
 export default {
   data() {
     return {
-      timeList: ["2020-10", "2020-9", "2020-8", "2020-10", "2020-10",],
-      textList: [
-        "我们成立了",
-        "我们成立了",
-        "我们成立了",
-        "我们成立了",
-        "我们成立了",
-      ],
+      timerArr: [],  //时间数组
+      valueArr:[],      //事件数组
+      titleList:[],
+      incidentList:[],  
+      ideaList:[],
+      textContent:""
     };
   },
-  created() {},
+  created() {
+    this.init();
+  },
   mounted() {},
-  methods: {},
+  methods: {
+    init(){
+      this.getAboutList();
+    },
+    getAboutList(){
+      queryAboutUs().then(res=>{
+        let result = res.split("%&");
+        this.titleList=result[0].split("_");    //首页标题数组
+        this.incidentList=result[1].split("_");  //中间树状图
+        this.ideaList=result[2].split("_");     //企业想法
+        this.incidentList.forEach((item,index)=>{
+          if(index>0){
+          this.timerArr.push(item.split("&&")[0]);
+          this.valueArr.push(item.split("&&")[1]);    
+          }
+        })
+        
+        console.log("企业",this.ideaList);
+        this.textContent=this.titleList[3].split("\n");
+      })
+    }
+  },
 };
 </script>
 
@@ -95,6 +132,7 @@ export default {
 * {
   box-sizing: border-box;
 }
+
 .about {
   .banner1 {
     height: 809px;
@@ -120,13 +158,46 @@ export default {
       .profile {
         width: 588px;
         height: 418px;
+        padding: 28px 33px;
         background-color: #fff;
         box-shadow: 3px 4px 5px 0px rgba(176, 176, 176, 0.75);
+        .company-title{
+          height: 50px;
+          display: flex;
+          margin-bottom: 50px;
+          & div:first-child{
+            height: 70px;
+             font-size: 40px;
+          font-family: Source Han Sans CN;
+          font-weight: bold;
+          color: #354168;
+            margin-right:30px;
+            margin-bottom: 18px;
+            border-bottom: 4px solid red;
+          }
+          & div:last-child{
+            margin-top:auto;
+               color: #354168;
+               font-size: 30px;
+          font-family: Source Han Sans CN;
+          }
+        }
+        .company-content{
+          font-size: 16px;
+          font-family: Source Han Sans CN;
+          color: #333333;
+          overflow: hidden;
+          text-overflow:ellipsis;
+          & div{
+            line-height:34px;
+            text-indent: 2em;
+          }
+        }
       }
     }
   }
   .banner2 {
-    height: 829px;
+    // height: 829px;
     // background: url("../../assets/img/about/bigPic.png") no-repeat;
     background: #354168;
     background-size: 100% 100%;

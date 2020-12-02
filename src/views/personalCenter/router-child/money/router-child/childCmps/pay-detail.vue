@@ -3,10 +3,10 @@
     <!-- 中间内容 -->
     <div class="main">
       <div class="title">充值金额</div>
-      <input type="text" placeholder="请输入充值金额" />
+      <input type="number" v-model="money" placeholder="请输入充值金额" />
       <!-- 单选框 -->
       <div>
-        <radio-button>
+        <radio-button @chekoutIndex="chekoutIndex">
           <span slot="radio1" class="my-font">微信支付</span>
           <span slot="radio2" class="my-font">支付宝支付</span>
         </radio-button>
@@ -14,45 +14,73 @@
 
       <!-- 按钮 -->
       <div class="footer">
-            <div class="btn" @click="go_pay">去支付</div>
+        <div class="btn" @click="go_pay">去支付</div>
       </div>
     </div>
     <!-- 遮罩层 -->
-    <el-dialog
-        :visible.sync="dialogVisible"
-        :show-close="false"
-        center
-        >
-    <pay @closeMask="closeMask()"></pay>
-</el-dialog>
+    <el-dialog :visible.sync="dialogVisible" :show-close="false" center>
+      <pay @closeMask="closeMask()"></pay>
+    </el-dialog>
   </div>
 </template>
 <script>
-import pay from "./pay"
+import pay from "./pay";
+import { recharge } from "@/network/personalCenter";
+import { mapState, mapActions } from "vuex";
 export default {
-    data(){
-        return{
-            dialogVisible:false
-        }
+  data() {
+    return {
+      dialogVisible: false, //控制遮罩层
+      money: 0, //充值金额
+      type: 2, //1.支付宝 2.微信 3.苹果内购
+    };
+  },
+  methods: {
+    //单选框选中
+    chekoutIndex(data) {
+      //是从公共组件传过来的下标
+      switch (data) {
+        case 0:
+          this.type = 2;
+          break;
+        case 1:
+          this.type = 1;
+          break;
+        default:
+          this.type = 3;
+      }
     },
-    methods:{
-        go_back(){
-            this.$router.back(-1);
-        },
-        go_pay(){
-            this.dialogVisible=true;
-        },
-        closeMask(){
-           this.dialogVisible=false;
-            this.$router.push({
-            path:"/page/personalCenter/personal/recharge/succee"
-          })
-        },
-       
+    go_back() {
+      this.$router.back(-1);
     },
-    components:{
-        pay
-    }
+    async go_pay() {
+      let money = Number(this.money).toFixed(2);
+      if(money==0){
+        this.$myAlert("充值金额不能为0");
+        return
+      }
+        if(money<0){
+        this.$myAlert("充值金额不能小于0");
+        return
+      }
+      let data = {
+        money: money,
+        payType: this.type,
+      };
+      let res =await recharge(data);
+      console.log("res=>",res);
+      this.dialogVisible = true;
+    },
+    closeMask() {
+      this.dialogVisible = false;
+      this.$router.push({
+        path: "/page/personalCenter/personal/recharge/succee",
+      });
+    },
+  },
+  components: {
+    pay,
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -84,11 +112,11 @@ export default {
       border-radius: 4px;
       padding: 13px 16px;
     }
-    .footer{
-        margin-top:60px;
-        width: 100%;
-        display: flex;
-        justify-content: center;
+    .footer {
+      margin-top: 60px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
     }
     .btn {
       width: 274px;

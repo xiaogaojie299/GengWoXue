@@ -17,34 +17,23 @@
       }"
       :row-class-name="tableRowClassName"
     >
-     
-      <el-table-column prop="date" label="课件名称" width="180" align="center">
+      <el-table-column
+        prop="userName"
+        label="被邀请人"
+        align="center"
+      >
       </el-table-column>
-      <el-table-column prop="name" label="课件类型" align="center" width="180">
+      <el-table-column
+        prop="insertTime"
+        label="被邀请人消费时间"
+        align="center"
+      >
       </el-table-column>
-      <el-table-column prop="address" align="center" label="课件科目">
+      <el-table-column prop="reason" align="center" label="被邀请人消费内容">
       </el-table-column>
-      <el-table-column prop="address" align="center" label="课件科目">
-      </el-table-column>
-      <el-table-column prop="address" align="center" label="课件科目">
-      </el-table-column>
-      <el-table-column prop="address" align="center" label="课件科目">
-      </el-table-column>
-      <el-table-column prop="address" align="center" label="课件科目">
-      </el-table-column>
-      <!-- 课后习题 -->
-      <el-table-column prop="exercise" align="center" label="课后习题">
-      </el-table-column>
-      <!-- 操作 -->
-      <el-table-column fixed="right" label="操作" width="120">
+      <el-table-column prop="golds" align="center" label="邀请提成">
         <template slot-scope="scope">
-          <el-button
-            @click.native.prevent="deleteRow(scope.$index, tableData)"
-            type="text"
-            size="small"
-          >
-            移除
-          </el-button>
+          <div>{{ scope.row.golds }}状元币</div>
         </template>
       </el-table-column>
     </el-table>
@@ -63,6 +52,17 @@
 
 <script>
 export default {
+  data() {
+    return {};
+  },
+  props: {
+    tableData: {
+      type: Array,
+      default: () => {
+        return [];
+      },
+    },
+  },
   methods: {
     tableRowClassName({ row, rowIndex }) {
       console.log(row);
@@ -84,36 +84,6 @@ export default {
         path: "/page/officeCenter/OfficeCenterIndex/test2",
       });
     },
-  },
-  data() {
-    return {
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "已审批",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "待审批",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "审批成功",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "未审批",
-        },
-      ],
-    };
   },
 };
 </script>

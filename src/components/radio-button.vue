@@ -38,6 +38,7 @@ export default {
   methods:{
       checkoutBtn(i){
           this.currentActive=i;
+          this.$emit("chekoutIndex",i);
           console.log("this.currentActive",this.currentActive)
       }
   }

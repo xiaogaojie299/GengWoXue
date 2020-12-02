@@ -65,6 +65,7 @@ export default {
       ],
     };
   },
+  inject:["_this"],
   props: { 
     item: {
       type: Object,
@@ -80,14 +81,15 @@ export default {
       });
     },
     deleteQuestion(){
-      // let data={
-      //   questionId:this.item.id
-      // };
-      // optDeleteQuestion(data).then(res=>{
-      //   this.isDel=!this.isDel;
-      // })
-      this.isDel=!this.isDel;
-      this.test1()
+      let data={
+        questionId:this.item.id
+      };
+      optDeleteQuestion(data).then(res=>{
+        // this.isDel=!this.isDel;
+        this._this.get_MeQuestionList()
+      })
+      // console.log(this.questionSquareList)
+      // this._this.test1()
     }
   },
   created(){

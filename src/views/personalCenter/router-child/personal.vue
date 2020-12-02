@@ -20,7 +20,7 @@
     </el-menu>
   </el-aside>
 
-  <el-container style="border:1px solid black;min-height:100%;padding-left:47px">
+  <el-container style="min-height:100%;padding-left:47px">
       <router-view></router-view>
   </el-container>
 </el-container>

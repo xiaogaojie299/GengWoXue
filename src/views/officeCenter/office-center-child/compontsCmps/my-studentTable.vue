@@ -70,9 +70,13 @@
       </el-table-column>
       <el-table-column prop="classHour" align="center" label="总课时">
       </el-table-column>
-      <el-table-column prop="className" align="center" label="已上课时">
+      <el-table-column prop="overClassHour;" align="center" label="已上课时">
       </el-table-column>
-      <el-table-column prop="className" align="center" label="在读班级">
+
+       <el-table-column align="center" label="结业证附件">
+         <template slot-scope="scope">
+           <img style="width:38px;height:38px" :src="scope.row.graduationCertificate" alt="">
+         </template>
       </el-table-column>
       <!-- 操作 -->
       <!-- <el-table-column fixed="right" label="操作" width="120">

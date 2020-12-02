@@ -15,39 +15,94 @@
         color: '#666',
         fontFamily: 'SourceHanSansCN-Medium',
       }"
-      :row-class-name="tableRowClassName"
+      @selection-change="handleSelectionChange"
     >
-      <el-table-column width="40" align="center">
+      <!-- <el-table-column width="40" align="center">
         <template slot-scope="scope">
-          <!-- <el-button
-            @click.native.prevent="deleteRow(scope.$index, tableData)"
-            type="text"
-            size="small"
-          >
-            图片
-          </el-button> -->
           <img
             @click="selectRow(scope.$index, tableData)"
             style="width: 20px; height: 20px"
-            src="~@/assets/img/icon_selected.png"
-            alt=""
+            :src="
+              isActive == scope.$index
+                ? require('@/assets/img/success.png')
+                : require('@/assets/img/icon_radiobutton.png')
+            "
+            :alt="scope.$index + ',' + isActive"
           />
         </template>
-      </el-table-column>
-     
-      <el-table-column prop="name" label="消息状态" align="center" width="180">
+      </el-table-column> -->
+     <el-table-column
+     align="center"
+      type="selection"
+      width="80">
+    </el-table-column>
+      <el-table-column label="消息状态" align="center" width="100">
+        <template slot-scope="scope">
+          <div>{{scope.row.read==1?"未读":"已读"}}</div>
+        </template>
       </el-table-column>
       <!-- 课后习题 -->
       <el-table-column prop="exercise" align="center" label="消息内容" >
+        <template slot-scope="scope">
+          <div style="display:flex;justify-content:center;">
+            <div style="width:100px">{{scope.row.title}}:</div>
+            <!-- <div>{{scope.row.content}}</div> -->
+            <div v-html="scope.row.content"></div>
+          </div>
+        </template>
       </el-table-column>
       <!-- 操作 -->
-      <el-table-column prop="date" align="center" label="发送时间" width="160">
+      <el-table-column prop="insertTime" align="center" label="发送时间" width="160">
       </el-table-column>
     </el-table>
   </div>
 </template>
 
 <style lang="scss" scoped>
+/deep/ .el-checkbox__inner{
+  width: 18px;
+  height: 18px;
+  outline: none;
+  border-radius:50%;
+}
+/deep/ .el-checkbox__input.is-checked>.el-checkbox__inner{
+    background-color: #F13D34;
+    border: #F13D34;
+}
+/deep/.el-checkbox__input.is-indeterminate>.el-checkbox__inner{
+  background-color: #F13D34;
+  border: #F13D34;
+}
+/deep/ .el-checkbox__inner::after {
+    box-sizing: content-box;
+    content: "";
+    border: 1px solid #FFF;
+    border-left: 0;
+    border-top: 0;
+    height: 7px;
+    left: 5px;
+    position: absolute;
+    top: 2px;
+    transform: rotate(45deg) scaleY(0) translateX(-50%);
+    width: 3px;
+    // transition: transform .15s ease-in .05s;
+    transform-origin: center;
+}
+/deep/ .el-checkbox__inner::after {
+    box-sizing: content-box;
+    content: "";
+    border: 1px solid #FFF;
+    border-left: 0;
+    border-top: 0;
+    height: 7px;
+    left: 6px;
+    position: absolute;
+    top: 4px;
+    transform: rotate(45deg) scaleY(0) translateX(-50%);
+    width: 3px;
+    transition: transform .15s ease-in .05s;
+    transform-origin: center;
+}
 .el-table .warning-row {
   background: #f9f9f9;
 }
@@ -59,6 +114,19 @@
 
 <script>
 export default {
+  data(){
+    return {
+      selectRows:[]
+    }
+  },
+  props:{
+    tableData:{
+      type:Array,
+      default:()=>{
+        return []
+      }
+    }
+  },
   methods: {
     tableRowClassName({ row, rowIndex }) {
       console.log(row);
@@ -74,42 +142,26 @@ export default {
       //      path:"/officeCenter/OfficeCenterIndex/test2"
       // })
     },
+    handleSelectionChange(val) {
+       this.selectRows=val.map((item,index)=>{
+         return item.noticeUserId
+       })
+       this.$emit("selectRows",this.selectRows.toString())
+       console.log("this.selectRows=",this.selectRows);
+      },
     deleteRow(index, rows) {
       console.log(index, rows);
       this.$router.push({
         path: "/page/officeCenter/OfficeCenterIndex/test2",
       });
     },
-  },
-  data() {
-    return {
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "已审批",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "待审批",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "审批成功",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "未审批",
-        },
-      ],
-    };
-  },
+  }
 };
 </script>
+<style lang="scss" scoped>
+  .props{
+    display:flex;
+    align-items :center;
+    justify-content :center
+  }
+</style>

@@ -34,17 +34,17 @@
 
       <!-- 右侧登陆注册 -->
       <div class="right-content">
-        <button @click="go_personalCenter">个人中心</button>
+        <!-- <button @click="go_personalCenter">个人中心</button> -->
         <!-- 客服电话 -->
         <div class="kf-box">
           <!-- Icon -->
          <img class="kf-icon" src="@/assets/img/navbar/icon_phone.png" alt="" />
           <!-- 数字 -->
-          <div class="num">400-88888888</div>
+          <div class="num">{{kfList.content}}</div>
         </div>
         <!-- 登录注册 -->
         <div
-        v-if="true"
+        v-if="!userInfo.nickname"
           :class="{ regist: true, active1: $route.path.indexOf('/register') != -1 }"
           @click="go_register"
         >
@@ -55,14 +55,18 @@
         </div>
         <!-- 登录成功后端样式 -->
         <div v-else class="reg-succes">
+          <div style="position: relative">
           <img @click="go_msgCenter" class="icon_envelope" src="@/assets/img/navbar/icon_envelope.png" alt="">
-          <img @click="go_personalCenter()" class="head-portrait" src="" alt="" />
+          <div class="num">1</div>
+          </div>
+          <img @click="go_personalCenter()" class="head-portrait" :src="userInfo.avatar" alt="" />
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
+import {state,actions} from "vuex"
 export default {
   data() {
     const url = "/page";
@@ -74,10 +78,35 @@ export default {
         { title: "APP下载", path: url + "/appInstall" },
         { title: "关于我们", path: url + "/about" },
       ],
+      userInfo:JSON.parse(localStorage.getItem("userInfo")),
+     
     };
   },
-
+  computed: {
+       //所有未读的消息条数
+     msgTotal(){
+       return this.$store.state.msgCenterList.total
+     },
+     kfList(){
+       return this.$store.state.kfList
+     }
+  },
+    created(){
+      this.init()
+  },
   methods: {
+    // 初始化
+    init(){
+      // vuex里的获取消息列表，在这里调用，然后去消息中心在调用，麻烦！！！可以用vuex中的数据可持续存储（百度）
+      let data={
+        current:1,    //页码
+        size:10,       //条数
+        read:1,
+        type:3
+      }
+      this.$store.dispatch('getMessageList', data);
+      this.$store.dispatch('getKfList',1);
+    },
     /* 跳转写的有点啰嗦。可以封装一个方法 */
     // 点击nav-bar切换路由
     checkRouter(path) {
@@ -104,7 +133,9 @@ export default {
         path: "/page/register",
       });
     },
-  },
+    // 获取消息列表
+  }
+
 };
 </script>
 <style lang="scss" scoped>
@@ -231,9 +262,28 @@ export default {
   width: 120px;
   justify-content: space-between;
 }
-.reg-succes>.icon_envelope{
-  width: 24px;
-  height: 20px;
+.reg-succes .icon_envelope{
+  width: 30px;
+  height: 30px;
+}
+.reg-succes .num{
+  position: relative;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+height: 16px;
+background: #EB002A;
+border-radius: 50%;
+top:0;
+right:0;
+transform: translateX(50%);
+font-size: 6px;
+font-family: Source Han Sans CN;
+font-weight: 400;
+color: #FFFFFF;
+
 }
 .reg-succes>.head-portrait{
   width: 64px;

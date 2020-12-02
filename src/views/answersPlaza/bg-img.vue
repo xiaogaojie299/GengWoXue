@@ -4,8 +4,8 @@
     <div class="bg-img"></div>
     <!-- 内容 -->
     <div class="content">
-      <div>{{   questionSquareList }}</div>
       <button @click="test1">测试</button>
+      <div>{{   questionSquareList1 }}</div>
       <!-- 顶上搜索框 -->
       <container>
         <div class="input-border-box">
@@ -57,12 +57,12 @@ import { queryQuestionSquareList,queryMeAnswerList,queryMeQuestionList } from "@
 import {myMixin} from "./mixins/mixins"
 export default {
   mixins:[myMixin],
+
   data() {
     return {
       seachTitle: "",
-      current: 1, //当前页
-      size: 10, //分页条数
-   
+      current: 1, //当前页  /* mixins中定义好了 */
+      size: 10, //分页条数  /* mixins中定义好了 */
       elTitle: "回答广场",
       options: [
         {
@@ -82,15 +82,24 @@ export default {
     };
   },
   components: {
-    exercises,
+    exercises, 
+
+  },
+  provide(){
+    return{
+      _this:this,
+      name:this.name
+    }
   },
   watch: {
-    questionSquareList(){
-      console.log("在主页面中刷新了");
+    questionSquareList1(e){
+      console.log(e)
+      return this.questionSquareList 
     }
   },
   created() {
     this.get_QuestionSquareList();
+    console.log(this.questionSquareList)
   },
   methods: {
     change(val){
@@ -119,25 +128,7 @@ export default {
       }
       */
     },
-    //查询我的问题
-    get_MeQuestionList(){
-      let data={
-        current: this.current,
-        size: this.size,
-      }
-      queryMeQuestionList(data).then(res=>{
-        console.log("查询我的问答",res);
-        //  判断返回的图片是否含有逗号，如果有，转为数组
-        if (res.imgUrl && res.imgUrl.indexOf(",") != -1) {
-          res.imgUrl = res.imgUrl.split(",");
-        }
-        // 传入value判断 当前是问答广场的问题 还是自己题的问题 //取决于下拉框中的值
-        res.forEach(item=>{
-          item.setValue=this.value
-        })
-        this.questionSquareList = res;
-      })
-    },
+
     // 查询我的回答
     //get_MeQuestionList
     get_MeAnswerList(){

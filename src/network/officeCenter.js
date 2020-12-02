@@ -94,3 +94,22 @@ export function queryAllMyStudent(data){
     url:api+"queryAllMyStudent"+qs(data)
   })
 }
+//  获取可以修改的课后练习题列表
+export function queryTestPaperList(data){
+  return request({
+    url:"/api/testPaper/queryTestPaperList"+qs(data),
+  })
+}
+
+//上传课件习题
+export function uploadTestFile(data){
+  return request({
+    url:api+"uploadTestFile"+qs(data)
+  })
+}
+//获取关于我们
+export function queryAboutUs(){
+  return request({
+    url:api+"queryAboutUs"
+  })
+}

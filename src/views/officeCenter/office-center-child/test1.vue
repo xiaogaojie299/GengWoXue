@@ -1,7 +1,7 @@
 <template>
   <div>
     <breadcrumb-nav>
-      <div slot="nav-name">课程表</div>
+      <div slot="nav-name" @click="go_back()">课程表</div>
       <div slot="nav-child">课程详情</div>
     </breadcrumb-nav>
     <!-- 下面主题内容 -->
@@ -85,9 +85,9 @@
         <div class="exercise">
             <row-template>
             <span slot="title">课后习题：</span>
-            <div slot="content">
-              <span class="input-style">英语第一课课后习题</span>
-              <span style="color:#0E51B7;margin-left:8px">习题已发送，点击重新上传</span>
+            <div  style="display: flex;align-items: center;" slot="content">
+              <span class="input-style">{{couseDetail.examinationName || "暂未上传习题"}}</span>
+              <span @click="open" style="color:#0E51B7;margin-left:8px">{{couseDetail.examinationName ?"习题已发送，点击重新上传":"上传习题"}}</span>
             </div>
           </row-template>
         </div>
@@ -107,6 +107,16 @@
         </div>
       </div>
     </div>
+
+    <el-dialog
+        :visible.sync="dialogVisible"
+        :show-close="false"
+        center
+        >
+        <selectTestTable :scheduleId="scheduleId" />
+        
+</el-dialog>
+
     <!-- 底部分页 -->
      <!-- 分页 -->
         <div class="footer vertical-center w-1">
@@ -117,18 +127,26 @@
 
 <script>
 import studentTable from "./compontsCmps/studentTable"
+import selectTestTable from "./compontsCmps/select-testTable"
 import {queryCourseInfoDate,queryCourseInfo } from '@/network/officeCenter'
+import {exmixin} from "./ex-mixin/mixin"
 export default {
+  mixins:[exmixin],
     data(){
         return{
-          current:1,
-          size:10,
           scheduleId:"",
-          couseDetail:{}
+          couseDetail:{},
         }
     },
+     provide(){
+    return{
+      _this:this,
+      name:this.name
+    }
+  },
     components:{
-        studentTable
+        studentTable,
+        selectTestTable
     },
     created() {
       this.init()
@@ -137,7 +155,7 @@ export default {
     // 初始化
     init(){
       let scheduleId=this.$route.query.scheduleId;
-      this.scheduleId=scheduleId;
+      this.scheduleId=Number(scheduleId);
       this.getDaySchedule();
       this.getCourseInfo();
     },
@@ -167,11 +185,22 @@ export default {
       queryCourseInfo(data).then(res=>{
         console.log("获取table==",res)
       })
+    },
+    //返回上一页
+    go_back(){
+      this.$router.go(-1);
     }
   },
 };
 </script>
 <style lang="scss" scoped>
+/deep/ .el-dialog{
+  width: 80%;
+}
+/deep/ .el-dialog__body{
+  // height: 700px;
+  width:100%;
+}
 .m-t{
     margin-top:12px
 }
@@ -204,7 +233,7 @@ textarea {
   justify-content: center;
 }
 .main {
-  min-height: 702px;
+  // min-height: 702px;
   background: #f9f9f9;
   padding: 12px 70px 14px 15px;
 }

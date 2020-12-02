@@ -179,7 +179,7 @@ export default {
           localStorage.setItem("userInfo", JSON.stringify(res));
           localStorage.setItem("token",res.token);
           this.$router.push({
-            path: "/",
+            path: "/page/home",
           });
       });
     },

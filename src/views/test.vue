@@ -80,6 +80,7 @@
 </template>
 <script>
 let routerUrl='/page/officeCenter/OfficeCenterIndex/';
+import {mapState} from "vuex"
   export default {
     data() {
       const item = {
@@ -89,6 +90,11 @@ let routerUrl='/page/officeCenter/OfficeCenterIndex/';
       };
       return {
         tableData: Array(20).fill(item)
+      }
+    },
+    computed:{
+      userInfo(){
+        return this.$store.state.infoList
       }
     },
     methods:{
