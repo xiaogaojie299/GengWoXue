@@ -57,34 +57,34 @@ export default new Vuex.Store({
     async getClassList(context) {
       // 发送ajax 异步请求
       let res = await queryAllGrade();
-      let teamArr = res.unshift({ name: "全部", id: "" });
+      let teamArr = res.data.unshift({ name: "全部", id: "" });
       context.commit("setClassList", res);
     },
     // 获取所有科目
     async getSubjectList(context) {
       let res = await queryAllSubjects();
       res.unshift({ name: "全部", id: "" });
-      context.commit("setSubjectList", res);
+      context.commit("setSubjectList", res.data);
     },
     //获取消息通知列表
     async getMessageList(context, data) {
       console.log("data==>", data);
       let res = await queryMessageList(data);
-      res.forEach((item) => {
+      res.data.forEach((item) => {
         item.ischeckout;
       });
-      context.commit("setMsgCenterList", res);
+      context.commit("setMsgCenterList", res.data);
     },
     // 获取客服列表
     async getKfList(context, data) {
       let pamars = { type: data };
       let res = await querySystemSetByType(pamars);
-      context.commit("setKfList", res);
+      context.commit("setKfList", res.data);
     },
     //获取个人资料
     async getPersonalData(context) {
       let res = await queryPersonalData();
-      context.commit("setinfoList", res);
+      context.commit("setinfoList", res.data);
     },
   },
   modules: {},

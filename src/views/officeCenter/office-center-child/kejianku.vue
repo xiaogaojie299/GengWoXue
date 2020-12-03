@@ -76,18 +76,21 @@
         <div class="header-tag w-100">
           <div class="tag-left">课件名称:</div>
           <div>
-            <input class="kjName" type="text" />
+            <input v-model="kejianName" class="kjName" type="text" />
           </div>
         </div>
       </div>
           <!-- 下面按钮组 -->
       <div class="btn-groups">
-        <div class="btn1">重置</div>
+        <div class="btn1" @click="reset">重置</div>
         <div @click="query" class="btn2">查询</div>
       </div>
       <!-- 顶部表格 -->
       <div>
-        <kejiankuTable />
+        <kejiankuTable :tableData="tableData" />
+      </div>
+      <div class="page-device">
+          <page-device />
       </div>
       <div class="btn-groups">
         <div class="btn1">预览</div>
@@ -106,9 +109,11 @@ export default {
       kejianTypeValue: "",
       subjectValue: "",
       classValue: "",
-      // kejianName: "",
+      kejianName: "",
       current:1,
-      size:10
+      size:10,
+      total:0,    //数据总数
+      tableData:[]  //列表详情
     };
   },
   computed: {
@@ -126,9 +131,6 @@ export default {
         { name: "文档", id: 3 },
       ];
     },
-    kejianName() {
-      return "";
-    },
   },
   created() {
     this.init();
@@ -145,6 +147,12 @@ export default {
       this.get_AllCourseware()
       // http://139.9.154.145/teacher-server/api/officeCenter/queryAllCourseware?current=1&gradeId=1&name=1&size=10&subjectsId=1&type=1
     },
+    reset(){//清空选项框
+      this.kejianTypeValue="";    //课件类型下拉款
+      this.subjectValue="";       //科目下拉框
+      this.kejianName="";         //课件名称
+      this.classValue=""          //选择的年级
+    },
     // 查询课件列表
     get_AllCourseware(){
       let data={
@@ -157,7 +165,14 @@ export default {
       }
       queryAllCourseware(data).then(res=>{
         console.log("课件库列表");
+        this.tableData=res.list;
+        this.total=res.total;
       })
+    },
+    // 点击分页出发回调
+    handleCurrentChange(val){
+      this.current=val;
+      get_AllCourseware;
     },
     // 下载
     downloadFile(url, fileName, flieId, type) {

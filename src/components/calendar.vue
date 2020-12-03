@@ -267,7 +267,7 @@ export default {
   position: relative;
 
   .top-data-box {
-    height: 40px;
+    height: 66px;
     // text-align: center;
     display: flex;
     justify-content: center;
@@ -287,7 +287,7 @@ export default {
   color: #333333;
   position: absolute;
   right: 0;
-  top: 8px;
+  top: 24px;
 }
 .Calendar-content {
   padding: 0 60px;

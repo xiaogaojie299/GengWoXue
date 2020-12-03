@@ -1,9 +1,7 @@
 import axios from "axios";
 import vue from "../main";
-import { state } from "vuex";
 import { BASE_URL, TIMEOUT } from "./config";
-// let token = localStorage.getItem("token");
-let token = vue.$store.state.token;
+let token = localStorage.getItem("token");
 const instance = axios.create({
   baseURL: BASE_URL,
   method: "POST",
@@ -29,7 +27,7 @@ instance.interceptors.response.use(
   (res) => {
     console.log("http=", res.data);
     if (res.data.code == 200) {
-      return res.data.data;
+      return res.data;
     } else {
       // vue.$myAlert(res.data.msg || res.data.message);
       switch (res.data.code) {

@@ -6,6 +6,7 @@
             :current-page="current"
             @size-change="test"
             @current-change="handleCurrentChange"
+            :hide-on-single-page="true"
             :total="total">
         </el-pagination>
     </div>
@@ -18,7 +19,7 @@ export default {
         }
     },
     props:{
-        current:{
+        current:{   //传过来的值枫叶来显示第一行
             type:Number,
             default:1
         },

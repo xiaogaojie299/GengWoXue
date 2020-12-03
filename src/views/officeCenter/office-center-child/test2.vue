@@ -119,8 +119,8 @@ export default {
         studentId:this.studentInfo.id||""
       }
       queryDaySchedule(data).then(res=>{
-        console.log("获取课程",res);
-        this.timerCourse=res;
+        console.log("获取课程",res.list);
+        this.timerCourse=res.list;
       })
     },
     // 按月查询课程数
@@ -185,11 +185,10 @@ export default {
 .header {
   width: 100%;
   // height: 100%;
-  height: 431px;
+  min-height: 431px;
   background: #ffffff;
   box-shadow: 1px 2px 36px 4px rgba(200, 200, 200, 0.32);
   border-radius: 3px;
-  border: 1px solid black;
 }
 
 // 底部

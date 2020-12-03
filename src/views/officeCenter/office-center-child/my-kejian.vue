@@ -119,32 +119,56 @@
         <!-- 分页 -->
         <div class="btn1" @click="del">删除</div>
         <!-- 分割开始 -->
-        <el-upload
+        <!-- action="http://ip:80/teacher/base/uploadFile" -->
+        <!-- <el-upload
           class="upload-demo"
-          action="http://ip:80/teacher/base/uploadFile"
+          action="http://139.9.154.145/student/base/uploadFile"
           :headers="headerObj"
           :on-preview="handlePreview"
           :on-remove="handleRemove"
           :on-error="handleFail"
+          :on-success="handleSuccess"
           :before-remove="beforeRemove"
           multiple
           :limit="3"
           :on-exceed="handleExceed"
         >
-          <div class="btn2">上传</div>
-        </el-upload>
+        </el-upload> -->
+          <div @click="dialogVisible=true" class="btn2">上传</div>
+
         <!-- 分割结束 -->
         <!-- <div class="btn2" @click="upload">上传</div> -->
       </div>
+    </div>
+    <div>
+          <el-dialog
+        :visible.sync="dialogVisible"
+        :show-close="false"
+        center
+        >
+        <!-- 课件上传 -->
+        <uploadKj @loadPage="loadPage" :subjectList="subjectList" :classList="classList"> </uploadKj>
+
+</el-dialog>
+
     </div>
   </div>
 </template>
 <script>
 import mykejiankuTable from "./compontsCmps/my-kejiankuTable";
-import { queryMyAllCourseware,delMyCourseware} from "@/network/officeCenter";
-
+import uploadKj from "./compontsCmps/upload-Kj"
+import { queryMyAllCourseware,delMyCourseware,saveMyCourseware} from "@/network/officeCenter";
+import { BASE_URL } from "@/network/config.js";
 import { state, actions } from "vuex";
+import {kjMixin} from "./kj-mixin/mixins"
 export default {
+  mixins:[kjMixin],
+    provide(){
+    return{
+      _this:this,
+      name:this.name
+    }
+  },
   data() {
     return {
       kejianTypeValue: "",
@@ -154,6 +178,7 @@ export default {
       kejianName: "",
       current: 1,
       size: 10,
+      baseUrl:BASE_URL,
       tableData:[{id:0}],
       kjId:"",  //课件id
       fileList: [
@@ -163,6 +188,7 @@ export default {
             "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
         },
       ],
+      
       // headerObj:{'ContentType':'multipart/form-data'}
     };
   },
@@ -170,28 +196,31 @@ export default {
     classList() {
       return this.$store.state.classList;
     },
+    
     subjectList() {
       return this.$store.state.subjectList;
     },
-    kejianType() {
-      return [
-        { name: "全部", id: "" },
-        { name: "视频", id: 1 },
-        { name: "PPT", id: 2 },
-        { name: "文档", id: 3 },
-      ];
-    },
+    
     kejianName() {
       return "";
     },
-    auditList() {
-      return [
-        { name: "全部", id: "" },
-        { name: "待审核", id: 1 },
-        { name: "审核通过", id: 2 },
-        { name: "审核拒绝", id: 3 },
-      ];
-    },
+        auditList() {
+            return [
+              { name: "全部", id: "" },
+              { name: "待审核", id: 1 },
+              { name: "审核通过", id: 2 },
+              { name: "审核拒绝", id: 3 },
+            ];
+          },
+          kejianType() {
+            return [
+              { name: "全部", id: "" },
+              { name: "视频", id: 1 },
+              { name: "PPT", id: 2 },
+              { name: "文档", id: 3 },
+            ];
+          },
+  
  
   },
   created() {
@@ -230,6 +259,9 @@ export default {
         this.kjId = res.list[0].id||0
       });
     },
+    loadPage(){//上传成功后更新页面
+      this.get_AllCourseware()
+    },
     // 选择状态
     change(val) {
       console.log("val=", val);
@@ -243,10 +275,21 @@ export default {
         console.log("删除成功");
       })
     },
+    //给耕我学服务器上传
+    uploadGwx(){
+      let pamars={
+        gradeId 
+      }
+      saveMyCourseware(pamars)
+    },
        selectRow(id){
       // 监听哪个课件的id
       this.kjId=id;
       console.log("this.kjId================>",this.kjId)
+    },
+    handleSuccess(response, file, fileList){
+      console.log(response,file,fileList)
+      console.log(response.data);
     },
     // 上传文件API
     handleRemove(file, fileList) {
@@ -273,6 +316,8 @@ export default {
   },
   components: {
     mykejiankuTable,
+  uploadKj
+
   },
 };
 </script>

@@ -19,15 +19,8 @@
     >
       <el-table-column width="40" align="center">
         <template slot-scope="scope">
-          <!-- <el-button
-            @click.native.prevent="deleteRow(scope.$index, tableData)"
-            type="text"
-            size="small"
-          >
-            图片
-          </el-button> -->
           <img
-            @click="selectRow(scope.$index, tableData)"
+            @click="selectRow(scope.$index, scope.row)"
             style="width: 20px; height: 20px"
             :src="isActive==scope.$index?require('@/assets/img/success.png'):require('@/assets/img/icon_radiobutton.png')"
             :alt="scope.$index+','+isActive"
@@ -83,6 +76,22 @@
 
 <script>
 export default {
+    data() {
+    return {
+      isActive:0
+    };
+  },
+  props:{
+    tableData:{
+      type:Array,
+      dedefault:()=>{
+        return []
+      }
+    }
+  },
+  created(){
+    console.log('tableData==>',this.tableData);
+  },
   methods: {
     tableRowClassName({ row, rowIndex }) {
       console.log(row);
@@ -107,37 +116,7 @@ export default {
       });
     },
   },
-  data() {
-    return {
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "已审批",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "待审批",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "审批成功",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "未审批",
-        },
-      ],
-      isActive:0
-    };
-  },
+
 };
 </script>
 <style lang="scss" scoped>

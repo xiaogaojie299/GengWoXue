@@ -113,3 +113,10 @@ export function queryAboutUs(){
     url:api+"queryAboutUs"
   })
 }
+
+//课件上传
+export function saveMyCourseware(data){
+  return request({
+    url:api+"saveMyCourseware"+qs(data)
+  })
+}
