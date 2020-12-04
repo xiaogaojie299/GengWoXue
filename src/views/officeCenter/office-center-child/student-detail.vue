@@ -2,7 +2,7 @@
   <div class="box">
       <div style="margin-left:23px">
         <breadcrumb-nav>
-        <span slot="nav-name">我的学生</span>
+        <span slot="nav-name" @click="goBack">我的学生</span>
         <span slot="nav-child">{{studyInfo.name}}个人信息</span>
         </breadcrumb-nav>
       </div>
@@ -72,7 +72,7 @@
               <growth-table></growth-table>
           </div>
           <div class="page-device">
-            <page-device @handleCurrentChange="handleCurrentChange" />
+            <page-device :total="total" @handleCurrentChange="handleCurrentChange" />
           </div>
       </div>
     </div>
@@ -87,6 +87,7 @@ export default {
       studyInfo:{},
       current:1,
       size:10,
+      total:0,
       tableData:[]
     };
   },
@@ -119,6 +120,9 @@ export default {
         default :
         return "已转科"
       }
+    },
+    goBack(){
+      this.$router.go(-1);
     },
     // 获取学生详情
     async get_EvaluationList(){

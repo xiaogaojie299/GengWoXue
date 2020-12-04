@@ -105,82 +105,75 @@
       </div>
 
       <div class="btn-groups">
-        <div class="btn1">重置</div>
+        <div class="btn1" @click="reset">重置</div>
         <div @click="query" class="btn2">查询</div>
       </div>
       <!-- 顶部表格 -->
       <div>
-        <mykejiankuTable @selectRow="selectRow" />
+        <mykejiankuTable :tableData="tableData" @selectRow="selectRow" />
       </div>
       <div class="btn-groups">
-        <div class="page-device">
-          <page-device />
-        </div>
         <!-- 分页 -->
+        <div class="page-device">
+          <page-device :total="total" @handleCurrentChange="handleCurrentChange" />
+        </div>
         <div class="btn1" @click="del">删除</div>
         <!-- 分割开始 -->
-        <!-- action="http://ip:80/teacher/base/uploadFile" -->
-        <!-- <el-upload
-          class="upload-demo"
-          action="http://139.9.154.145/student/base/uploadFile"
-          :headers="headerObj"
-          :on-preview="handlePreview"
-          :on-remove="handleRemove"
-          :on-error="handleFail"
-          :on-success="handleSuccess"
-          :before-remove="beforeRemove"
-          multiple
-          :limit="3"
-          :on-exceed="handleExceed"
-        >
-        </el-upload> -->
-          <div @click="dialogVisible=true" class="btn2">上传</div>
-
+        <div @click="dialogVisible = true" class="btn2">上传</div>
         <!-- 分割结束 -->
         <!-- <div class="btn2" @click="upload">上传</div> -->
       </div>
     </div>
     <div>
-          <el-dialog
+      <el-dialog
         :visible.sync="dialogVisible"
-        :show-close="false"
+        :before-close="handleClose"
         center
-        >
+      >
         <!-- 课件上传 -->
-        <uploadKj @loadPage="loadPage" :subjectList="subjectList" :classList="classList"> </uploadKj>
-
-</el-dialog>
-
+        <uploadKj
+          @loadPage="loadPage"
+          :subjectList="subjectList"
+          :classList="classList"
+        >
+        </uploadKj>
+      </el-dialog>
     </div>
   </div>
 </template>
 <script>
 import mykejiankuTable from "./compontsCmps/my-kejiankuTable";
-import uploadKj from "./compontsCmps/upload-Kj"
-import { queryMyAllCourseware,delMyCourseware,saveMyCourseware} from "@/network/officeCenter";
+import uploadKj from "./compontsCmps/upload-Kj";
+import {
+  queryMyAllCourseware,
+  delMyCourseware,
+  saveMyCourseware,
+} from "@/network/officeCenter";
 import { BASE_URL } from "@/network/config.js";
 import { state, actions } from "vuex";
-import {kjMixin} from "./kj-mixin/mixins"
+import { kjMixin } from "./kj-mixin/mixins";
 export default {
-  mixins:[kjMixin],
-    provide(){
-    return{
-      _this:this,
-      name:this.name
-    }
+  mixins: [kjMixin],
+  provide() {
+    return {
+      _this: this,
+      name: this.name,
+    };
   },
   data() {
     return {
-      kejianTypeValue: "",
-      subjectValue: "",
-      classValue: "",
-      auditValue: "",
-      kejianName: "",
-      current: 1,
-      size: 10,
-      baseUrl:BASE_URL,
-      tableData:[{id:0}],
-      kjId:"",  //课件id
+      kejianTypeValue: "", //课件类型
+      subjectValue: "", //下拉框选中的学科列表
+      classValue: "", //选择的年级ID
+      auditValue: "", //审核通过与未通过
+      kejianName: "", //课件名称
+      current: 1, //分页
+      size: 10, //每页多少条
+      total: 0, //总条数
+      baseUrl: BASE_URL, //IP地址
+      tableData: [{ id: 0 }], //课件库列表
+      kjId: "", //课件id
+      row:{},   //table中选择的单元格
       fileList: [
         {
           name: "food.jpeg",
@@ -188,7 +181,7 @@ export default {
             "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
         },
       ],
-      
+
       // headerObj:{'ContentType':'multipart/form-data'}
     };
   },
@@ -196,32 +189,30 @@ export default {
     classList() {
       return this.$store.state.classList;
     },
-    
+
     subjectList() {
       return this.$store.state.subjectList;
     },
-    
+
     kejianName() {
       return "";
     },
-        auditList() {
-            return [
-              { name: "全部", id: "" },
-              { name: "待审核", id: 1 },
-              { name: "审核通过", id: 2 },
-              { name: "审核拒绝", id: 3 },
-            ];
-          },
-          kejianType() {
-            return [
-              { name: "全部", id: "" },
-              { name: "视频", id: 1 },
-              { name: "PPT", id: 2 },
-              { name: "文档", id: 3 },
-            ];
-          },
-  
- 
+    auditList() {
+      return [
+        { name: "全部", id: "" },
+        { name: "待审核", id: 1 },
+        { name: "审核通过", id: 2 },
+        { name: "审核拒绝", id: 3 },
+      ];
+    },
+    kejianType() {
+      return [
+        { name: "全部", id: "" },
+        { name: "视频", id: 1 },
+        { name: "PPT", id: 2 },
+        { name: "文档", id: 3 },
+      ];
+    },
   },
   created() {
     this.init();
@@ -236,12 +227,23 @@ export default {
     // 查询
     query() {
       this.get_AllCourseware();
-      // http://139.9.154.145/teacher-server/api/officeCenter/queryAllCourseware?current=1&gradeId=1&name=1&size=10&subjectsId=1&type=1
+    },
+    // 重置
+    reset() {
+      this.kejianTypeValue = "";
+      this.subjectValue = "";
+      this.classValue = "";
+      this.auditValue = "";
+      this.kejianName = "";
     },
     // 分页
     handleCurrentChange(data) {
       this.current = data;
       this.get_AllCourseware();
+    },
+    //
+    handleClose() {
+      this.dialogVisible = false;
     },
     // 查询我的课件列表
     get_AllCourseware() {
@@ -255,69 +257,53 @@ export default {
         status: this.auditValue, //课件类型
       };
       queryMyAllCourseware(data).then((res) => {
-        console.log("我的课件库", res);
-        this.kjId = res.list[0].id||0
+        this.tableData = res.data.list;
+        this.total = res.data.total;
+        this.kjId = res.data.list[0].id || 0;
       });
     },
-    loadPage(){//上传成功后更新页面
-      this.get_AllCourseware()
+    loadPage() {
+      //上传成功后更新页面
+      this.get_AllCourseware();
     },
     // 选择状态
     change(val) {
-      console.log("val=", val);
     },
     // 删除课件
-    del(){
-      console.log("kjId",this.kjId);
-      let data={id:this.kjId}
-      console.log("delMyCourseware",delMyCourseware);
-      delMyCourseware(data).then(res=>{
-        console.log("删除成功");
-      })
+    del() {
+      let data = { id: this.kjId };
+      delMyCourseware(data).then((res) => {
+        if (res.code == 200) {
+          this.get_AllCourseware();
+        }
+      });
+    },
+    // 测试预览
+    test(){
+      console.log("预览");
+    console.log(this.row)
+    this.$preview(this.tableData[0].url);
+     // window.open("http://view.officeapps.live.com/op/view.aspx?src=" + Courseware.seItem.url);
     },
     //给耕我学服务器上传
-    uploadGwx(){
-      let pamars={
-        gradeId 
-      }
-      saveMyCourseware(pamars)
+    uploadGwx() {
+      let pamars = {
+        gradeId,
+      };
+      saveMyCourseware(pamars);
     },
-       selectRow(id){
+    selectRow(id) {
       // 监听哪个课件的id
-      this.kjId=id;
-      console.log("this.kjId================>",this.kjId)
+      this.kjId =id;
     },
-    handleSuccess(response, file, fileList){
-      console.log(response,file,fileList)
+    handleSuccess(response, file, fileList) {
+      console.log(response, file, fileList);
       console.log(response.data);
-    },
-    // 上传文件API
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(
-        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
-          files.length + fileList.length
-        } 个文件`
-      );
-    },
-    handleFail(err,file,fileList){
-      console.log("err=",err)
-      console.log("file=",file)
-      console.log("fileList=",fileList)
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`);
-    },
+    }
   },
   components: {
     mykejiankuTable,
-  uploadKj
-
+    uploadKj,
   },
 };
 </script>

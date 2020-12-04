@@ -126,6 +126,18 @@
     </div>
   </div>
 </template>
+  <script>
+  export default {
+    data(){
+      return {
+        studentInfo:{}
+      }
+    },
+    created(){
+      this.studentInfo=JSON.parse(this.$route.query.data)
+    }
+  }
+  </script>
 <style lang="scss" scoped>
 
 .main {

@@ -4,6 +4,7 @@
       :data="tableData"
       style="width: 100%"
       stripe
+      @cell-click="handleSelectionChange"
       :header-cell-style="{
         color: 'black',
         fontSize: '14px',
@@ -27,33 +28,38 @@
             图片
           </el-button> -->
           <img
-            @click="selectRow(scope.$index, tableData)"
             style="width: 20px; height: 20px"
-            :src="isActive==scope.$index?require('@/assets/img/success.png'):require('@/assets/img/icon_radiobutton.png')"
+            :src="isActive==scope.row.id?require('@/assets/img/success.png'):require('@/assets/img/icon_radiobutton.png')"
             :alt="scope.$index+','+isActive"
           />
         </template>
       </el-table-column>
-      <el-table-column prop="date" label="课件名称" width="180" align="center">
+      <el-table-column prop="name" label="课件名称" width="120" align="center">
       </el-table-column>
-      <el-table-column prop="name" label="课件类型" align="center" width="180">
+      <el-table-column label="课件类型" align="center" width="120">
+        <template slot-scope="scope">
+          <div>{{scope.row.type==1?"视频":scope.row.type==2?"PPT":"文档"}}</div>
+        </template>
       </el-table-column>
-      <el-table-column prop="address" align="center" label="课件科目">
+      <el-table-column prop="coursesubjects" align="center" label="课件科目">
       </el-table-column>
-      <el-table-column prop="address" align="center" label="年级">
+      <el-table-column prop="grade" align="center" label="年级">
       </el-table-column>
-      <el-table-column prop="address" align="center" label="附件">
+      <el-table-column prop="url" align="center" width="180" label="附件">
       </el-table-column>
-      <el-table-column prop="address" align="center" label="下载费用">
+      <el-table-column prop="downloadFee" align="center" label="下载费用">
       </el-table-column>
-      <el-table-column prop="address" align="center" label="下载次数">
+      <el-table-column prop="downloadNumber" align="center" label="下载次数">
       </el-table-column>
       <!-- 课后习题 -->
-      <el-table-column prop="exercise" align="center" label="上传人">
+      <el-table-column prop="insertUser" align="center" label="上传人">
       </el-table-column>
-      <el-table-column prop="exercise" align="center" label="上传时间">
+      <el-table-column prop="insertTime" align="center" label="上传时间" width="180">
       </el-table-column>
-      <el-table-column prop="exercise" align="center" label="审核状态">
+       <el-table-column label="课件类型" align="center" width="120">
+        <template slot-scope="scope">
+          <div>{{scope.row.status==1?"待审核":scope.row.status==2?"审核通过":"审核拒绝"}}</div>
+        </template>
       </el-table-column>
       <!-- 操作 -->
       <!-- <el-table-column fixed="right" label="操作" width="120">
@@ -82,24 +88,54 @@
 </style>
 
 <script>
+import {delMyCourseware} from "@/network/officeCenter"
 export default {
+    data() {
+      return {
+        isActive:""
+      };
+    },
+    props:{
+      tableData:{
+        type:Array,
+        default:()=>{
+          return []
+        }
+      }
+    },
+    created(){
+        setTimeout(()=>{
+        this.isActive = this.tableData[0].id;
+    },500)
+    },
   methods: {
+// 点击单元格
+handleSelectionChange() {
+        // this.multipleSelection = val;
+        this.isActive=row.id;
+      this.$emit("selectRow",row.id);
+      },
+
     tableRowClassName({ row, rowIndex }) {
-      console.log(row);
       if (rowIndex % 2 == 0) {
         return "warning-row";
       } else {
         return "success-row";
       }
     },
-    selectRow(index, rows) {
-      console.log("isActive=",this.isActive)
-      console.log(index, rows);
-      this.isActive=index;
-      this.$emit("selectRow",rows[index].id);
+    selectRow(index, row) {
       // this.$router.push({
       //      path:"/officeCenter/OfficeCenterIndex/test2"
       // })
+    },
+    deleteCourseware(row=this.tableData[0]){ //删除课件操作
+    console
+      let pamars ={id:row.id};
+      delMyCourseware(pamars).then(res=>{
+        if(res.code==200){
+          console.log('res','删除成功');
+        }
+      })
     },
     deleteRow(index, rows) {
       console.log(index, rows);
@@ -107,41 +143,6 @@ export default {
         path: "/officeCenter/OfficeCenterIndex/test2",
       });
     },
-  },
-  data() {
-    return {
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "已审批",
-          id:1,
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "待审批",
-          id:2,
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "审批成功",
-           id:3
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "未审批",
-           id:4
-        },
-      ],
-      isActive:0
-    };
   },
 };
 </script>

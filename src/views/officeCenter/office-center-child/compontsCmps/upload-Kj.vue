@@ -96,47 +96,49 @@
       </div>
 
       <!-- 上传 -->
-      <div class="footer"><button @click="submit" class="btn2">上传</button></div>
+      <div class="footer">
+        <button @click="submit" class="btn2">上传</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import {kjMixin} from "../kj-mixin/mixins"
-import { saveMyCourseware} from "@/network/officeCenter";
+import { kjMixin } from "../kj-mixin/mixins";
+import { saveMyCourseware } from "@/network/officeCenter";
 export default {
-mixins:[kjMixin],
-props:{
-    classList:{
-        type:Array,
-        default:()=>{
-            return []
-        }
+  mixins: [kjMixin],
+  props: {
+    classList: {
+      type: Array,
+      default: () => {
+        return [];
+      },
     },
-    subjectList:{
-        type:Array,
-        default:()=>{
-            return []
-        }
-    }
-},
+    subjectList: {
+      type: Array,
+      default: () => {
+        return [];
+      },
+    },
+  },
   data() {
     return {
-        kejianTypeValue: "",
+      kejianTypeValue: "",
       subjectValue: "",
       classValue: "",
-      kjName:"",
+      kjName: "",
       dialogVisible: false,
-      pptUrl:"",
-      copy_classList:[],
-      copy_subject:[]
+      pptUrl: "",
+      copy_classList: [],
+      copy_subject: [],
     };
   },
-  created(){
-      this.copy_classList=[...this.classList];
-      this.copy_classList.shift();
-      this.copy_subject=[...this.subjectList];
-      this.copy_subject.shift();
+  created() {
+    this.copy_classList = [...this.classList];
+    this.copy_classList.shift();
+    this.copy_subject = [...this.subjectList];
+    this.copy_subject.shift();
   },
   methods: {
     handleRemove(file, fileList) {
@@ -145,47 +147,51 @@ props:{
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
     },
-    handleSuccess(file){
-        console.log("file==>",file);
-        this.pptUrl=file.data
+    handleSuccess(file) {
+      console.log("file==>", file);
+      this.pptUrl = file.data;
     },
-    submit(){
-        if(!this.kejianTypeValue){
-            this.$myAlert('课件类型不能为空')
-            return
+    submit() {
+      if (!this.kejianTypeValue) {
+        this.$myAlert("课件类型不能为空");
+        return;
+      }
+      if (!this.subjectValue) {
+        this.$myAlert("科目不能为空");
+        return;
+      }
+      if (!this.classValue) {
+        this.$myAlert("年级不能为空");
+        return;
+      }
+      if (!this.kjName) {
+        this.$myAlert("课件名称不能为空");
+        return;
+      }
+      if (!this.pptUrl) {
+        this.$myAlert("请上传PPT");
+        return;
+      }
+      let pamars = {
+        gradeId: this.classValue,
+        name: this.kjName,
+        subjectsId: this.subjectValue,
+        type: this.kejianTypeValue,
+        url: this.pptUrl,
+      };
+      saveMyCourseware(pamars).then((res) => {
+        console.log(res);
+        if (res.code == 200) {
+          this._this.dialogVisible = false;
+          this.$emit("loadPage");
+          this.$message({
+            message: "课件上传成功",
+            type: "success",
+          });
         }
-        if(!this.subjectValue){
-            this.$myAlert('科目不能为空')
-            return
-        }
-        if(!this.classValue){
-            this.$myAlert('年级不能为空')
-            return
-        }
-         if(!this.kjName){
-            this.$myAlert('课件名称不能为空')
-            return
-        }
-        if(!this.pptUrl){
-            this.$myAlert('请上传PPT')
-            return
-        }
-        let pamars = {
-            gradeId:this.classValue,
-            name :this.kjName,
-            subjectsId :this.subjectValue,
-            type:this.kejianTypeValue,
-            url:this.pptUrl,
-        }
-        saveMyCourseware(pamars).then(res=>{
-            console.log(res);
-            if(res.code==200){
-                this._this.dialogVisible=false;
-                this.$emit("loadPage")
-            }
-        })
+      });
     },
-     // 选择状态
+    // 选择状态
     change(val) {
       console.log("val=", val);
     },

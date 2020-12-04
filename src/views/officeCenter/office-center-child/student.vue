@@ -39,7 +39,7 @@
     <!-- 底部分页 -->
 
     <div class="footer">
-      <page-device :total="total" />
+      <page-device @handleCurrentChange="handleCurrentChange" :total="total"  />
     </div>
 
   </div>
@@ -69,6 +69,7 @@ export default {
     },
     // 查询
     query(){
+      this.current=1;
       this.get_AllMyStudent()
     },
     // 查看课表
@@ -108,7 +109,7 @@ export default {
     //     path: "/officeCenter/OfficeCenterIndex/studentDetail",
     //   });
     },
-    async get_AllMyStudent(){
+    async get_AllMyStudent(){ //获取我的学生列表
         let data={
           className:this.inputClassName,
           studentName:this.inputStudentName,
@@ -116,9 +117,12 @@ export default {
           size:this.size
         }
         let res= await queryAllMyStudent(data);
-        this.tableData=res.list;
-        this.total=res.total;
-
+        this.tableData=res.data.list;
+        this.total=res.data.total;
+},
+handleCurrentChange(current){//分页组件传过来的页码
+    this.current = current;
+    this.get_AllMyStudent()
 }
   },
   components: {

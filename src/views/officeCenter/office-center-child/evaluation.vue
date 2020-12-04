@@ -12,7 +12,7 @@
               <input
                 type="text"
                 v-model="studentName"
-                placeholder="输入学生姓名进行检索"
+                placeholder="输入学生姓名"
               />
             </div>
           </div>
@@ -24,7 +24,7 @@
               <input
                 type="text"
                 v-model="className"
-                placeholder="请输入班级名称进行检索"
+                placeholder="请输入班级名称"
               />
             </div>
           </div>
@@ -215,6 +215,7 @@ export default {
       ],
       pushAnswerValue: "",
       tableData: [], //表格数据
+      selectTest:[]
     };
   },
   created() {
@@ -240,8 +241,12 @@ export default {
     },
     //   跳转到测评页面
     go_evalDetails() {
+      let data=JSON.stringify(this.selectTest);
       this.$router.push({
         path: "/page/officeCenter/evaluationDetail",
+        query:{
+          data:data
+        }
       });
     },
     //跳转到阅卷页面
@@ -252,24 +257,33 @@ export default {
     },
     //获取测评详情数据
     async get_ClassEvaluation() {
-      let data = {
-        current: this.current,
-        size: this.size,
-        name: this.studentName,
-        pushAnswer: this.pushAnswerValue,
-        scoring: this.scoreValue,
-        status: this.examStatusValue,
+      let params = {
+        current: this.current,    //页码
+        size: this.size,          //每页多少条数据
+        name: this.studentName,   // 学生姓名
+        pushAnswer: this.pushAnswerValue,   //成绩发布 1==未发布 2 已发布
+        scoring: this.scoreValue,            //阅卷状态（1=未阅卷，2=已阅卷）
+        status: this.examStatusValue,        //考试状态（1=缺考，2=完成）
         testPaperName: this.examPaper, //试卷名称
-        testPaperType: this.testPaperTypeValue,
+        testPaperType: this.testPaperTypeValue,     //考试类型（1=线上，2=线下）
       };
-      let res = await queryClassEvaluation(data);
-      this.tableData = res.list;
-      this.total=res.total
-      console.log("测评列表", res.total);
+      let {code,data} = await queryClassEvaluation(params);
+      if(code==200){
+           this.tableData = data.list;
+          this.total=data.total;
+          if(this.current==1){
+            this.selectTest=data.list[0];
+          }
+      }
+     
+      console.log("测评列表", data);
     },
     // 下拉框
     change(val) {
-      console.log("val=", val);
+    },
+    //table表格传过来选中的列
+    selectRow(row){
+      this.selectTest=row;
     },
     // 分页
     handleCurrentChange(data){

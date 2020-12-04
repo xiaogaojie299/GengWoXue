@@ -4,8 +4,9 @@
       :data="tableData"
       style="width: 100%"
       stripe
+      @cell-click="handleSelectionChange"
       :header-cell-style="{
-        color: '#FFFFFF',
+        color: '#FFFFFF', 
         fontSize: '14px',
         background: '#EF743C',
         fontWeight: 500,
@@ -21,10 +22,9 @@
       <el-table-column width="40" align="center">
         <template slot-scope="scope">
           <img
-            @click="selectRow(scope.$index, tableData)"
             style="width: 20px; height: 20px"
             :src="
-              isActive == scope.$index
+              isActive == scope.row.id
                 ? require('@/assets/img/success.png')
                 : require('@/assets/img/icon_radiobutton.png')
             "
@@ -120,19 +120,23 @@ export default {
   },
   methods: {
     tableRowClassName({ row, rowIndex }) {
-      console.log(row);
       if (rowIndex % 2 == 0) {
         return "warning-row";
       } else {
         return "success-row";
       }
     },
-    selectRow(index, rows) {
-      console.log("isActive=", this.isActive);
-      this.isActive = index;
-      this.$emit("selectClass", index);
-      // this.$EventBus("selectClassId",rows[index].id)
-    },
+        // 点击单元格
+  handleSelectionChange(row) {
+        this.isActive=row.id;
+      this.$emit("selectRow",row);
+      },
+    // selectRow(index, rows) {
+    //   console.log("isActive=", this.isActive);
+    //   this.isActive = index;
+    //   this.$emit("selectClass", index);
+    //   // this.$EventBus("selectClassId",rows[index].id)
+    // },
     deleteRow(index, rows) {
       console.log(index, rows);
       this.$router.push({

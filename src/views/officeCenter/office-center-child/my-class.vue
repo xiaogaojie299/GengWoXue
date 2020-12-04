@@ -43,7 +43,7 @@
     <!-- 底部分页 -->
 
     <div class="footer">
-        <page-device @handleCurrentChange="handleCurrentChange" />
+        <page-device :total="total" @handleCurrentChange="handleCurrentChange" />
     </div>
     <!-- 遮罩层弹框 -->
 
@@ -65,28 +65,15 @@ import {mapState,mapGetters,mapActions} from "vuex"
 export default {
   data() {
     return {
-     dialogVisible:false,
-     current:1,
-     size:10,
-    //  options: [
-    //     {
-    //       value: "1",
-    //       label: "问答广场",
-    //     },
-    //     {
-    //       value: "2",
-    //       label: "我的回答",
-    //     },
-    //     {
-    //       value: "3",
-    //       label: "我的提问",
-    //     },
-    //   ],
-      value:1,
-      inputClassName:"",
-      tableData:[],
-      classIndex:"",
-      classId:1
+     dialogVisible:false,     // 遮罩层弹出开关
+     current:1,               // 页码
+     size:10,                 //页条数
+      total:0,                 //用来分页的总数
+      inputClassName:"",      //输入班级名
+      tableData:[],           //获取的列表数据
+      classIndex:"",          //班级下标 
+      classId:1,              //班级Id
+      selectClassObj:{}
     };
   },
   computed:{
@@ -95,42 +82,45 @@ export default {
     }
   },
   created(){
-    this.getAllGrade();
+    // this.getAllGrade();
     this.init();
   },
   methods:{
     async init(){
-     let res =  await this.get_MyAllClassList();
       // 页面加载时，给classId初始值
-      this.classId=this.tableData[0].id
-      console.log("this.classId=",this.classId);
+      let pamars = {
+        current:1,
+        size:10,
+      }
+     let {data,code} = await queryMyAllClassList(pamars);
+     if(code==200){
+       this.tableData = data.list;
+        this.total = data.toal;
+      this.selectClassObj=data.list[0];
+     }
     },
       change(val){
-      console.log("val=",this.value);
     },
     // 选中的班级
     selectClass(data){
-      this.classIndex = data;
+      this.selectClassObj = data
+      this.classId = data.id;
+      console.log("classId==>",this.classId);
+      // this.classIndex = data;
     },
     //查看班级表格栏
     watchStudent(){
       let that=this;
       that.dialogVisible=true;
-      let classIndex=that.classIndex||0;
-      console.log("classId===111",classIndex)
-      that.classId=that.tableData[classIndex].id;
     },
 
     // 查看班级课表
     courseTimetable(){
       let that=this;
-      let classIndex=that.classIndex||0;
-      that.classId=that.tableData[classIndex].id;
-      console.log("classId===>",that.tableData[classIndex])
       that.$router.push({
         path: "/page/officeCenter/OfficeCenterIndex/test2",
         query:{
-          classInfo:JSON.stringify(that.tableData[classIndex])
+          classInfo:JSON.stringify(that.selectClassObj)
         }
       });
     },
@@ -140,14 +130,16 @@ export default {
     },
     // 获取我的班级列表
     async get_MyAllClassList(){
-      let data = {
+      let pamars = {
         current:this.current,
         size:this.size,
         name:this.inputClassName
       }
-     let res =  await queryMyAllClassList(data)
-     console.log(res)
-     this.tableData = res.list;
+     let {data,code} = await queryMyAllClassList(pamars)
+      if(code==200){
+        this.tableData = data.list;
+        this.total = data.toal;
+      }
     },
     // 跳转我的学生详情
       go_myStudent(){
@@ -160,14 +152,13 @@ export default {
       this.$store.dispatch("getClassList");
     },
     // 分页
-     handleCurrentChange(data){
+     handleCurrentChange(current){
       // data   分页页数
-      this.current=data;
+      this.current=current;
       this.get_MyAllClassList()
     },
     //   关闭遮罩层
       closeMask(){
-          console.log("调用成功");
           this.dialogVisible=false;
       }
   },

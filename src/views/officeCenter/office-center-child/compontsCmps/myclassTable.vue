@@ -4,6 +4,7 @@
       :data="tableData"
       style="width: 100%"
       stripe
+      @cell-click="handleSelectionChange"
       :header-cell-style="{
         color: '#FFFFFF',
         fontSize: '14px',
@@ -21,9 +22,8 @@
       <el-table-column width="40" align="center">
         <template slot-scope="scope">
           <img
-            @click="selectRow(scope.$index, tableData)"
             style="width: 20px; height: 20px"
-            :src="isActive==scope.$index?require('@/assets/img/success.png'):require('@/assets/img/icon_radiobutton.png')"
+            :src="isActive==scope.row.id?require('@/assets/img/success.png'):require('@/assets/img/icon_radiobutton.png')"
             :alt="scope.$index+','+isActive"
           />
         </template>
@@ -56,7 +56,7 @@
        <el-table-column prop="endTime" align="center" label="有效期止日" width="180">
       </el-table-column>
       <!-- 操作 -->
-      <el-table-column fixed="right" label="操作" width="120">
+      <!-- <el-table-column fixed="right" label="操作" width="120">
         <template slot-scope="scope">
           <el-button
             @click.native.prevent="deleteRow(scope.$index, tableData)"
@@ -66,7 +66,7 @@
             移除
           </el-button>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
   </div>
 </template>
@@ -96,21 +96,31 @@ export default {
       }
     }
   },
+  created(){
+    setTimeout(()=>{
+      this.isActive = this.tableData[0].id;
+    },500)
+  },
   methods: {
+
+    // 点击单元格
+handleSelectionChange(row,column,cell) {
+        this.isActive=row.id;
+        this.$emit("selectClass",row);
+      },
+
     tableRowClassName({ row, rowIndex }) {
-      console.log(row);
       if (rowIndex % 2 == 0) {
         return "warning-row";
       } else {
         return "success-row";
       }
     },
-    selectRow(index, rows) {
-      console.log("isActive=",this.isActive)
-      this.isActive=index;
-      this.$emit("selectClass",index)
-      // this.$EventBus("selectClassId",rows[index].id)
-    },
+    // selectRow(index, rows) {
+    //   console.log("isActive=",this.isActive)
+    //   this.isActive=index;
+    //   this.$emit("selectClass",index)
+    // },
     deleteRow(index, rows) {
       console.log(index, rows);
       this.$router.push({

@@ -2,7 +2,7 @@
   <div class="box">
     <!-- 头部日历 -->
     <breadcrumb-nav v-if="Object.keys(classInfo).length !== 0">
-      <div slot="nav-name">我的班级</div>
+      <div slot="nav-name" @click="goBack">我的班级</div>
       <div slot="nav-child">{{classInfo.name}}</div>
     </breadcrumb-nav>
     <div class="header">
@@ -57,7 +57,7 @@
     </div>
     <!-- 分页 -->
     <div class="page-device">
-      <page-device :current="current" @handleCurrentChange="handleCurrentChange"></page-device>
+      <page-device :total="total" @handleCurrentChange="handleCurrentChange"></page-device>
     </div>
   </div>
 </template>
@@ -73,6 +73,7 @@ export default {
       isdayTimer:false,      //控制按月查询还是按日查询的开关
       current:1,
       size:10,
+      total:0,
       timerCourse:[],     //课程表数据
       MonthClass:[],
       classInfo:[],       //班级数据 从我的班级课程表传入
@@ -111,16 +112,18 @@ export default {
     // 按天查询获取的时间
     getDaySchedule(){
      let day = utils.getTimeType(this.dayTimer);
-      let data={
+      let params={
         current:this.current,
         size:this.size,
         day:day,
         classId:this.classInfo.id||"",
         studentId:this.studentInfo.id||""
       }
-      queryDaySchedule(data).then(res=>{
+      queryDaySchedule(params).then(res=>{
         console.log("获取课程",res.list);
-        this.timerCourse=res.list;
+        let {data,code} =res;
+        this.timerCourse=data.list;
+        this.total = data.total;
       })
     },
     // 按月查询课程数
@@ -135,7 +138,7 @@ export default {
       queryTeacherSchedule(data).then(res=>{
         console.log("获取月课程",res);
         if(res=="undefind"||res.length==0){
-            this.MonthClass=[{number:1,strTime:"2020-11-25"},{number:2,strTime:"2020-11-22"}]
+            this.MonthClass=[{number:1,strTime:"2020-12-25"},{number:2,strTime:"2020-12-22"}]
             console.log("MonthClass=",this.MonthClass);
         }else{
           this.MonthClass=res;
@@ -171,9 +174,11 @@ export default {
     //分页页数
     handleCurrentChange(data){
       this.current=data;
-      console.log("this.current=",this.current);
         this.getDaySchedule();  //按天查询 2020-09-09
         this.getMonthTeacherSchedule()  //按月查询2020-09 有多少节课
+    },
+    goBack(){
+        this.$router.go(-1);
     }
   },
 };

@@ -21,6 +21,9 @@ export const kjMixin={
             return this.$store.state.subjectList.shift();
           },
     },
+    methods: {
+        
+    },
     created() {
         
     },

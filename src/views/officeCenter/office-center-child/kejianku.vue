@@ -93,8 +93,8 @@
           <page-device />
       </div>
       <div class="btn-groups">
-        <div class="btn1">预览</div>
-        <a class="btn2" @click="downloadFile(file.url,file.originalFilename, file.id, file.fileTye)">下载</a>
+        <div class="btn1" @click="previewPPT">预览</div>
+        <a class="btn2" style="text-decoration: none;" :href="selectKejian.url">下载</a>
       </div>
     </div>
   </div>
@@ -113,7 +113,8 @@ export default {
       current:1,
       size:10,
       total:0,    //数据总数
-      tableData:[]  //列表详情
+      tableData:[],  //列表详情
+      selectKejian:{}
     };
   },
   computed: {
@@ -153,6 +154,22 @@ export default {
       this.kejianName="";         //课件名称
       this.classValue=""          //选择的年级
     },
+
+    previewPPT(){// 预览PPT
+      this.$preview(this.selectKejian.url);
+    },
+     // 下载
+    downloadFile(url, fileName, flieId, type) {
+      // 参数分别是：文件的路径 文件的名字 文件的id 文件的类型
+
+    //  link.href ="https://beixiaorui.obs.cn-southwest-2.myhuaweicloud.com/6a1629fbb92649189363bde60218a564.pptx";
+    //  document.body.appendChild(link);
+    //  link.click();
+   },
+
+    selectRow(row){//课件库选择的row
+      this.selectKejian=row;  
+    },
     // 查询课件列表
     get_AllCourseware(){
       let data={
@@ -167,6 +184,9 @@ export default {
         console.log("课件库列表");
         this.tableData=res.list;
         this.total=res.total;
+        if(this.current==1){
+          this.selectKejian=res.list[0]   //页面刷新的时候，给row赋值一个初始值
+        }
       })
     },
     // 点击分页出发回调
@@ -174,15 +194,7 @@ export default {
       this.current=val;
       get_AllCourseware;
     },
-    // 下载
-    downloadFile(url, fileName, flieId, type) {
-      // 参数分别是：文件的路径 文件的名字 文件的id 文件的类型
-     let link = document.createElement('a');
-     link.style.display = 'none';
-     link.href = baseUrl + '/xxx/xxx/xxx?flieId=' + flieId;
-     document.body.appendChild(link);
-     link.click();
-   },
+   
     change(val) {
       console.log("val=", val);
     },

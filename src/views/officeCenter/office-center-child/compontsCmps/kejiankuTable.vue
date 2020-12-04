@@ -4,6 +4,7 @@
       :data="tableData"
       style="width: 100%"
       stripe
+      @cell-click="handleSelectionChange"
       :header-cell-style="{
         color: 'black',
         fontSize: '14px',
@@ -93,22 +94,24 @@ export default {
     console.log('tableData==>',this.tableData);
   },
   methods: {
+
     tableRowClassName({ row, rowIndex }) {
-      console.log(row);
       if (rowIndex % 2 == 0) {
         return "warning-row";
       } else {
         return "success-row";
       }
     },
-    selectRow(index, rows) {
-      console.log("isActive=",this.isActive)
-      console.log(index, rows);
-      this.isActive=index;
-      // this.$router.push({
-      //      path:"/officeCenter/OfficeCenterIndex/test2"
-      // })
-    },
+    // 点击单元格
+  handleSelectionChange() {
+        this.isActive=row.id;
+      this.$emit("selectRow",row);
+      },
+    // selectRow(index, rows) {
+    //   console.log("isActive=",this.isActive)
+    //   console.log(index, rows);
+    //   this.isActive=index;
+    // },
     deleteRow(index, rows) {
       console.log(index, rows);
       this.$router.push({

@@ -107,8 +107,8 @@ export default {
       password: "", //用户密码
       disabledBtn: false,
       inputList: [
-        { placeholder: "请输入您的手机号", value: "" },
-        { placeholder: "请输入您的手机号", value: "" },
+        { placeholder: "请输入您的手机号", value: "15828353333" },
+        { placeholder: "请输入您的手机号", value: "15828353333" },
       ], //选中ICON
       testURL: "@/assets/img/register/selected.png",
       textCode: "获取验证码",
@@ -175,17 +175,20 @@ export default {
         this.$Alert("请输入正确的手机格式");
         return;
       }
-      let data = { code: this.phoneCode, phone: this.inputList[1].value };
-      let pamars = { data: data, $router: this.$router };
+      let params = { code: this.phoneCode, phone: this.inputList[1].value };
       // this.$store.dispatch("getToken", pamars, this.$router);
-      captchaLogin(data).then((res) => {
-        localStorage.setItem("userInfo", JSON.stringify(res));
-        localStorage.setItem("token", res.token);
+      captchaLogin(params).then((res) => {
+        let {data,code} = res;
+        if(code==200){
+          localStorage.setItem("userInfo", JSON.stringify(data));
+          localStorage.setItem("token", data.token);
         setTimeout(() => {
           this.$router.push({
             path: "/page/home",
           });
         }, 2000);
+        }
+        
       });
     },
     // 校验验证码
