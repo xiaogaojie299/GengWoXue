@@ -247,12 +247,16 @@ export default {
         query:{
           data:data
         }
-      });
+      })
     },
     //跳转到阅卷页面
     go_readWork(){
+      let data=JSON.stringify(this.selectTest);
       this.$router.push({
-        path:"/page/officeCenter/readwork"
+        path:"/page/officeCenter/readwork",
+        query:{
+          data:data
+        }
       })
     },
     //获取测评详情数据

@@ -3,7 +3,7 @@ import vue from "../main";
 import { BASE_URL, TIMEOUT } from "./config";
 let token = localStorage.getItem("token");
 const instance = axios.create({
-  baseURL: BASE_URL,
+  baseURL: BASE_URL+"teacher",
   method: "POST",
 });
 // instance.defaults.withCredentials=true;

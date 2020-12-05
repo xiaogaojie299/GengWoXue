@@ -8,86 +8,108 @@
         <div class="first-row">
           <!-- 标题 -->
           <div class="tltle-box">
-            <span class="one">英语第一课课后习题</span>
-            <span class="two">(总分：60分)</span>
+            <span class="one">{{testList.name}}</span>
+            <span class="two">(总分：{{ testList.totalScore }}分)</span>
           </div>
           <div class="tag">已完成</div>
         </div>
         <!-- 第二行 -->
         <div class="second-row">
-          <span>张思思</span>
-          <span>英语直播课</span>
+          <span>{{ testList.courseName }}</span>
         </div>
       </div>
 
       <!-- 中间题库 -->
-      <div class="main-center">
-        <!-- 单选题 -->
-        <div v-for="i in 3" :key="i" class="topic-box">
+      <div v-for="(item,index) in testList.list" :key="index" class="main-center">
+        <!-- 填空题 -->
+        <div v-if="item.type==1" class="topic-box">
           <!-- 左侧题形 -->
-          <div class="left-subject">单选题：</div>
+          <div class="left-subject">填空题：</div>
           <!-- 右侧内容 -->
-          <div class="subject-detail-box">
+         <div class="subject-detail-box">
             <div class="row-header">
               <!-- 左侧题目 -->
-              <div class="left-problem">1：以下哪个答案是正确的？（5分）</div>
+              <div class="left-problem">
+                {{item.title}}（{{item.points}}分）
+              </div>
               <!-- 右侧打分批阅 -->
               <div class="right-grade">
                 <div class="first-box">
-                  <span>得分：5</span>
+                  <div>得分：</div> 
+                  <input v-model="item.studentScore" />
                   <!-- icon -->
                   <img src="@/assets/img/officeCenter/icon_edit.png" alt="" />
                 </div>
 
                 <!-- 上传音频按钮 -->
-                <div class="second-box">
+                 <!-- <div class="second-box">
+                  <img src="@/assets/img/officeCenter/icon_upload.png" alt="" />
+                  <span>上传音频按钮</span>
+                </div> -->
+                <el-upload
+                      class="upload-demo"
+                      action="https://jsonplaceholder.typicode.com/posts/"
+                      :on-change="handleChange"
+                      :file-list="fileList">
+                      <div class="second-box">
                   <img src="@/assets/img/officeCenter/icon_upload.png" alt="" />
                   <span>上传音频按钮</span>
                 </div>
+              </el-upload>
+               
               </div>
             </div>
             <!-- 选项A,B,C,D -->
             <div class="option-box">
-              <div>A：答案1</div>
-              <div>A：答案1</div>
-              <div>A：答案1</div>
-              <div>A：答案1</div>
+              <img :src="item.img" alt="">
+              <div v-for="(it,i) in item.options" :key="i">{{it}}</div>
             </div>
             <!-- 正确答案 -->
             <div class="answer-box">
-              <div class="student-answer">学生答案：B</div>
-              <div class="correct-answer">正确答案：A</div>
+              <div class="student-answer">
+                <div>学生答案：</div>
+                <div>{{item.studentAnswer||"未作答"}}</div>
+              </div>
+              <div class="correct-answer">
+                <div>正确答案：</div>
+                <div>{{item.answer}}</div>
+                <!-- <img src="@/assets/img/officeCenter/test1.png" alt="" /> -->
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <!-- -------------分割线开始----------- -->
 
-      <div class="main-center">
-        <!-- 单选题 -->
-        <div class="topic-box">
+        <!-- 简答题： -->
+        <div v-else-if="item.type==5" class="topic-box">
           <!-- 左侧题形 -->
           <div class="left-subject">简答题：</div>
           <!-- 右侧内容 -->
           <div class="subject-detail-box">
-            <div class="row-header">
+             <div class="row-header">
               <!-- 左侧题目 -->
               <div class="left-problem">
-                请对这张图表表述的内容进行描述。（10分）
+                {{item.title}}（{{item.points}}分）
               </div>
               <!-- 右侧打分批阅 -->
               <div class="right-grade">
                 <div class="first-box">
-                  <span>得分：5</span>
+                  <div>得分：</div> 
+                  <input v-model="item.studentScore" />
                   <!-- icon -->
                   <img src="@/assets/img/officeCenter/icon_edit.png" alt="" />
                 </div>
 
-                <!-- 上传音频按钮 -->
-                <div class="second-box">
+                <el-upload
+                      class="upload-demo"
+                      action="https://jsonplaceholder.typicode.com/posts/"
+                      :on-change="handleChange"
+                      :file-list="fileList">
+                      <div class="second-box">
                   <img src="@/assets/img/officeCenter/icon_upload.png" alt="" />
                   <span>上传音频按钮</span>
                 </div>
+              </el-upload>
+               
               </div>
             </div>
             <!-- 选项A,B,C,D -->
@@ -97,23 +119,88 @@
               <div>A：答案1</div>
               <div>A：答案1</div> -->
               <div>
-                <img src="@/assets/img/officeCenter/test1.png" alt="" />
+                <img :src="item.img" alt="" />
               </div>
             </div>
             <!-- 正确答案 -->
             <div class="answer-box">
               <div class="student-answer">
                 <div>学生答案：</div>
-                <img src="@/assets/img/officeCenter/test1.png" alt="" />
+                  <img :src="item.studentAnswerUrl" alt="" />
               </div>
               <div class="correct-answer">
                 <div>正确答案：</div>
-                <img src="@/assets/img/officeCenter/test1.png" alt="" />
+                <img :src="item.answer" alt="" />
+              </div>
+              <div class="correct-answer">
+                <div>老师答案：</div>
+                <textarea :value="item.studentAnswer" name="" id="" cols="30" rows="10"> </textarea>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- 选择题判断题多选题 -->
+        <div v-else class="topic-box">
+          <!-- 左侧题形 -->
+          <div class="left-subject">{{item.type==2?"单选题":item.type==3?"多选题":"判断题"}}：</div>
+          <!-- 右侧内容 -->
+          <div class="subject-detail-box">
+            <div class="row-header">
+              <!-- 左侧题目 -->
+              <div class="left-problem">
+                {{item.title}}（{{item.points}}分）
+              </div>
+              <!-- 右侧打分批阅 -->
+              <div class="right-grade">
+                <div class="first-box">
+                  <div>得分：</div> 
+                  <input v-model="item.studentScore" />
+                  <!-- icon -->
+                  <img src="@/assets/img/officeCenter/icon_edit.png" alt="" />
+                </div>
+
+                <!-- 上传音频按钮 -->
+                 <!-- <div class="second-box">
+                  <img src="@/assets/img/officeCenter/icon_upload.png" alt="" />
+                  <span>上传音频按钮</span>
+                </div> -->
+                <el-upload
+                      class="upload-demo"
+                      action="https://jsonplaceholder.typicode.com/posts/"
+                      :on-change="handleChange"
+                      :file-list="fileList">
+                      <div class="second-box">
+                  <img src="@/assets/img/officeCenter/icon_upload.png" alt="" />
+                  <span>上传音频按钮</span>
+                </div>
+              </el-upload>
+               
+              </div>
+            </div>
+            <!-- 选项A,B,C,D -->
+            <div class="option-box">
+              <img :src="item.img" alt="">
+              <div v-for="(it,i) in item.options" :key="i">{{it}}</div>
+            </div>
+            <!-- 正确答案 -->
+            <div class="answer-box">
+              <div class="student-answer">
+                <div>学生答案：</div>
+                <div>{{item.studentAnswer||"未作答"}}</div>
+              </div>
+              <div class="correct-answer">
+                <div>正确答案：</div>
+                <div>{{item.answer}}</div>
+                <!-- <img src="@/assets/img/officeCenter/test1.png" alt="" /> -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--  -->
       </div>
+      <!-- -------------分割线开始----------- -->
 
       <!-- ----------分割线------------- -->
     </div>
@@ -123,7 +210,183 @@
     </div>
   </div>
 </template>
+  <script>
+import { queryExaminationInfo } from "@/network/officeCenter";
+export default {
+  data() {
+    return {
+      studentInfo: {}, //传过来的学生详情对象
+      current: 1,
+      size: 10,
+      testList: [], //考试详情
+      audio: "",
+      fileList: [{
+          name: 'food.jpeg',
+          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+        }]
+      }
+  },
+  created() {
+    this.studentInfo = JSON.parse(this.$route.query.data); 
+    this.getExaminationInfo();
+  },
+  methods: {
+    getExaminationInfo() {
+      //查询考试试题
+      let params = {
+        id: this.studentInfo.id,
+      };
+      queryExaminationInfo(params).then((res) => {
+        let { code, data } = res;
+        if (code == 200) {
+          this.testList = data;
+          let testObj = {
+            //测试数据
+            answer: "C%&D",
+            audio: "",
+            id: 0,
+            img:
+              "https://beixiaorui.obs.cn-southwest-2.myhuaweicloud.com/8b8d0d9e119f4566bc98ca02cc88c7e6.jpg",
+            options: "A：测试A%&B：测试B%&C：测试C%&D：测试D",
+            points: 10,
+            prompt: "",
+            studentAnswer: "",
+            studentAnswerUrl: "",
+            studentScore: 0,
+            studentState: 0,
+            teacherAudio: "",
+            teacherImg: "",
+            teacherRemark: "",
+            title: "这是一道多选题",
+            type: 3,
+          };
+          let testObj1 = {
+            //测试数据
+            answer: "A%&C",
+            audio: "",
+            id: 0,
+            img:
+              "https://beixiaorui.obs.cn-southwest-2.myhuaweicloud.com/8b8d0d9e119f4566bc98ca02cc88c7e6.jpg",
+            options: "A：测试多选A%&B：测试多选B%&C：测试多选C%&D：测试多选D",
+            points: 10,
+            prompt: "",
+            studentAnswer: "",
+            studentAnswerUrl: "",
+            studentScore: 0,
+            studentState: 0,
+            teacherAudio: "",
+            teacherImg: "",
+            teacherRemark: "",
+            title: "这是一道多选题",
+            type: 2,
+          };
+          let testObj2 = {
+            //测试数据
+            answer: "日照香炉生紫烟",
+            audio: "",
+            id: 0,
+            img:
+              "https://beixiaorui.obs.cn-southwest-2.myhuaweicloud.com/8b8d0d9e119f4566bc98ca02cc88c7e6.jpg",
+            options: "",
+            points: 10,
+            prompt: "",
+            studentAnswer: "我不想回答",
+            studentAnswerUrl: "",
+            studentScore: 0,
+            studentState: 0,
+            teacherAudio: "",
+            teacherImg: "",
+            teacherRemark: "",
+            title: "这是填空题",
+            type: 1,
+          };
+          let testObj3 = {
+            answer: "A",
+            audio: "",
+            id: 0,
+            img:
+              "https://beixiaorui.obs.cn-southwest-2.myhuaweicloud.com/8b8d0d9e119f4566bc98ca02cc88c7e6.jpg",
+            options: "A：正确%&B：错误",
+            points: 10,
+            prompt: "",
+            studentAnswer: "A",
+            studentAnswerUrl: "",
+            studentScore: 0,
+            studentState: 0,
+            teacherAudio: "",
+            teacherImg: "",
+            teacherRemark: "",
+            title: "判断题",
+            type: 4,
+          };
+          this.testList.list.push(testObj);
+          this.testList.list.push(testObj1);
+          this.testList.list.push(testObj2);
+          this.testList.list.push(testObj3);
+          
+         this.testList.list.forEach((item) => {
+            if (item.options) {
+              let arr = [];
+              try {
+                item.options = item.options.split("%&");
+                // item.options.forEach((item) => {
+                //   let obj = {};
+                //   obj.name = item.split("：")[0];
+                //   obj.info = item.split("：")[1];
+                //   arr.push(obj);
+                // });
+                // item.options = arr;
+              } catch (e) {
+                console.log(e);
+              }
+            }
+          });
+          
+        }
+      });
+    },
+    myAudio() {
+      this.audio = new Audio();
+      this.audio.src =
+        "https://beixiaorui.obs.cn-southwest-2.myhuaweicloud.com/b41c39a67f124ca89fc5047fa7bf14ec.mp3";
+      let playPromise;
+      playPromise = this.audio.play();
+      if (playPromise) {
+        playPromise
+          .then(() => {
+            console.log("加载成功");
+            // 音频加载成功
+            // 音频的播放需要耗时
+            that.tiemr = setInterval(() => {
+              second--;
+              if (second <= 0) {
+                that.audio.pause();
+                clearInterval(that.tiemr);
+              }
+            }, 1000);
+          })
+          .catch((e) => {
+            // 音频加载失败
+            console.error(e);
+          });
+      }
+    },
+  },
+};
+</script>
 <style lang="scss" scoped>
+textarea {
+          outline: none;
+          width: 90%;
+          height: 110px;
+          padding: 4px;
+          background: #ffffff;
+          border: 1px solid #dbdbdb;
+          border-radius: 6px;
+        }
+        textarea:focus {
+          border: 1px solid #eb002a;
+        }
 .main {
   width: 100%;
   //   height: 1525px;
@@ -213,11 +476,29 @@
         }
         .right-grade {
           display: flex;
-          justify-content: space-between;
-          align-items: center;
-          width: 200px;
+          // justify-content: space-between;
+          width: 220px;
           .first-box {
-            width: 80px;
+            font-size: 12px;
+              font-family: Source Han Sans CN;
+              font-weight: 400;
+              color: #ea5810;
+            width: 120px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            input{
+              border: none;
+              outline: none;
+              width: 20px;
+              font-size: 12px;
+              font-family: Source Han Sans CN;
+              font-weight: 400;
+              color: #ea5810;
+            };
+            input:focus{
+              border:1px solid #ea5810; 
+            }
             span {
               font-size: 12px;
               font-family: Source Han Sans CN;
@@ -231,14 +512,19 @@
             }
           }
           .second-box {
+            width: 130px;
+            padding-left: 6px;
+            margin-top:8px;
             position: relative;
+            display: flex;
+            // align-items: center;
             img {
               width: 100px;
               height: 22px;
             }
             span {
               position: absolute;
-              right: 4px;
+              left: 30px;
               top: 2px;
               font-size: 12px;
               font-family: Source Han Sans CN;

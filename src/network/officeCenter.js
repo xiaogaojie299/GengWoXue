@@ -120,3 +120,17 @@ export function saveMyCourseware(data){
     url:api+"saveMyCourseware"+qs(data)
   })
 }
+
+//获取课后习题
+export function queryExaminationInfo(data){
+  return request({
+    url:api+"queryExaminationInfo"+qs(data)
+  })
+}
+
+// 下载付费课件
+export function addCoursewareOrder(data){
+  return request({
+    url:api+"addCoursewareOrder"+qs(data)
+  })
+}

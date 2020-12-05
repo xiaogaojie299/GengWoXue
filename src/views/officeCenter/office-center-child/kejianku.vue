@@ -94,15 +94,37 @@
       </div>
       <div class="btn-groups">
         <div class="btn1" @click="previewPPT">预览</div>
-        <a class="btn2" style="text-decoration: none;" :href="selectKejian.url">下载</a>
+        <!-- <a class="btn2" style="text-decoration: none;" :href="selectKejian.url">下载</a> -->
+        <a class="btn2" @click="uploadPPT" style="text-decoration: none;">下载</a>
       </div>
     </div>
+    <!-- 弹框，遮罩层 -->
+    <el-dialog
+      title="下载课件"
+      :visible.sync="dialogVisible"
+      width="60%"
+      >
+      <div style="display:flex">
+        <div class="label">支付方式：</div>
+        <div>
+        <radio-button @chekoutIndex="chekoutIndex">
+          <span slot="radio1" class="my-font">微信支付</span>
+          <span slot="radio2" class="my-font">支付宝支付</span>
+        </radio-button>
+      </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="pay">确 定</el-button>
+      </span>
+</el-dialog>
+
   </div>
 </template>
 <script>
 import kejiankuTable from "./compontsCmps/kejiankuTable";
 import { state, actions } from "vuex";
-import {queryAllCourseware} from "@/network/officeCenter"
+import {queryAllCourseware,addCoursewareOrder} from "@/network/officeCenter"
 export default {
   data() {
     return {
@@ -114,7 +136,9 @@ export default {
       size:10,
       total:0,    //数据总数
       tableData:[],  //列表详情
-      selectKejian:{}
+      selectKejian:{},
+      dialogVisible:false, //控制遮罩层开关
+      type:1
     };
   },
   computed: {
@@ -137,11 +161,29 @@ export default {
     this.init();
   },
   methods: {
+        //单选框选中
+    chekoutIndex(data) {
+      //是从公共组件传过来的下标
+      switch (data) {
+        case 0:
+          this.type = 1;
+          break;
+        case 1:
+          this.type = 2;
+          break;
+        default:
+          this.type = 3;
+      }
+    },
     // 查询学科
     init() {
       this.subjectList = this.$store.dispatch("getSubjectList");
       this.classList = this.$store.dispatch("getClassList");
       this.get_AllCourseware()
+    },
+    pay(){
+
+    this.pushCoursewareOrder()
     },
     // 查询
     query(){
@@ -158,14 +200,26 @@ export default {
     previewPPT(){// 预览PPT
       this.$preview(this.selectKejian.url);
     },
-     // 下载
-    downloadFile(url, fileName, flieId, type) {
-      // 参数分别是：文件的路径 文件的名字 文件的id 文件的类型
-
-    //  link.href ="https://beixiaorui.obs.cn-southwest-2.myhuaweicloud.com/6a1629fbb92649189363bde60218a564.pptx";
-    //  document.body.appendChild(link);
-    //  link.click();
-   },
+    uploadPPT(){//下载PPT
+      this.dialogVisible = true;
+      let a = document.getElementsByClassName("btn2")[1];
+      //用户付款操作
+    },
+    pushCoursewareOrder(){ //调用支付接口
+      let params = {
+        payType:this.type,
+        // coursewareId:this.selectKejian.id
+        coursewareId:2
+ }
+        addCoursewareOrder(params).then(res=>{
+          console.log("res",res);
+        let {code,data} = res;
+        if(code == 0){
+          console.log("data==>",data);
+        } 
+      })
+      
+    },
 
     selectRow(row){//课件库选择的row
       this.selectKejian=row;  
@@ -248,7 +302,12 @@ export default {
   background: linear-gradient(110deg, #F13232, #EF753C);
   color: #fff;
 }
-
+.label{
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  margin-right:12px;
+}
 .box {
   background: #f9f9f9;
   width: 1054px;
