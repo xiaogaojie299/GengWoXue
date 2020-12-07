@@ -156,30 +156,30 @@
       <div class="btn-groups1">
         <div class="btn1" @click="go_evalDetails">测评详情</div>
         <div class="btn1" @click="go_readWork">阅卷</div>
+        <div class="btn1" @click="publish">发布成绩</div>
       </div>
       <!-- 底部表格 -->
       <div>
-        <evaluation-table :tableData="tableData" />
+        <evaluation-table ref="evaCheck" @selectRow="selectRow" :active="active" :tableData="tableData" />
       </div>
     </div>
     <!-- 底部分页 -->
 
     <div class="footer">
-      <page-device @handleCurrentChange="handleCurrentChange" :total="total" />
+      <page-device @handleCurrentChange="handleCurrentChange" :current="current" :total="total" />
     </div>
     <!-- 遮罩层弹框 -->
 
     <el-dialog :visible.sync="dialogVisible" :show-close="false" center>
       <myStudent @handleClose="closeMask" />
     </el-dialog>
-
   </div>
 </template>
 <script>
 import evaluationTable from "./compontsCmps/evaluationTable";
 import myStudent from "./compontsCmps/my-student";
 
-import { queryClassEvaluation } from "@/network/officeCenter";
+import { queryClassEvaluation, pushExamination } from "@/network/officeCenter";
 export default {
   data() {
     return {
@@ -188,7 +188,7 @@ export default {
       studentName: "", //学生姓名
       current: 1, //当前页码
       size: 10, //当前条数
-      total:0, //总数
+      total: 0, //总数
       examStatus: [
         { id: "", name: "全部" },
         { id: 1, name: "缺考" },
@@ -215,7 +215,8 @@ export default {
       ],
       pushAnswerValue: "",
       tableData: [], //表格数据
-      selectTest:[]
+      selectTest: [],
+      active:0
     };
   },
   created() {
@@ -225,9 +226,16 @@ export default {
     init() {
       this.get_ClassEvaluation();
     },
+    // 调用子组件切换下标的方法
+    childMethod(id=this.tableData[0].id){
+      this.current>1||this.$refs.evaCheck.chekcout(id);
+      console.log("调用成功",this.tableData[0]);
+    },
     // 查询
     query() {
+      this.current=1;
       this.get_ClassEvaluation();
+      this.childMethod();
     },
     go_myStudent() {
       this.$router.push({
@@ -241,59 +249,82 @@ export default {
     },
     //   跳转到测评页面
     go_evalDetails() {
-      let data=JSON.stringify(this.selectTest);
+      console.log(this.selectTest);
+      let data = JSON.stringify(this.selectTest);
       this.$router.push({
         path: "/page/officeCenter/evaluationDetail",
-        query:{
-          data:data
-        }
-      })
+        query: {
+          data: data,
+        },
+      });
     },
     //跳转到阅卷页面
-    go_readWork(){
-      let data=JSON.stringify(this.selectTest);
+    go_readWork() {
+      let data = JSON.stringify(this.selectTest);
       this.$router.push({
-        path:"/page/officeCenter/readwork",
-        query:{
-          data:data
+        path: "/page/officeCenter/readwork",
+        query: {
+          data: data,
+        },
+      });
+    },
+    //发布成绩
+    publish() {
+      let params = {
+        id: this.selectTest.id,
+      };
+      pushExamination(params).then((res) => {
+        console.log("res==>",res);
+        if(res.code == 200){
+          this.$message({
+            message:"发布成绩成功",
+            type:"success"
+          })
+          this.get_ClassEvaluation();
+        }else{
+          this.$message.error({
+            message:"发布成绩失败",
+          })
         }
-      })
+      });
     },
     //获取测评详情数据
     async get_ClassEvaluation() {
       let params = {
-        current: this.current,    //页码
-        size: this.size,          //每页多少条数据
-        name: this.studentName,   // 学生姓名
-        pushAnswer: this.pushAnswerValue,   //成绩发布 1==未发布 2 已发布
-        scoring: this.scoreValue,            //阅卷状态（1=未阅卷，2=已阅卷）
-        status: this.examStatusValue,        //考试状态（1=缺考，2=完成）
+        current: this.current, //页码
+        size: this.size, //每页多少条数据
+        name: this.studentName, // 学生姓名
+        pushAnswer: this.pushAnswerValue, //成绩发布 1==未发布 2 已发布
+        scoring: this.scoreValue, //阅卷状态（1=未阅卷，2=已阅卷）
+        status: this.examStatusValue, //考试状态（1=缺考，2=完成）
         testPaperName: this.examPaper, //试卷名称
-        testPaperType: this.testPaperTypeValue,     //考试类型（1=线上，2=线下）
+        testPaperType: this.testPaperTypeValue, //考试类型（1=线上，2=线下）
       };
-      let {code,data} = await queryClassEvaluation(params);
-      if(code==200){
-           this.tableData = data.list;
-          this.total=data.total;
-          if(this.current==1){
-            this.selectTest=data.list[0];
-          }
+      let { code, data } = await queryClassEvaluation(params);
+      if (code == 200) {
+        this.tableData = data.list;
+        this.total = data.total;
+        this.childMethod(data.list[0].id)
+        if (this.current == 1) {
+          //this.active = data.list[0].id;  //根据ID来进行选择的判定
+          this.selectTest = data.list[0];
+
+        }
       }
-     
+
       console.log("测评列表", data);
     },
     // 下拉框
-    change(val) {
-    },
+    change(val) {},
     //table表格传过来选中的列
-    selectRow(row){
-      this.selectTest=row;
+    selectRow(row) {
+      this.selectTest = row;
     },
     // 分页
-    handleCurrentChange(data){
-      this.current=data;
-      this.get_ClassEvaluation()
-    }
+    handleCurrentChange(data) {
+      this.current = data;
+      this.get_ClassEvaluation();
+    },
   },
   components: {
     evaluationTable,

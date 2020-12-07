@@ -4,6 +4,7 @@
       :data="tableData"
       style="width: 100%"
       stripe
+      @cell-click="handleSelectionChange"
       :header-cell-style="{
         color: 'black',
         fontSize: '14px',
@@ -27,9 +28,8 @@
             图片
           </el-button> -->
           <img
-            @click="selectRow(scope.$index, tableData)"
             style="width: 20px; height: 20px"
-            :src="isActive==scope.$index?require('@/assets/img/success.png'):require('@/assets/img/icon_radiobutton.png')"
+            :src="isActive==scope.row.id?require('@/assets/img/success.png'):require('@/assets/img/icon_radiobutton.png')"
             :alt="scope.$index+','+isActive"
           />
         </template>
@@ -116,47 +116,20 @@ export default {
 props:{
     tableData:Array,
     default:()=>{
-        return [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "已审批",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "待审批",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "审批成功",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区",
-          exercise: "未审批",
-        },
-      ]
+        return []
     }
 },
    methods: {
     tableRowClassName({ row, rowIndex }) {
-      console.log(row);
       if (rowIndex % 2 == 0) {
         return "warning-row";
       } else {
         return "success-row";
       }
     },
-    selectRow(index, rows) {
-      console.log("isActive=",this.isActive)
-      this.isActive=index;
-      this.$emit("selectRow",index)
+       // 切换actice的下标
+    chekcout(id){
+        this.isActive = id;
     },
     studentType(i){
       switch(i){
@@ -178,6 +151,10 @@ props:{
         return "已转科"
       }
     },
+    handleSelectionChange(row) {
+        this.isActive=row.id;
+      this.$emit("selectRow",row);
+      },
     deleteRow(index, rows) {
       console.log(index, rows);
       this.$router.push({

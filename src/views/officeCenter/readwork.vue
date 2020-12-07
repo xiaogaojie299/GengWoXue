@@ -8,10 +8,10 @@
         <div class="first-row">
           <!-- 标题 -->
           <div class="tltle-box">
-            <span class="one">{{testList.name}}</span>
+            <span class="one">{{ testList.name }}</span>
             <span class="two">(总分：{{ testList.totalScore }}分)</span>
           </div>
-          <div class="tag">已完成</div>
+          <div class="tag">{{testList.state==1?'未完成':'已完成'}}</div>
         </div>
         <!-- 第二行 -->
         <div class="second-row">
@@ -20,59 +20,66 @@
       </div>
 
       <!-- 中间题库 -->
-      <div v-for="(item,index) in testList.list" :key="index" class="main-center">
+      <div
+        v-for="(item, index) in testList.list"
+        :key="index"
+        class="main-center"
+      >
         <!-- 填空题 -->
-        <div v-if="item.type==1" class="topic-box">
+        <div v-if="item.type == 1" class="topic-box">
           <!-- 左侧题形 -->
           <div class="left-subject">填空题：</div>
           <!-- 右侧内容 -->
-         <div class="subject-detail-box">
+          <div class="subject-detail-box">
             <div class="row-header">
               <!-- 左侧题目 -->
               <div class="left-problem">
-                {{item.title}}（{{item.points}}分）
+                {{ item.title }}（{{ item.points }}分）
               </div>
               <!-- 右侧打分批阅 -->
               <div class="right-grade">
                 <div class="first-box">
-                  <div>得分：</div> 
+                  <div>得分：</div>
                   <input v-model="item.studentScore" />
                   <!-- icon -->
                   <img src="@/assets/img/officeCenter/icon_edit.png" alt="" />
                 </div>
 
                 <!-- 上传音频按钮 -->
-                 <!-- <div class="second-box">
+                <!-- <div class="second-box">
                   <img src="@/assets/img/officeCenter/icon_upload.png" alt="" />
                   <span>上传音频按钮</span>
                 </div> -->
                 <el-upload
-                      class="upload-demo"
-                      action="https://jsonplaceholder.typicode.com/posts/"
-                      :on-change="handleChange"
-                      :file-list="fileList">
-                      <div class="second-box">
-                  <img src="@/assets/img/officeCenter/icon_upload.png" alt="" />
-                  <span>上传音频按钮</span>
-                </div>
-              </el-upload>
-               
+                  class="upload-demo"
+                  action="https://jsonplaceholder.typicode.com/posts/"
+                  :on-change="handleChange"
+                  :file-list="fileList"
+                >
+                  <div class="second-box">
+                    <img
+                      src="@/assets/img/officeCenter/icon_upload.png"
+                      alt=""
+                    />
+                    <span>上传音频按钮</span>
+                  </div>
+                </el-upload>
               </div>
             </div>
             <!-- 选项A,B,C,D -->
             <div class="option-box">
-              <img :src="item.img" alt="">
-              <div v-for="(it,i) in item.options" :key="i">{{it}}</div>
+              <img :src="item.img" alt="" />
+              <div v-for="(it, i) in item.options" :key="i">{{ it }}</div>
             </div>
             <!-- 正确答案 -->
             <div class="answer-box">
               <div class="student-answer">
                 <div>学生答案：</div>
-                <div>{{item.studentAnswer||"未作答"}}</div>
+                <div>{{ item.studentAnswer || "未作答" }}</div>
               </div>
               <div class="correct-answer">
                 <div>正确答案：</div>
-                <div>{{item.answer}}</div>
+                <div>{{ item.answer }}</div>
                 <!-- <img src="@/assets/img/officeCenter/test1.png" alt="" /> -->
               </div>
             </div>
@@ -80,44 +87,43 @@
         </div>
 
         <!-- 简答题： -->
-        <div v-else-if="item.type==5" class="topic-box">
+        <div v-else-if="item.type == 5" class="topic-box">
           <!-- 左侧题形 -->
           <div class="left-subject">简答题：</div>
           <!-- 右侧内容 -->
           <div class="subject-detail-box">
-             <div class="row-header">
+            <div class="row-header">
               <!-- 左侧题目 -->
               <div class="left-problem">
-                {{item.title}}（{{item.points}}分）
+                {{ item.title }}（{{ item.points }}分）
               </div>
               <!-- 右侧打分批阅 -->
               <div class="right-grade">
                 <div class="first-box">
-                  <div>得分：</div> 
+                  <div>得分：</div>
                   <input v-model="item.studentScore" />
                   <!-- icon -->
                   <img src="@/assets/img/officeCenter/icon_edit.png" alt="" />
                 </div>
 
                 <el-upload
-                      class="upload-demo"
-                      action="https://jsonplaceholder.typicode.com/posts/"
-                      :on-change="handleChange"
-                      :file-list="fileList">
-                      <div class="second-box">
-                  <img src="@/assets/img/officeCenter/icon_upload.png" alt="" />
-                  <span>上传音频按钮</span>
-                </div>
-              </el-upload>
-               
+                  class="upload-demo"
+                  action="https://jsonplaceholder.typicode.com/posts/"
+                  :on-change="handleChange"
+                  :file-list="fileList"
+                >
+                  <div class="second-box">
+                    <img
+                      src="@/assets/img/officeCenter/icon_upload.png"
+                      alt=""
+                    />
+                    <span>上传音频按钮</span>
+                  </div>
+                </el-upload>
               </div>
             </div>
             <!-- 选项A,B,C,D -->
             <div class="option-box">
-              <!-- <div>A：答案1</div>
-              <div>A：答案1</div>
-              <div>A：答案1</div>
-              <div>A：答案1</div> -->
               <div>
                 <img :src="item.img" alt="" />
               </div>
@@ -126,15 +132,62 @@
             <div class="answer-box">
               <div class="student-answer">
                 <div>学生答案：</div>
-                  <img :src="item.studentAnswerUrl" alt="" />
+                <div>{{item.studentAnswer}}学生回答的答案</div>
+                <div>
+                  <!-- <img src="@/assets/img/officeCenter/test1.png" alt=""> -->
+                </div>
               </div>
+              <div v-if="item.studentAnswerUrl" class="student-answer mt-10">
+                <div style="width:60px"></div>
+                <!-- <img :src="item.studentAnswerUrl" alt="" /> -->
+                <div>
+                <img :src="item.studentAnswerUrl" alt="" />
+                  <!-- <img src="@/assets/img/officeCenter/test1.png" alt=""> -->
+                </div>
+              </div>
+              <!-- 正确答案分割 -->
               <div class="correct-answer">
                 <div>正确答案：</div>
                 <img :src="item.answer" alt="" />
               </div>
-              <div class="correct-answer">
-                <div>老师答案：</div>
-                <textarea :value="item.studentAnswer" name="" id="" cols="30" rows="10"> </textarea>
+              <!-- 正确答案包含的图片 （如果有显示出来）-->
+              <div class="student-answer mt-10">
+                <div style="width:60px"></div>
+                <!-- <img :src="item.studentAnswerUrl" alt="" /> -->
+                <div>
+                  <!-- <img :src="item.studentAnswerUrl" alt="" /> -->
+                  <!-- <img src="@/assets/img/officeCenter/test1.png" alt=""> -->
+                </div>
+              </div>
+              <!-- 分割结束 -->
+              <div class="correct-answer mt-10 mb-10">
+                <div>老师批阅备注：</div>
+                <textarea
+                  v-model="item.teacherRemark"
+                  name=""
+                  id=""
+                  cols="30"
+                  rows="10"
+                >
+                </textarea>
+                <!-- <vue-ueditor-wrap></vue-ueditor-wrap> -->
+              </div>
+              <div @click="uploadPPTindex(index)" class="correct-answer">
+                <div>上传图片解析：</div>
+                <!-- <img src="@/assets/img/icon_photo_update.png" alt=""> -->
+                <el-upload
+                  :action="BASE_URL+'student/base/uploadImg'"
+                  list-type="picture-card"
+                  :before-upload="beforeImgUpload"
+                  :on-success="handleImg"
+                  :on-preview="handlePictureCardPreview"
+                  :on-remove="handleImgRemove"
+                >
+                  <i class="el-icon-plus"></i>
+                </el-upload>
+                <el-dialog :visible.sync="dialogVisible">
+                  <img width="100%" :src="item.answerUrl" alt="" />
+                </el-dialog>
               </div>
             </div>
           </div>
@@ -143,55 +196,67 @@
         <!-- 选择题判断题多选题 -->
         <div v-else class="topic-box">
           <!-- 左侧题形 -->
-          <div class="left-subject">{{item.type==2?"单选题":item.type==3?"多选题":"判断题"}}：</div>
+          <div class="left-subject">
+            {{
+              item.type == 2 ? "单选题" : item.type == 3 ? "多选题" : "判断题"
+            }}：
+          </div>
           <!-- 右侧内容 -->
           <div class="subject-detail-box">
             <div class="row-header">
               <!-- 左侧题目 -->
               <div class="left-problem">
-                {{item.title}}（{{item.points}}分）
+                {{ item.title }}（{{ item.points }}分）
               </div>
               <!-- 右侧打分批阅 -->
               <div class="right-grade">
                 <div class="first-box">
-                  <div>得分：</div> 
+                  <div>得分：</div>
                   <input v-model="item.studentScore" />
                   <!-- icon -->
                   <img src="@/assets/img/officeCenter/icon_edit.png" alt="" />
                 </div>
 
                 <!-- 上传音频按钮 -->
-                 <!-- <div class="second-box">
+                <!-- <div class="second-box">
                   <img src="@/assets/img/officeCenter/icon_upload.png" alt="" />
                   <span>上传音频按钮</span>
                 </div> -->
                 <el-upload
-                      class="upload-demo"
-                      action="https://jsonplaceholder.typicode.com/posts/"
-                      :on-change="handleChange"
-                      :file-list="fileList">
-                      <div class="second-box">
-                  <img src="@/assets/img/officeCenter/icon_upload.png" alt="" />
-                  <span>上传音频按钮</span>
-                </div>
-              </el-upload>
-               
+                  class="upload-demo"
+                  ref="upload"
+                  :action="BASE_URL+'student/base/uploadImg'"
+                  :on-change="handleChange"
+                  :on-success="handleAudioSuccess"
+                  :on-remove="handleAudioRemove"
+                  :before-upload="beforeAudioUpload"
+                  :limit="1"
+                  :on-exceed="handleExceed"
+                >
+                  <div @click="uploadPPTindex(index)" class="second-box">
+                    <img
+                      src="@/assets/img/officeCenter/icon_upload.png"
+                      alt=""
+                    />
+                    <span>上传音频按钮</span>
+                  </div>
+                </el-upload>
               </div>
             </div>
             <!-- 选项A,B,C,D -->
             <div class="option-box">
-              <img :src="item.img" alt="">
-              <div v-for="(it,i) in item.options" :key="i">{{it}}</div>
+              <img :src="item.img" alt="" />
+              <div v-for="(it, i) in item.options" :key="i">{{ it }}</div>
             </div>
             <!-- 正确答案 -->
             <div class="answer-box">
               <div class="student-answer">
                 <div>学生答案：</div>
-                <div>{{item.studentAnswer||"未作答"}}</div>
+                <div>{{ item.studentAnswer || "未作答" }}</div>
               </div>
               <div class="correct-answer">
                 <div>正确答案：</div>
-                <div>{{item.answer}}</div>
+                <div>{{ item.answer }}</div>
                 <!-- <img src="@/assets/img/officeCenter/test1.png" alt="" /> -->
               </div>
             </div>
@@ -206,31 +271,37 @@
     </div>
     <!-- 底部按钮 -->
     <div class="footer">
-      <div class="btn">提交</div>
+      <div @click="submit" class="btn">提交</div>
     </div>
   </div>
 </template>
   <script>
-import { queryExaminationInfo } from "@/network/officeCenter";
+import { queryExaminationInfo, saveExamines } from "@/network/officeCenter";
+import { BASE_URL, TIMEOUT } from "@/network/config";
 export default {
   data() {
     return {
       studentInfo: {}, //传过来的学生详情对象
       current: 1,
       size: 10,
-      testList: [], //考试详情
+      testList: {}, //考试详情
       audio: "",
-      fileList: [{
-          name: 'food.jpeg',
-          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-        }]
-      }
+      BASE_URL:BASE_URL,
+      fileList: [],
+      dialogImageUrl: [],
+      dialogVisible: false,
+      index:0   //上传音频的下标
+    };
   },
   created() {
-    this.studentInfo = JSON.parse(this.$route.query.data); 
+    this.studentInfo = JSON.parse(this.$route.query.data);
     this.getExaminationInfo();
   },
   methods: {
+    uploadPPTindex(index){ //判断是哪一个上传的音频
+      console.log("index=",index);
+      this.index = index;
+    },
     getExaminationInfo() {
       //查询考试试题
       let params = {
@@ -319,29 +390,22 @@ export default {
             title: "判断题",
             type: 4,
           };
-          this.testList.list.push(testObj);
-          this.testList.list.push(testObj1);
-          this.testList.list.push(testObj2);
-          this.testList.list.push(testObj3);
-          
-         this.testList.list.forEach((item) => {
+          // this.testList.list.push(testObj);
+          // this.testList.list.push(testObj1);
+          // this.testList.list.push(testObj2);
+          // this.testList.list.push(testObj3);
+
+          this.testList.list.forEach((item) => {
             if (item.options) {
               let arr = [];
               try {
                 item.options = item.options.split("%&");
-                // item.options.forEach((item) => {
-                //   let obj = {};
-                //   obj.name = item.split("：")[0];
-                //   obj.info = item.split("：")[1];
-                //   arr.push(obj);
-                // });
-                // item.options = arr;
               } catch (e) {
                 console.log(e);
               }
             }
+            item.teacherImg.includes("%&")?item.teacherImg=item.teacherImg.split("%&"):item.teacherImg=[];  //老师上传图片
           });
-          
         }
       });
     },
@@ -371,22 +435,118 @@ export default {
           });
       }
     },
+    handleChange(res){ //音频上传
+    },
+    handleAudioSuccess(res,file,fileList){
+      this.testList.list[this.index].teacherAudio=res.data;
+    },
+    handleImg(res){
+       //上传图片接口
+       if(res.code==200){
+        this.testList.list[this.index].teacherImg=this.testList.list[this.index].teacherImg.concat(res.data);
+       }else{
+         this.$myAlert(res.msg);
+
+       }
+    },
+    handleImgRemove(file, fileList) {
+      //删除图片操作
+      console.log(fileList);
+      this.testList.list[this.index].teacherImg=fileList.map(item=>{
+        return item.response.data
+      })
+      //this.testList.list[this.index].teacherImg=file;
+    },
+    handleAudioRemove(file,fileList){
+      console.log("file==>",file)
+      this.testList.list[this.index].teacherAudio="";
+    },
+    handleExceed(files,fileList){ //限制音频上传个数
+        this.$message.warning("只能上传一端音频");
+    },
+    handlePictureCardPreview(file) {  //查看图片
+      //查看图片操作
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
+    beforeImgUpload(file){  // 校验上传的文件类型是否是图片
+      const isJPG = file.type === 'image/jpeg';
+      const isPNG =file.type ==='image/png';
+      if(!isJPG&&!isPNG){
+          this.$message.error('上传头像图片只能是 JPG或者PNG 格式!');
+      }
+       return isJPG||isPNG
+    },
+    beforeAudioUpload(file){    //音频上传校验
+      const type = "audio";
+      const fileName = file.name;
+      const m = fileName.match(/\.(\w+)(#|\?|$)/);
+      const fileType = (m && m[1]).toString().toLowerCase();
+      console.log(fileType);
+      const allowHook = {
+        video: ['mp4', 'ogv', 'ogg', 'webm'],
+        audio: ['wav', 'mp3', 'ogg', 'acc', 'webm', 'amr'],
+        file: ['doc', 'docx', 'xlsx', 'xls', 'pdf'],
+        excel: ['xlsx', 'xls'],
+        img: ['jpg', 'jpeg', 'png', 'gif']
+      }
+      const validType = (allowHook[type] || []).includes(fileType);
+      console.log("validType",validType);
+      if (!validType) {
+        const supprtTypes = allowHook[type].join(',');
+        this.$message.error(`只能上传${supprtTypes}类型的文件上传`);
+      }
+      return validType
+    },
+    submit(){
+      console.log(this.testList.list);
+      let testList=[...this.testList.list];
+      let params ={}; //上传的参数列表
+      let examines=[];  //批阅内容
+      testList.forEach(item=>{
+        let arr = {};
+        arr.id = item.id;       //答案id
+        arr.answer = item.answer;   //上传学生答案
+        arr.answerUrl = item.studentAnswerUrl; //上传学生简答题图片
+        arr.score = item.points;     // 学生问题答案
+        arr.audio =item.teacherAudio;    //老师批阅音频
+        arr.remark = item.teacherRemark;      //老师批阅备注  
+        arr.img=item.teacherImg.join("%&");         //老师批阅图片
+        examines.push(arr);       //已JSON自符串的形式
+      });
+      params.examines=JSON.stringify(examines);
+      console.log("params.examines=",params.examines);
+      saveExamines(params).then(res=>{
+        console.log(res);
+        let {code,data} = res;
+        if(code==200){
+          this.$message({
+          message: '消息批阅成功',
+          type: 'success'
+        });
+        this.$router.go(-1);
+        }else{
+          this.$message.error('上传失败，网络错误');
+        }
+      })
+    }
+
   },
 };
 </script>
 <style lang="scss" scoped>
 textarea {
-          outline: none;
-          width: 90%;
-          height: 110px;
-          padding: 4px;
-          background: #ffffff;
-          border: 1px solid #dbdbdb;
-          border-radius: 6px;
-        }
-        textarea:focus {
-          border: 1px solid #eb002a;
-        }
+  outline: none;
+  width: 90%;
+  height: 110px;
+  padding: 4px;
+  background: #ffffff;
+  border: 1px solid #dbdbdb;
+  border-radius: 6px;
+}
+textarea:focus {
+  border: 1px solid #eb002a;
+}
 .main {
   width: 100%;
   //   height: 1525px;
@@ -480,14 +640,14 @@ textarea {
           width: 220px;
           .first-box {
             font-size: 12px;
-              font-family: Source Han Sans CN;
-              font-weight: 400;
-              color: #ea5810;
+            font-family: Source Han Sans CN;
+            font-weight: 400;
+            color: #ea5810;
             width: 120px;
             height: 40px;
             display: flex;
             align-items: center;
-            input{
+            input {
               border: none;
               outline: none;
               width: 20px;
@@ -495,9 +655,9 @@ textarea {
               font-family: Source Han Sans CN;
               font-weight: 400;
               color: #ea5810;
-            };
-            input:focus{
-              border:1px solid #ea5810; 
+            }
+            input:focus {
+              border: 1px solid #ea5810;
             }
             span {
               font-size: 12px;
@@ -514,7 +674,7 @@ textarea {
           .second-box {
             width: 130px;
             padding-left: 6px;
-            margin-top:8px;
+            margin-top: 8px;
             position: relative;
             display: flex;
             // align-items: center;
@@ -573,8 +733,8 @@ textarea {
 .footer {
   width: 100%;
   margin: 22px 0;
-.btn {
-    margin:0 auto;
+  .btn {
+    margin: 0 auto;
 
     width: 172px;
     height: 29px;

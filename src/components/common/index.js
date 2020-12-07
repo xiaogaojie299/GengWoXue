@@ -10,6 +10,7 @@ import crumbs from "@/components/crumbs"
 import myBox from "@/components/my-box"
 import myTitle from "@/components/my-title"
 import radioButton from "@/components/radio-button"  
+import VueUeditorWrap from 'vue-ueditor-wrap'
 function plugins(Vue){
         Vue.component("container",container)
         Vue.component("nav-bar",navBar)

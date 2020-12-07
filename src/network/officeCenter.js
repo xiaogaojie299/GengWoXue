@@ -121,7 +121,7 @@ export function saveMyCourseware(data){
   })
 }
 
-//获取课后习题
+//根据学生考试关系id获取考试详情
 export function queryExaminationInfo(data){
   return request({
     url:api+"queryExaminationInfo"+qs(data)
@@ -132,5 +132,20 @@ export function queryExaminationInfo(data){
 export function addCoursewareOrder(data){
   return request({
     url:api+"addCoursewareOrder"+qs(data)
+  })
+}
+
+// 提交阅卷激励
+export function saveExamines(data){
+  return request({
+    url:api+"saveExamines",
+    data
+  })
+}
+
+//发布成绩
+export function pushExamination(data){
+  return request({
+    url:api+"pushExamination"+qs(data)
   })
 }

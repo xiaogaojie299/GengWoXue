@@ -69,7 +69,7 @@
       <div class="main-center">
         <div class="top-title">成长记录</div>
           <div class="table">
-              <growth-table></growth-table>
+              <growth-table :tableData="tableData"></growth-table>
           </div>
           <div class="page-device">
             <page-device :total="total" @handleCurrentChange="handleCurrentChange" />
@@ -126,17 +126,21 @@ export default {
     },
     // 获取学生详情
     async get_EvaluationList(){
-      let data={
+      let params={
         current:this.current,
         size:this.size,
-        id:this.studyInfo.id||""
+        studentId:this.studyInfo.id||""
       }
-    let res = await queryEvaluationList(data);
-      console.log("学生记录",res);
+    let {code,data} = await queryEvaluationList(params);
+      console.log("学生记录",data);
+      if(code==200){
+        this.total = data.total;
+        this.tableData = data.list;
+      }
     },
     // 分页
-    handleCurrentChange(currenr){
-      this.current=currenr;
+    handleCurrentChange(current){
+      this.current=current;
       this.get_EvaluationList()
     }
   },
@@ -169,7 +173,6 @@ export default {
 .main {
     padding: 18px 85px 20px 23px;
   width: 1014px;
-  height: 844px;
   background: #f9f9f9;
   .main-top {
     .stu-Info-box {
@@ -188,7 +191,6 @@ export default {
         .right-img {
           width: 100px;
           height: 100px;
-          border: 1px solid red;
         }
         .right-content {
           width: 167px;
@@ -216,7 +218,6 @@ export default {
       .table{
           width: 794px;
           margin-left: 75px;
-          border: 1px solid black;
       }
       .page-device{
         display: flex;
@@ -241,7 +242,6 @@ export default {
         .right-img {
           width: 100px;
           height: 100px;
-          border: 1px solid red;
         }
         .right-content {
           width: 167px;

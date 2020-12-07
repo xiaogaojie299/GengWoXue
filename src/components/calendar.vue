@@ -86,19 +86,19 @@
               visible[(todayIndex - 1) * 7 + (j - 1)]
             ),
             today: isToday(visible[(todayIndex - 1) * 7 + (j - 1)]),
-            checkToday:
-              visible[(todayIndex - 1) * 7 + (j - 1)].getTime() == activeDay,
+            checkToday:visible[(todayIndex - 1) * 7 + (j - 1)].getTime() == activeDay,
           }"
         >
-          <!-- {{ visible[(todayIndex - 1) * 7 + (j - 1)].getDate() }} -->
           {{ visible[(todayIndex - 1) * 7 + (j - 1)].getDate() }}
           <span
             v-if="isMonthClass(visible[(todayIndex - 1) * 7 + (j - 1)])"
             class="inline"
           ></span>
-          <!-- {{ arr[(i - 1) * 7 + (j - 1)].getDate() }} -->
-          <!-- <span class="inline">2<span> -->
         </span>
+
+        <!-- 分割线 -->
+          
+        <!-- 分割结束 -->
       </div>
       <!-- 按周显示结束 -->
     </div>
@@ -208,13 +208,9 @@ export default {
     getTodayIndex() {
       this.visible.forEach((item, index) => {
         if (this.isToday(item)) {
-          item.getDate() <= 7
-            ? (this.todayIndex = item.getDate())
-            : (this.todayIndex = parseInt(index / 7) + 1);
-          console.log("this.todayIndex=", this.todayIndex);
+          this.todayIndex = parseInt(index / 7) + 1;
         }
       });
-      console.log("4");
     },
     swichWeek() {
       // 按周显示
@@ -226,7 +222,6 @@ export default {
     },
     // 点击选中样式
     checkToday(timer) {
-      console.log("this.time=", this.time);
       this.activeDay = timer.getTime();
       // let data=utils.getTimeType(timer);
       //把选中的时间传给父元素

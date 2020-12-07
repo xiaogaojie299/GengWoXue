@@ -32,39 +32,41 @@
           />
         </template>
       </el-table-column>
-      <el-table-column prop="examinationName" label="考试名称" align="center">
+      <el-table-column prop="examinationName" label="考试名称" width="150" align="center">
       </el-table-column>
-      <el-table-column prop="testPaperName" label="试卷名称" align="center">
+      <el-table-column prop="testPaperName" label="试卷试卷" width="150" align="center">
       </el-table-column>
       <el-table-column prop="type" align="center" label="考试类别">
-        <template slot-scope="scope">
+        <!-- <template slot-scope="scope">
           <span>{{ scope.row.type == 1 ? "线上" : "线下" }}</span>
-        </template>
+        </template> -->
       </el-table-column>
       <el-table-column prop="className" align="center" label="班级">
       </el-table-column>
       <el-table-column prop="studentName" align="center" label="学生姓名">
       </el-table-column>
+     
+      <!--
       <el-table-column prop="courseNum" align="center" label="课次">
-      </el-table-column>
-      <el-table-column prop="phone" align="center" label="学生电话">
+      </el-table-column> -->
+      <el-table-column prop="phone" align="center" label="学生电话" width="160">
       </el-table-column>
       <!-- 课后习题 -->
-      <el-table-column align="center" label="是否邮寄资料" width="150">
+      <el-table-column align="center" label="成绩发布" width="150">
         <template slot-scope="scope">
           <!-- <span>{{ scope.row.release == 1 ? "未发布" : "已发布" }}</span> -->
           <span>{{ scope.row.release }}</span>
         </template>
       </el-table-column>
       <!-- 考试状态 -->
-      <el-table-column align="center" label="是否邮寄资料" width="150">
+      <el-table-column align="center" label="考试情况">
         <template slot-scope="scope">
           <!-- <span>{{ scope.row.status == 1 ? "缺考" : "完成" }}</span> -->
           <span>{{ scope.row.status }}</span>
         </template>
       </el-table-column>
       <!-- 阅卷状况scoring -->
-      <el-table-column align="center" label="阅卷状态" width="150">
+      <el-table-column align="center" label="阅卷状态">
         <template slot-scope="scope">
           <!-- <span>{{ scope.row.scoring == 1 ? "未阅卷" : "已阅卷" }}</span> -->
           <span>{{ scope.row.scoring }}</span>
@@ -74,8 +76,7 @@
       <el-table-column
         prop="points"
         align="center"
-        label="考试成绩"
-        width="150"
+        label="考试成绩" 
       >
       </el-table-column>
       <el-table-column
@@ -113,10 +114,16 @@ export default {
       default: () => {
         return [];
       },
-    },
+    }
+      },
+  watch:{
+    actions(){
+      this.isActive=actions;
+      console.log("发生变化",actions);
+    }
   },
-  created() {
-    console.log("子组件中的", this.tableData);
+  mounted() {
+    // console.log("子组件中的", this.tableData);
   },
   methods: {
     tableRowClassName({ row, rowIndex }) {
@@ -126,8 +133,14 @@ export default {
         return "success-row";
       }
     },
+    // 切换actice的下标
+    chekcout(id){
+        this.isActive = id;
+    },
+
         // 点击单元格
   handleSelectionChange(row) {
+    console.log("this.isActive==",this.isActive);
         this.isActive=row.id;
       this.$emit("selectRow",row);
       },

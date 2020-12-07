@@ -33,13 +33,13 @@
       </div>
       <!-- 顶部表格 -->
       <div>
-        <my-studentTable @selectRow="selectRow" :tableData="tableData" />
+        <my-studentTable ref="stuCheck" @selectRow="selectRow" :tableData="tableData" />
       </div>
     </div>
     <!-- 底部分页 -->
 
     <div class="footer">
-      <page-device @handleCurrentChange="handleCurrentChange" :total="total"  />
+      <page-device :current="current" @handleCurrentChange="handleCurrentChange" :total="total"  />
     </div>
 
   </div>
@@ -58,6 +58,7 @@ export default {
       tableData:[],
       total:1,
       classIndex:0,
+      selectStudent:[]
     };
   },
   created() {
@@ -70,26 +71,30 @@ export default {
     // 查询
     query(){
       this.current=1;
-      this.get_AllMyStudent()
+      this.get_AllMyStudent();
+    },
+      // 调用子组件切换下标的方法
+    childMethod(id=this.tableData[0].id){
+      this.current>1||this.$refs.stuCheck.chekcout(id);
     },
     // 查看课表
     look_student(){
-      console.log("查看课表",this.tableData[this.classIndex])
+      console.log("查看课表",this.selectStudent)
       this.$router.push({
         path: "/page/officeCenter/OfficeCenterIndex/test2",
         query:{
-          studentInfo:JSON.stringify(this.tableData[this.classIndex])
+          studentInfo:JSON.stringify(this.selectStudent)
         }
       });
     },
     //选中的学生信息
     selectRow(data){
-      this.classIndex = data;
-      console.log("classIndex=",this.classIndex)
+      // this.classIndex = data;
+      this.selectStudent=data
     },
     // 跳转到学生详情
     go_stuDetail(){
-      let studyInfo=this.tableData[this.classIndex];
+      let studyInfo=this.selectStudent;
       console.log("studyInfo=",studyInfo);
       this.go_url('studentDetail',studyInfo)
     },
@@ -110,14 +115,18 @@ export default {
     //   });
     },
     async get_AllMyStudent(){ //获取我的学生列表
-        let data={
+        let params={
           className:this.inputClassName,
           studentName:this.inputStudentName,
           current:this.current,
           size:this.size
         }
-        let res= await queryAllMyStudent(data);
+        let res= await queryAllMyStudent(params);
         this.tableData=res.data.list;
+        this.childMethod(res.data.list[0].id)
+        if(this.current==1){
+          this.selectStudent = res.data.list[0];
+        }
         this.total=res.data.total;
 },
 handleCurrentChange(current){//分页组件传过来的页码
