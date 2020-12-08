@@ -14,11 +14,11 @@
       ></calendar>
     </div>
     <!-- 底部详情 -->
-    <div>
+    <div v-if="timerCourse.length>0">
       <div class="class-box" v-for="(it, i) in timerCourse" :key="i">
         <div class="class-title">{{ it.className }}</div>
         <!-- 课程列表 -->
-        <div v-for="(item, index) in it.list" :key="index" class="course-item">
+        <div v-for="(item, index) in it.list" :key="index" class="course-item m-20">
           <!-- 左侧图片 -->
           <img class="left-img" :src="item.teacherAvater" />
           <!-- 右侧内容 -->
@@ -71,6 +71,9 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="no-course" v-else>
+        <div>今日暂无课程安排</div>
     </div>
     <!-- 分页 -->
     <div class="page-device">
@@ -256,12 +259,12 @@ export default {
   border-radius: 4px;
   min-height: 144px;
   padding: 19px 27px 19px 22px;
+  margin-bottom: 18px;
   display: flex;
   .left-img {
     width: 88px;
     height: 88px;
     border-radius: 50%;
-    border: 1px solid blue;
     margin-right: 12px;
   }
 
@@ -343,10 +346,9 @@ export default {
         align-items: center;
         .btn-start {
           width: 88px;
-          height: 30px;
-          background: linear-gradient(110deg, #f13131, #ef753b);
+          height: 31px;
+          border: 1px solid #EA0830;
           border-radius: 15px;
-
           //字体颜色
           display: flex;
           justify-content: center;
@@ -354,7 +356,7 @@ export default {
           font-size: 15px;
           font-family: Source Han Sans CN;
           font-weight: bold;
-          color: #ffffff;
+          color: #EA0830;
           margin-top: -4px;
         }
       }
@@ -367,5 +369,14 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+//暂无课程
+.no-course{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  font-weight: bold;
+  font-size: 22px;
 }
 </style>

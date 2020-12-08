@@ -5,6 +5,7 @@
       <!-- 左边点击上一个月 -->
       <div v-if="switchMonthWeek" class="top-data-box">
         <img
+        class="hand"
           @click="previousMonth"
           src="@/assets/img/officeCenter/icon_left_black.png"
           alt=""
@@ -14,6 +15,7 @@
         }}</span>
         <!--右边点击下一个月  -->
         <img
+        class="hand"
           @click="nextMonth"
           src="@/assets/img/officeCenter/icon_right_black.png"
           alt=""
@@ -22,6 +24,7 @@
       <!-- 按周显示 -->
       <div v-else class="top-data-box">
         <img
+        class="hand"
           @click="previousWeek"
           src="@/assets/img/officeCenter/icon_left_black.png"
           alt=""
@@ -31,17 +34,18 @@
         }}</span>
         <!--右边点击下一个月  -->
         <img
+        class="hand"
           @click="nextWeek"
           src="@/assets/img/officeCenter/icon_right_black.png"
           alt=""
         />
       </div>
       <div class="right-text">
-        <span :class="{ isActive: switchMonthWeek }" @click="swichWeek"
+        <span :class="{ isActive: switchMonthWeek,hand:true }" @click="swichWeek"
           >周</span
         >
         &nbsp;/
-        <span :class="{ isActive: !switchMonthWeek }" @click="swichMonth"
+        <span :class="{ isActive: !switchMonthWeek,hand:true }" @click="swichMonth"
           >月</span
         >
       </div>
@@ -63,6 +67,7 @@
             notCurentMonth: !isCurrentMonth(visible[(i - 1) * 7 + (j - 1)]),
             today: isToday(visible[(i - 1) * 7 + (j - 1)]),
             checkToday: visible[(i - 1) * 7 + (j - 1)].getTime() == activeDay,
+            hand:true
           }"
         >
           {{ visible[(i - 1) * 7 + (j - 1)].getDate() }}
@@ -87,6 +92,7 @@
             ),
             today: isToday(visible[(todayIndex - 1) * 7 + (j - 1)]),
             checkToday:visible[(todayIndex - 1) * 7 + (j - 1)].getTime() == activeDay,
+            hand:true
           }"
         >
           {{ visible[(todayIndex - 1) * 7 + (j - 1)].getDate() }}
@@ -157,11 +163,9 @@ export default {
   },
   watch: {
     time(val) {
-      console.log("val=", val);
       this.$emit("checkMonth", val);
     },
     switchMonthWeek() {
-      console.log("执行成功1111");
       this.$emit("initCurrent");
     },
   },
@@ -240,7 +244,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss"  scoped>
+<style lang="scss" scoped>
 .date-style {
   display: flex;
   justify-content: center;

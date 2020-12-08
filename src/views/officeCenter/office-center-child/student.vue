@@ -110,9 +110,6 @@ export default {
           path:routerUrl+path,
           query:{stuInfo:JSON.stringify(data)}
       })
-    //   this.$router.push({
-    //     path: "/officeCenter/OfficeCenterIndex/studentDetail",
-    //   });
     },
     async get_AllMyStudent(){ //获取我的学生列表
         let params={

@@ -4,26 +4,26 @@
     <div class="company-box">
       <div class="company-profile">
         <div class="company">
-          <img style="height:100%;width:100%" :src="titleList[2]" alt="">
+          <img style="height: 100%; width: 100%" :src="titleList[2]" alt="" />
         </div>
         <div class="profile">
           <!-- 头部主副标题 -->
           <div class="company-title">
-            <div>{{titleList[0]}}</div>
-            <div>{{titleList[1]}}</div>
+            <div>{{ titleList[0] }}</div>
+            <div>{{ titleList[1] }}</div>
           </div>
           <!-- 内容 -->
           <!-- <div class="company-content" v-html="textContent"></div> -->
           <div class="company-content">
-            <div v-for="(item,index) in textContent" :key="index">
-              {{item}}
+            <div v-for="(item, index) in textContent" :key="index">
+              {{ item }}
             </div>
           </div>
         </div>
       </div>
     </div>
     <div class="banner2">
-      <div class="company-think">{{incidentList[0]}}</div>
+      <div class="company-think">{{ incidentList[0] }}</div>
       <div class="cut-off">
         <div></div>
         <i class="icon-school"></i>
@@ -64,22 +64,22 @@
           <div class="info-img">
             <img src="~@/assets/img/about/jiazhi@2x.png" alt="" />
           </div>
-          <h5>{{this.ideaList[0].split("&&")[0]}}</h5>
-          <p>{{this.ideaList[0].split("&&")[1]}}</p>
+          <h5>{{ this.ideaList[0].split("&&")[0] }}</h5>
+          <p>{{ this.ideaList[0].split("&&")[1] }}</p>
         </div>
         <div class="info-box">
           <div class="info-img">
             <img src="~@/assets/img/about/xinnian@2x.png" alt="" />
           </div>
-          <h5>{{this.ideaList[1].split("&&")[0]}}</h5>
-          <p>{{this.ideaList[1].split("&&")[1]}}</p>
+          <h5>{{ this.ideaList[1].split("&&")[0] }}</h5>
+          <p>{{ this.ideaList[1].split("&&")[1] }}</p>
         </div>
         <div class="info-box">
           <div class="info-img">
             <img src="~@/assets/img/about/yuanjing@2x.png" alt="" />
           </div>
-         <h5>{{this.ideaList[2].split("&&")[0]}}</h5>
-          <p>{{this.ideaList[2].split("&&")[1]}}</p>
+          <h5>{{ this.ideaList[2].split("&&")[0] }}</h5>
+          <p>{{ this.ideaList[2].split("&&")[1] }}</p>
         </div>
       </div>
     </div>
@@ -87,16 +87,16 @@
 </template>
 
 <script>
-import { queryAboutUs } from '@/network/officeCenter'
+import { queryAboutUs } from "@/network/officeCenter";
 export default {
   data() {
     return {
-      timerArr: [],  //时间数组
-      valueArr:[],      //事件数组
-      titleList:[],
-      incidentList:[],  
-      ideaList:[],
-      textContent:""
+      timerArr: [], //时间数组
+      valueArr: [], //事件数组
+      titleList: [],
+      incidentList: [],
+      ideaList: [],
+      textContent: "",
     };
   },
   created() {
@@ -104,26 +104,31 @@ export default {
   },
   mounted() {},
   methods: {
-    init(){
+    init() {
       this.getAboutList();
     },
-    getAboutList(){
-      queryAboutUs().then(res=>{
-        let result = res.split("%&");
-        this.titleList=result[0].split("_");    //首页标题数组
-        this.incidentList=result[1].split("_");  //中间树状图
-        this.ideaList=result[2].split("_");     //企业想法
-        this.incidentList.forEach((item,index)=>{
-          if(index>0){
-          this.timerArr.push(item.split("&&")[0]);
-          this.valueArr.push(item.split("&&")[1]);    
+    getAboutList() {
+      queryAboutUs().then((res) => {
+        let { code, data } = res;
+        try {
+          if (code == 200) {
+            let result = data.split("%&");
+            this.titleList = result[0].split("_"); //首页标题数组
+            this.incidentList = result[1].split("_"); //中间树状图
+            this.ideaList = result[2].split("_"); //企业想法
+            this.incidentList.forEach((item, index) => {
+              if (index > 0) {
+                this.timerArr.push(item.split("&&")[0]);
+                this.valueArr.push(item.split("&&")[1]);
+              }
+            });
+            this.textContent = this.titleList[3].split("\n");
           }
-        })
-        
-        console.log("企业",this.ideaList);
-        this.textContent=this.titleList[3].split("\n");
-      })
-    }
+        } catch (error) {
+          console.log(error);
+        }
+      });
+    },
   },
 };
 </script>
@@ -161,35 +166,35 @@ export default {
         padding: 28px 33px;
         background-color: #fff;
         box-shadow: 3px 4px 5px 0px rgba(176, 176, 176, 0.75);
-        .company-title{
+        .company-title {
           height: 50px;
           display: flex;
           margin-bottom: 50px;
-          & div:first-child{
+          & div:first-child {
             height: 70px;
-             font-size: 40px;
-          font-family: Source Han Sans CN;
-          font-weight: bold;
-          color: #354168;
-            margin-right:30px;
+            font-size: 40px;
+            font-family: Source Han Sans CN;
+            font-weight: bold;
+            color: #354168;
+            margin-right: 30px;
             margin-bottom: 18px;
             border-bottom: 4px solid red;
           }
-          & div:last-child{
-            margin-top:auto;
-               color: #354168;
-               font-size: 30px;
-          font-family: Source Han Sans CN;
+          & div:last-child {
+            margin-top: auto;
+            color: #354168;
+            font-size: 30px;
+            font-family: Source Han Sans CN;
           }
         }
-        .company-content{
+        .company-content {
           font-size: 16px;
           font-family: Source Han Sans CN;
           color: #333333;
           overflow: hidden;
-          text-overflow:ellipsis;
-          & div{
-            line-height:34px;
+          text-overflow: ellipsis;
+          & div {
+            line-height: 34px;
             text-indent: 2em;
           }
         }
@@ -259,17 +264,17 @@ export default {
           width: 20px;
           height: 20px;
           border-radius: 50%;
-          background: #BABABA;
-          border: #FFFFFF;
+          background: #bababa;
+          border: #ffffff;
         }
         .center-row-item-inline {
           margin: 0 auto;
           width: 4px;
           height: 100%;
-          background: #FFFFFF;
+          background: #ffffff;
         }
       }
-      .center-row-item:last-child{
+      .center-row-item:last-child {
         height: 0;
         widows: 0;
       }

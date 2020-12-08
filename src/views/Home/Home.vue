@@ -16,6 +16,10 @@
           今日暂无课程安排
         </div>
       </container>
+      <!-- 分页 -->
+      <div class="page-device">
+          <page-device :current="current" :total="total" />
+      </div>
     </div>
     <!-- 排行榜 -->
     <div>
@@ -72,6 +76,9 @@ export default {
     return {
       bannerList: [], //轮播图列表
       TodayCourseList: TodayCourseList, //今日课程
+      current:1,        //分页页码
+      size:10,           //每页显示的条数
+      total:0            //后端传过来的总数           
     };
   },
   components: {
@@ -90,23 +97,35 @@ export default {
     },
     // 获取首页轮播图
     async getBanner() {
-      let data = { type: 1 }; //1=学生APP端，2=学生网页端，3=老师端
-      let res = await queryBanner(data);
-      this.bannerList = res;
+      let params = { type: 1 }; //1=学生APP端，2=学生网页端，3=老师端
+      let {code ,data} = await queryBanner(params);
+      if(res.code==200){
+        this.bannerList = data;
+      }
     },
     // 获取老师课时数排行
     getClassHourRand() {
       queryClassHourRand().then((res) => {
         console.log(res);
+        let {code,data}=res;
+        if(code==200){
+          
+        }
       });
     },
+    // 获取今日课程数
     getTodayCourse() {
       let data = {
-        current: 1,
-        size: 10,
+        current: this.current,
+        size: this.size,
       };
       queryTodayCourse(data).then((res) => {
-        this.TodayCourseList = res;
+        let {code,data} = res;
+        console.log("今日课程",data.list);
+        if(code==200){
+          this.TodayCourseList =data.list;
+          this.total=data.total;
+        }
         console.log("TodayCourseList", this.TodayCourseList);
       });
     },

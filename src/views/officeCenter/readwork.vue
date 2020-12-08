@@ -11,7 +11,7 @@
             <span class="one">{{ testList.name }}</span>
             <span class="two">(总分：{{ testList.totalScore }}分)</span>
           </div>
-          <div class="tag">{{testList.state==1?'未完成':'已完成'}}</div>
+          <div class="tag">{{ testList.state == 1 ? "未完成" : "已完成" }}</div>
         </div>
         <!-- 第二行 -->
         <div class="second-row">
@@ -132,16 +132,16 @@
             <div class="answer-box">
               <div class="student-answer">
                 <div>学生答案：</div>
-                <div>{{item.studentAnswer}}学生回答的答案</div>
+                <div>{{ item.studentAnswer }}学生回答的答案</div>
                 <div>
                   <!-- <img src="@/assets/img/officeCenter/test1.png" alt=""> -->
                 </div>
               </div>
               <div v-if="item.studentAnswerUrl" class="student-answer mt-10">
-                <div style="width:60px"></div>
+                <div style="width: 60px"></div>
                 <!-- <img :src="item.studentAnswerUrl" alt="" /> -->
                 <div>
-                <img :src="item.studentAnswerUrl" alt="" />
+                  <img :src="item.studentAnswerUrl" alt="" />
                   <!-- <img src="@/assets/img/officeCenter/test1.png" alt=""> -->
                 </div>
               </div>
@@ -152,7 +152,7 @@
               </div>
               <!-- 正确答案包含的图片 （如果有显示出来）-->
               <div class="student-answer mt-10">
-                <div style="width:60px"></div>
+                <div style="width: 60px"></div>
                 <!-- <img :src="item.studentAnswerUrl" alt="" /> -->
                 <div>
                   <!-- <img :src="item.studentAnswerUrl" alt="" /> -->
@@ -176,7 +176,7 @@
                 <div>上传图片解析：</div>
                 <!-- <img src="@/assets/img/icon_photo_update.png" alt=""> -->
                 <el-upload
-                  :action="BASE_URL+'student/base/uploadImg'"
+                  :action="BASE_URL + 'student/base/uploadImg'"
                   list-type="picture-card"
                   :before-upload="beforeImgUpload"
                   :on-success="handleImg"
@@ -225,7 +225,7 @@
                 <el-upload
                   class="upload-demo"
                   ref="upload"
-                  :action="BASE_URL+'student/base/uploadImg'"
+                  :action="BASE_URL + 'student/base/uploadImg'"
                   :on-change="handleChange"
                   :on-success="handleAudioSuccess"
                   :on-remove="handleAudioRemove"
@@ -276,30 +276,46 @@
   </div>
 </template>
   <script>
-import { queryExaminationInfo, saveExamines } from "@/network/officeCenter";
+import {
+  queryExaminationInfo,
+  saveExamines,
+  queryAnswerInfo,
+} from "@/network/officeCenter";
 import { BASE_URL, TIMEOUT } from "@/network/config";
 export default {
   data() {
     return {
       studentInfo: {}, //传过来的学生详情对象
+      studentWork: {}, //传过来的学生完成情况
       current: 1,
       size: 10,
       testList: {}, //考试详情
       audio: "",
-      BASE_URL:BASE_URL,
+      BASE_URL: BASE_URL,
       fileList: [],
       dialogImageUrl: [],
       dialogVisible: false,
-      index:0   //上传音频的下标
+      index: 0, //上传音频的下标
     };
   },
   created() {
     this.studentInfo = JSON.parse(this.$route.query.data);
     this.getExaminationInfo();
+
+    if (this.$route.query.type == 1) {
+      //如果type存在 则是根据学生排课ID查询。
+      this.studentWork = JSON.parse(this.$route.query.data);
+      this.getAnswerInfo();
+    } else {
+      // 否则则是考试关系ID的 考试题
+      this.studentInfo = JSON.parse(this.$route.query.data);
+      this.getExaminationInfo();
+    }
   },
   methods: {
-    uploadPPTindex(index){ //判断是哪一个上传的音频
-      console.log("index=",index);
+    uploadPPTindex(index) {
+      //判断是哪一个上传的音频
+      console.log("index=", index);
       this.index = index;
     },
     getExaminationInfo() {
@@ -404,10 +420,39 @@ export default {
                 console.log(e);
               }
             }
-            item.teacherImg.includes("%&")?item.teacherImg=item.teacherImg.split("%&"):item.teacherImg=[];  //老师上传图片
+            item.teacherImg.includes("%&")
+              ? (item.teacherImg = item.teacherImg.split("%&"))
+              : (item.teacherImg = []); //老师上传图片
           });
         }
       });
+    },
+    getAnswerInfo() {
+      //根据学生排课ID查询完成作业成绩
+      //查询考试试题
+      let params = {
+        id: this.studentWork.id,
+      };
+      queryAnswerInfo(params).then((res) => {
+        let { code, data } = res;
+        if (code == 200) {
+           this.testList = data;
+          this.testList.list.forEach((item) => {
+            if (item.options) {
+              let arr = [];
+              try {
+                item.options = item.options.split("%&");
+              } catch (e) {
+                console.log(e);
+              }
+            }
+            item.teacherImg.includes("%&")
+              ? (item.teacherImg = item.teacherImg.split("%&"))
+              : (item.teacherImg = []); //老师上传图片
+          });
+        }
+      });
+      console.log()
     },
     myAudio() {
       this.audio = new Audio();
@@ -435,102 +480,107 @@ export default {
           });
       }
     },
-    handleChange(res){ //音频上传
+    handleChange(res) {
+      //音频上传
     },
-    handleAudioSuccess(res,file,fileList){
-      this.testList.list[this.index].teacherAudio=res.data;
+    handleAudioSuccess(res, file, fileList) {
+      this.testList.list[this.index].teacherAudio = res.data;
     },
-    handleImg(res){
-       //上传图片接口
-       if(res.code==200){
-        this.testList.list[this.index].teacherImg=this.testList.list[this.index].teacherImg.concat(res.data);
-       }else{
-         this.$myAlert(res.msg);
-
-       }
+    handleImg(res) {
+      //上传图片接口
+      if (res.code == 200) {
+        this.testList.list[this.index].teacherImg = this.testList.list[
+          this.index
+        ].teacherImg.concat(res.data);
+      } else {
+        this.$myAlert(res.msg);
+      }
     },
     handleImgRemove(file, fileList) {
       //删除图片操作
       console.log(fileList);
-      this.testList.list[this.index].teacherImg=fileList.map(item=>{
-        return item.response.data
-      })
+      this.testList.list[this.index].teacherImg = fileList.map((item) => {
+        return item.response.data;
+      });
       //this.testList.list[this.index].teacherImg=file;
     },
-    handleAudioRemove(file,fileList){
-      console.log("file==>",file)
-      this.testList.list[this.index].teacherAudio="";
+    handleAudioRemove(file, fileList) {
+      console.log("file==>", file);
+      this.testList.list[this.index].teacherAudio = "";
     },
-    handleExceed(files,fileList){ //限制音频上传个数
-        this.$message.warning("只能上传一端音频");
+    handleExceed(files, fileList) {
+      //限制音频上传个数
+      this.$message.warning("只能上传一端音频");
     },
-    handlePictureCardPreview(file) {  //查看图片
+    handlePictureCardPreview(file) {
+      //查看图片
       //查看图片操作
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
-    beforeImgUpload(file){  // 校验上传的文件类型是否是图片
-      const isJPG = file.type === 'image/jpeg';
-      const isPNG =file.type ==='image/png';
-      if(!isJPG&&!isPNG){
-          this.$message.error('上传头像图片只能是 JPG或者PNG 格式!');
+    beforeImgUpload(file) {
+      // 校验上传的文件类型是否是图片
+      const isJPG = file.type === "image/jpeg";
+      const isPNG = file.type === "image/png";
+      if (!isJPG && !isPNG) {
+        this.$message.error("上传头像图片只能是 JPG或者PNG 格式!");
       }
-       return isJPG||isPNG
+      return isJPG || isPNG;
     },
-    beforeAudioUpload(file){    //音频上传校验
+    beforeAudioUpload(file) {
+      //音频上传校验
       const type = "audio";
       const fileName = file.name;
       const m = fileName.match(/\.(\w+)(#|\?|$)/);
       const fileType = (m && m[1]).toString().toLowerCase();
       console.log(fileType);
       const allowHook = {
-        video: ['mp4', 'ogv', 'ogg', 'webm'],
-        audio: ['wav', 'mp3', 'ogg', 'acc', 'webm', 'amr'],
-        file: ['doc', 'docx', 'xlsx', 'xls', 'pdf'],
-        excel: ['xlsx', 'xls'],
-        img: ['jpg', 'jpeg', 'png', 'gif']
-      }
+        video: ["mp4", "ogv", "ogg", "webm"],
+        audio: ["wav", "mp3", "ogg", "acc", "webm", "amr"],
+        file: ["doc", "docx", "xlsx", "xls", "pdf"],
+        excel: ["xlsx", "xls"],
+        img: ["jpg", "jpeg", "png", "gif"],
+      };
       const validType = (allowHook[type] || []).includes(fileType);
-      console.log("validType",validType);
+      console.log("validType", validType);
       if (!validType) {
-        const supprtTypes = allowHook[type].join(',');
+        const supprtTypes = allowHook[type].join(",");
         this.$message.error(`只能上传${supprtTypes}类型的文件上传`);
       }
-      return validType
+      return validType;
     },
-    submit(){
+    submit() {
       console.log(this.testList.list);
-      let testList=[...this.testList.list];
-      let params ={}; //上传的参数列表
-      let examines=[];  //批阅内容
-      testList.forEach(item=>{
+      let testList = [...this.testList.list];
+      let params = {}; //上传的参数列表
+      let examines = []; //批阅内容
+      testList.forEach((item) => {
         let arr = {};
-        arr.id = item.id;       //答案id
-        arr.answer = item.answer;   //上传学生答案
+        arr.id = item.id; //答案id
+        arr.answer = item.answer; //上传学生答案
         arr.answerUrl = item.studentAnswerUrl; //上传学生简答题图片
-        arr.score = item.points;     // 学生问题答案
-        arr.audio =item.teacherAudio;    //老师批阅音频
-        arr.remark = item.teacherRemark;      //老师批阅备注  
-        arr.img=item.teacherImg.join("%&");         //老师批阅图片
-        examines.push(arr);       //已JSON自符串的形式
+        arr.score = item.points; // 学生问题答案
+        arr.audio = item.teacherAudio; //老师批阅音频
+        arr.remark = item.teacherRemark; //老师批阅备注
+        arr.img = item.teacherImg.join("%&"); //老师批阅图片
+        examines.push(arr); //已JSON自符串的形式
       });
-      params.examines=JSON.stringify(examines);
-      console.log("params.examines=",params.examines);
-      saveExamines(params).then(res=>{
+      params.examines = JSON.stringify(examines);
+      console.log("params.examines=", params.examines);
+      saveExamines(params).then((res) => {
         console.log(res);
-        let {code,data} = res;
-        if(code==200){
+        let { code, data } = res;
+        if (code == 200) {
           this.$message({
-          message: '消息批阅成功',
-          type: 'success'
-        });
-        this.$router.go(-1);
-        }else{
-          this.$message.error('上传失败，网络错误');
+            message: "消息批阅成功",
+            type: "success",
+          });
+          this.$router.go(-1);
+        } else {
+          this.$message.error("上传失败，网络错误");
         }
-      })
-    }
-
+      });
+    },
   },
 };
 </script>

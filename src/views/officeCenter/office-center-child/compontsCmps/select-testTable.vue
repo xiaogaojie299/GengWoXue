@@ -286,7 +286,7 @@ export default {
   },
 };
 </script>
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .box1 {
   width: 100%;
   background: white;

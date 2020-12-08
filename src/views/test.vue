@@ -1,5 +1,6 @@
 <template>
     <div class="header">
+      <el-button @click="go_live">测试跳转</el-button>
         <div class="header-tag">
           <div class="tag-left">课件类型:</div>
           <!-- 下拉多选框 -->
@@ -98,6 +99,9 @@ import {mapState} from "vuex"
       }
     },
     methods:{
+      go_live(){
+        window.open("http://www.xiaogaojie.vip:99/")
+      },
         go_url(path){
             console.log('跳转成功');
             this.$router.push({

@@ -177,11 +177,12 @@
   </div>
 </template>
   <script>
-import { queryExaminationInfo } from "@/network/officeCenter";
+import { queryExaminationInfo,queryAnswerInfo } from "@/network/officeCenter";
 export default {
   data() {
     return {
       studentInfo: {}, //传过来的学生详情对象
+      studentWork:{}, //学生传过来的答题情况
       current: 1,
       size: 10,
       testList: [], //考试详情
@@ -189,11 +190,19 @@ export default {
     };
   },
   created() {
-    this.studentInfo = JSON.parse(this.$route.query.data);
-    this.getExaminationInfo();
+    console.log(this.$route.query.type);
+    if(this.$route.query.type==1){
+      //如果type存在 则是根据学生排课ID查询。
+      this.studentWork = JSON.parse(this.$route.query.data);
+      this.getAnswerInfo();
+    }else{
+      // 否则则是考试关系ID的 考试题
+      this.studentInfo = JSON.parse(this.$route.query.data);
+      this.getExaminationInfo();
+    }
   },
   methods: {
-    getExaminationInfo() {
+    getExaminationInfo() {  //根据学生考试关系ID查询考试成绩
       //查询考试试题
       let params = {
         id: this.studentInfo.id,
@@ -285,6 +294,35 @@ export default {
           this.testList.list.push(testObj1);
           this.testList.list.push(testObj2);
           this.testList.list.push(testObj3);
+          this.testList.list.forEach((item) => {
+            if (item.options) {
+              let arr = []; //单选题  多选
+              try {
+                item.options = item.options.split("%&");
+                item.options.forEach((item) => {
+                  let obj = {};
+                  obj.name = item.split("：")[0];
+                  obj.info = item.split("：")[1];
+                  arr.push(obj);
+                });
+                item.options = arr;
+              } catch (e) {
+                console.log(e);
+              }
+            }
+          });
+        }
+      });
+    },
+    getAnswerInfo(){  //根据学生排课ID查询完成作业成绩
+     //查询考试试题
+      let params = {
+        id: this.studentWork.id,
+      };
+      queryAnswerInfo(params).then((res) => {
+        let { code, data } = res;
+        if (code == 200) {
+          this.testList = data;
           this.testList.list.forEach((item) => {
             if (item.options) {
               let arr = []; //单选题  多选

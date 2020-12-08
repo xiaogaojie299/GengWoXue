@@ -102,7 +102,7 @@
           <!-- 占位符号,与基线保持一致 -->
           <span style="width:60px;"></span>
           <div class="studentTabel">
-              <studentTable />
+              <studentTable :tableData="tableData" />
           </div>
         </div>
       </div>
@@ -120,7 +120,7 @@
     <!-- 底部分页 -->
      <!-- 分页 -->
         <div class="footer vertical-center w-1">
-            <page-device />
+            <page-device :current="current" @handleCurrentChange="handleCurrentChange" :total="total" />
         </div>
   </div>
 </template>
@@ -136,6 +136,10 @@ export default {
         return{
           scheduleId:"",
           couseDetail:{},
+          tableData:[],
+          total:0,
+          current:1,
+          size:10
         }
     },
      provide(){
@@ -166,13 +170,16 @@ export default {
     },
     // 获取课程详情
     getDaySchedule(){
-      let data={
+      let params={
         scheduleId:this.scheduleId
       }
-      queryCourseInfoDate(data).then(res=>{
+      queryCourseInfoDate(params).then(res=>{
         console.log("获取课程",res);
-        this.timerCourse=res;
-        this.couseDetail=res
+        let {code,data} = res;
+        if(code==200){
+          this.timerCourse=data;
+          this.couseDetail=data;
+        }
       })
     },
     // 获取排课详情中的列表数据
@@ -183,8 +190,18 @@ export default {
         size:this.size    //当前数据多少
         };
       queryCourseInfo(data).then(res=>{
+        let {code,data} = res;
+        if(code == 200){
+          this.tableData = data.list;
+          this.total = data.total;
+        }
         console.log("获取table==",res)
       })
+    },
+    //分页组件传过来的页码
+    handleCurrentChange(current){
+      this.current=current;
+      this.getCourseInfo()
     },
     //返回上一页
     go_back(){

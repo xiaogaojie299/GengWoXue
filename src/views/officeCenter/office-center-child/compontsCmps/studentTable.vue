@@ -19,8 +19,8 @@
     >
       <el-table-column align="center" label="考勤">
         <template slot-scope="scope">
-          <span>{{scope.$index+1}}</span>
-       </template>
+          <span>{{ scope.$index + 1 }}</span>
+        </template>
       </el-table-column>
       <el-table-column prop="studentName" align="center" label="姓名">
       </el-table-column>
@@ -28,24 +28,36 @@
       <!-- prop="work" -->
       <el-table-column align="center" label="考勤">
         <template slot-scope="scope">
-          <span>{{scope.row.work==0?"参加直播":"未参加"}}</span>
-       </template>
+          <span>{{ scope.row.work == 0 ? "参加直播" : "未参加" }}</span>
+        </template>
       </el-table-column>
       <!-- 课后习题 -->
-     <el-table-column align="center" label="课后习题">
+      <el-table-column align="center" label="课后习题">
         <template slot-scope="scope">
-          <span>{{scope.row.state==0?"未做题":scope.row.state==1?"已完成":"已阅卷"}}</span>
-       </template>
+          <span>{{
+            scope.row.state == 0
+              ? "未完成"
+              : scope.row.state == 1
+              ? "已完成"
+              : "已阅卷"
+          }}</span>
+        </template>
       </el-table-column>
       <!-- 操作 -->
-      <el-table-column fixed="right" label="操作" width="120">
+      <el-table-column align="center" fixed="right" label="操作" width="120">
         <template slot-scope="scope">
           <el-button
-            @click.native.prevent="deleteRow(scope.$index, tableData)"
+            @click.native.prevent="operation(scope.row)"
             type="text"
             size="small"
           >
-            {{scope.row.state==0?"提醒做题":scope.row.state==1?"批阅作业":"查看作业"}}
+            {{
+              scope.row.state == 0
+                ? "提醒做题"
+                : scope.row.state == 1
+                ? "批阅作业"
+                : "查看作业"
+            }}
           </el-button>
         </template>
       </el-table-column>
@@ -64,7 +76,7 @@
 </style>
 
 <script>
-import {remindTheProblem} from '@/network/officeCenter'
+import { remindTheProblem } from "@/network/officeCenter";
 export default {
   data() {
     return {
@@ -84,26 +96,26 @@ export default {
       // ],
     };
   },
-  props:{
-    tableData:{
-      type:Array,
-      default:()=>{
+  props: {
+    tableData: {
+      type: Array,
+      default: () => {
         return [
-        {
-          id: "1",
-          studentName: "王小虎",
-          state: "0",
-          work: "0",
-        },
-        {
-          id: "2",
-          studentName: "王虎",
-          state: "1",
-          work: "1",
-        },
-      ]
-      }
-    }
+          {
+            id: "1",
+            studentName: "王小虎",
+            state: "0",
+            work: "0",
+          },
+          {
+            id: "2",
+            studentName: "王虎",
+            state: "1",
+            work: "1",
+          },
+        ];
+      },
+    },
   },
   methods: {
     tableRowClassName({ row, rowIndex }) {
@@ -114,23 +126,44 @@ export default {
         return "success-row";
       }
     },
-    deleteRow(index, rows) {
-        console.log(index,rows);
-        if(rows[index].state==0){
-          //提醒学生做题
-          let data={
-            id:rows[index].id
+    operation(row) {
+      console.log(row);
+      if (row.state == 0) {
+        //提醒学生做题
+        let params = {
+          id: row.id,
+        };
+        remindTheProblem(params).then((res) => {
+          let { code, data } = res;
+          if (code == 200) {
+            this.$myAlert("提醒学生做题成功");
+          } else {
+            this.$myAlert("提醒学生做题失败，请稍后再试");
           }
-          remindTheProblem(data).then(res=>{
-            this.$myAlert("提醒学生做题成功")
-          })
-        }
-        // this.$router.push({
-        //      path:"/page/officeCenter/readwork"
-        // })
+        });
+      } else if (row.state == 1) {
+        let data = JSON.stringify(row);
+        this.$router.push({
+          path: "/page/officeCenter/readwork",
+          query: {
+            data: data,
+            type: 1,
+          },
+        });
+      }else{
+        let data = JSON.stringify(row);
+        this.$router.push({
+          path: "/page/officeCenter/evaluationDetail",
+          query: {
+            data: data,
+            type: 1,
+          },
+        });
+      }
+      // this.$router.push({
+      //      path:"/page/officeCenter/readwork"
+      // })
     },
   },
-  
- 
 };
 </script>

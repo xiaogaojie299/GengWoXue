@@ -15,6 +15,7 @@
             :key="index"
             :class="{
               'navbar-item': true,
+              hand:true,
               active1: $route.path.indexOf(item.path) != -1,
             }"
             @click="checkRouter(item.path)"
@@ -88,11 +89,12 @@ export default {
        return this.$store.state.msgCenterList.total
      },
      kfList(){
-       return this.$store.state.kfList
+       return this.$store.state.KfList
      }
   },
     created(){
       this.init()
+      console.log(this.$store.state);
   },
   methods: {
     // 初始化

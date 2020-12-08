@@ -46,7 +46,6 @@ export default new Vuex.Store({
   actions: {
     //获取登录状态的token
     async getToken(context, data) {
-      console.log(data);
       let res = await captchaLogin(data.data);
       context.commit("setToken", res.token);
       data.$router.push({
@@ -63,8 +62,10 @@ export default new Vuex.Store({
     // 获取所有科目
     async getSubjectList(context) {
       let res = await queryAllSubjects();
-      res.unshift({ name: "全部", id: "" });
-      context.commit("setSubjectList", res.data);
+      let {code,data} = res
+      data.unshift({ name: "全部", id: "" });
+      console.log("res.data=",data);
+      context.commit("setSubjectList", data);
     },
     //获取消息通知列表
     async getMessageList(context, data) {
@@ -79,7 +80,9 @@ export default new Vuex.Store({
     async getKfList(context, data) {
       let pamars = { type: data };
       let res = await querySystemSetByType(pamars);
+      console.log('客服',res.data);
       context.commit("setKfList", res.data);
+
     },
     //获取个人资料
     async getPersonalData(context) {

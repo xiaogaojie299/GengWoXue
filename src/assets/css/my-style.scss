@@ -21,6 +21,13 @@ $base-color:#EB002A;
   font-weight: 600;
   color: #F13833;
   }
+  textarea{
+    outline: none;
+    border: 1px solid #fff;
+  }
+  textarea:focus{
+    border:1px solid #F13833
+  }
   .color-black{
     color: #333333;
   }

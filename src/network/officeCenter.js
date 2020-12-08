@@ -127,6 +127,12 @@ export function queryExaminationInfo(data){
     url:api+"queryExaminationInfo"+qs(data)
   })
 }
+//根据学生排课ID获取完成作业情况  //课程详情页面 table表格
+export function queryAnswerInfo(data){
+  return request({
+    url:api+"queryAnswerInfo"+qs(data)
+  })
+}
 
 // 下载付费课件
 export function addCoursewareOrder(data){
