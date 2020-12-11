@@ -52,7 +52,7 @@
                 </div>
 
                 <!-- 未开始或者开始按钮 -->
-                <div class="btn-start">
+                <div @click="go_live(item)" class="btn-start">
                   {{
                     item.status == 1
                       ? "未开始"
@@ -87,6 +87,8 @@
 <script>
 import { queryDaySchedule, queryTeacherSchedule } from "@/network/officeCenter";
 import * as utils from "@/utils/getData";
+
+import {state} from "vuex";
 export default {
   data() {
     let { year, month, day } = utils.getYearMonthDay(new Date());
@@ -105,6 +107,11 @@ export default {
   },
   created() {
     this.init();
+  },
+  computed:{
+    userInfo(){ //在vuex中拿到登录成功的列表{token,老师id} 传给直播页面
+      return this.$store.state.userInfo
+    }
   },
   watch: {
     // 监听现在是按时间查询还是按月查询
@@ -160,7 +167,7 @@ export default {
       queryTeacherSchedule(params).then((res) => {
         let { data, code } = res;
         if (code == 200) {
-         if (data == "undefind" || data.length == 0) {
+         if (data == "undefind" || data.length == 0) {  //测试给的初始值
           this.MonthClass = [
             { number: 1, strTime: "2020-12-25" },
             { number: 2, strTime: "2020-12-22" },
@@ -198,7 +205,16 @@ export default {
     initCurrent(i) {
       this.current = 1;
     },
-
+    go_live(item){  //看直播
+       let params = item;
+        params.teacherId = this.userInfo.id;
+        params.token = this.userInfo.token;
+        params.avatar = this.userInfo.avatar;
+       console.log("params==>",params);
+        params = JSON.stringify(params)
+        window.open("http://www.xiaogaojie.vip:99/"+"?params="+encodeURIComponent(params));
+        // window.open("https://demo.qcloudtiw.com/web/latest/index.html");
+    },
     //分页页数
     handleCurrentChange(data) {
       this.current = data;

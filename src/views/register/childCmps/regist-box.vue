@@ -175,21 +175,20 @@ export default {
         this.$Alert("请输入正确的手机格式");
         return;
       }
-      let params = { code: this.phoneCode, phone: this.inputList[1].value };
-      // this.$store.dispatch("getToken", pamars, this.$router);
-      captchaLogin(params).then((res) => {
-        let {data,code} = res;
-        if(code==200){
-          localStorage.setItem("userInfo", JSON.stringify(data));
-          localStorage.setItem("token", data.token);
-        setTimeout(() => {
-          this.$router.push({
-            path: "/page/home",
-          });
-        }, 2000);
-        }
+      let params ={data:{ code: this.phoneCode, phone: this.inputList[1].value },$router:this.$router}
+      this.$store.dispatch("getToken", params, this.$router); //将token存储在vuex中
+      // captchaLogin(params).then((res) => {
+      //   let {data,code} = res;
+      //   if(code==200){
+      //     localStorage.setItem("userInfo", JSON.stringify(data));
+      //   setTimeout(() => {
+      //     this.$router.push({
+      //       path: "/page/home",
+      //     });
+      //   }, 2000);
+      //   }
         
-      });
+      // });
     },
     // 校验验证码
 

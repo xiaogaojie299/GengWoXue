@@ -15,7 +15,7 @@
             :key="index"
             :class="{
               'navbar-item': true,
-              hand:true,
+              hand: true,
               active1: $route.path.indexOf(item.path) != -1,
             }"
             @click="checkRouter(item.path)"
@@ -35,40 +35,69 @@
 
       <!-- 右侧登陆注册 -->
       <div class="right-content">
-        <!-- <button @click="go_personalCenter">个人中心</button> -->
         <!-- 客服电话 -->
         <div class="kf-box">
           <!-- Icon -->
-         <img class="kf-icon" src="@/assets/img/navbar/icon_phone.png" alt="" />
+          <img
+            class="kf-icon"
+            src="@/assets/img/navbar/icon_phone.png"
+            alt=""
+          />
           <!-- 数字 -->
-          <div class="num">{{kfList.content}}</div>
+          <div class="num">{{ kfList.content }}</div>
         </div>
         <!-- 登录注册 -->
-        <div
-        v-if="!userInfo.nickname"
-          :class="{ regist: true, active1: $route.path.indexOf('/register') != -1 }"
+        <div v-if="!userInfo.nickname"
+          :class="{
+            regist: true,
+            active1: $route.path.indexOf('/register') != -1,
+          }"
           @click="go_register"
         >
           登录/注册
           <span
-            :class="{ inline: true, active: $route.path.indexOf('/register') != -1 }"
+            :class="{
+              inline: true,
+              active: $route.path.indexOf('/register') != -1,
+            }"
           ></span>
         </div>
-        <!-- 登录成功后端样式 -->
-        <div v-else class="reg-succes">
+        <!-- <div><el-button @click="go_register">退出登陆</el-button></div> -->
+        <!-- 登录成功后样式 -->
+        <div v-else class="reg-succes hand">
           <div style="position: relative">
-          <img @click="go_msgCenter" class="icon_envelope" src="@/assets/img/navbar/icon_envelope.png" alt="">
-          <div class="num">1</div>
+            <img
+              @click="go_msgCenter"
+              class="icon_envelope"
+              src="@/assets/img/navbar/icon_envelope.png"
+              alt=""
+            />
+            <div class="num">1</div>
           </div>
-          <img @click="go_personalCenter()" class="head-portrait" :src="userInfo.avatar" alt="" />
+
+          <div style="position: relative; width: 64px; height: 64px">
+            <div @click="go_personalCenter" class="head-photo">
+              <el-dropdown @command="go_register">
+                <span class="el-dropdown-link">
+                  下拉菜单下拉菜单下拉菜单下拉菜单下拉菜单下拉菜单下拉菜单
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item>退出登录</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </div>
+            <img class="head-portrait" :src="userImg" alt="" />
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import {state,actions} from "vuex"
+import preventBack from 'vue-prevent-browser-back';
+import { state, mutations,actions } from "vuex";
 export default {
+  mixins:[preventBack],
   data() {
     const url = "/page";
     return {
@@ -79,35 +108,46 @@ export default {
         { title: "APP下载", path: url + "/appInstall" },
         { title: "关于我们", path: url + "/about" },
       ],
-      userInfo:JSON.parse(localStorage.getItem("userInfo")),
-     
+      options: [{ name: "退出登录" }],
     };
   },
   computed: {
-       //所有未读的消息条数
-     msgTotal(){
-       return this.$store.state.msgCenterList.total
-     },
-     kfList(){
-       return this.$store.state.KfList
-     }
+    //所有未读的消息条数
+    msgTotal() {
+      return this.$store.state.msgCenterList.total;
+    },
+    kfList() {
+      return this.$store.state.KfList;
+    },
+    userInfo(){
+      return this.$store.state.userInfo;
+    },
+    userImg(){
+      return this.$store.state.userImg
+    }
   },
-    created(){
-      this.init()
-      console.log(this.$store.state);
+  mounted(){
+  },
+  created() {
+    this.init();
+    console.log(this.$store.state);
   },
   methods: {
     // 初始化
-    init(){
+    init() {
       // vuex里的获取消息列表，在这里调用，然后去消息中心在调用，麻烦！！！可以用vuex中的数据可持续存储（百度）
-      let data={
-        current:1,    //页码
-        size:10,       //条数
-        read:1,
-        type:3
-      }
-      this.$store.dispatch('getMessageList', data);
-      this.$store.dispatch('getKfList',1);
+      let data = {
+        current: 1, //页码
+        size: 10, //条数
+        read: 1,
+        type: 3,
+      };
+      this.$store.dispatch("getMessageList", data);
+      this.$store.dispatch("getKfList", 1);
+    },
+    quite() {
+      console.log("跳转成功");
+
     },
     /* 跳转写的有点啰嗦。可以封装一个方法 */
     // 点击nav-bar切换路由
@@ -124,7 +164,7 @@ export default {
         path: "/page/personalCenter/personal",
       });
     },
-    go_msgCenter(){
+    go_msgCenter() {
       this.$router.push({
         path: "/page/msgCenter",
       });
@@ -134,13 +174,29 @@ export default {
       this.$router.push({
         path: "/page/register",
       });
+      this.$store.commit('setToken',"");
+      this.$store.commit('setUserInfo',{});
+      // history.pushState(null, null, document.URL);
+      //           window.addEventListener("popstate",function(e) {  
+      //               history.pushState(null, null, document.URL);
+      // }, false);
+
     },
     // 获取消息列表
-  }
-
+  },
 };
 </script>
 <style lang="scss" scoped>
+/deep/ .el-dropdown {
+  opacity: 0;
+  padding:0;
+  margin: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 1px solid red;
+  overflow: hidden;
+}
 .nav {
   width: 100%;
   height: 80px;
@@ -148,10 +204,10 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-   box-shadow: 1px 13px 18px 0px rgba(233, 233, 233, 0.3);
+  box-shadow: 1px 13px 18px 0px rgba(233, 233, 233, 0.3);
 }
-.nav-main{
-   width: 1400px;
+.nav-main {
+  width: 1400px;
   margin: 0 auto;
   // background: #ffffff;
   // box-shadow: 1px 13px 18px 0px rgba(233, 233, 233, 0.3);
@@ -163,12 +219,10 @@ export default {
   display: flex;
 }
 .left-title {
-  // border: 1px solid red;
   width: 162px;
   /* height: 34px; */
   margin-right: 20px;
   color: #eb002a;
-  // border-right: 2px solid #E0E0E0;
   display: flex;
   align-items: center;
   position: relative;
@@ -176,7 +230,7 @@ export default {
 .left-title > span {
   height: 34px;
   width: 2px;
-  background: #E0E0E0;
+  background: #e0e0e0;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -259,38 +313,43 @@ export default {
 .regist:hover {
   color: #eb002a;
 }
-.reg-succes{
-  margin-left:22px;
+.reg-succes {
+  margin-left: 22px;
   width: 120px;
   justify-content: space-between;
 }
-.reg-succes .icon_envelope{
+.reg-succes .icon_envelope {
   width: 30px;
   height: 30px;
 }
-.reg-succes .num{
+.reg-succes .num {
   position: relative;
   position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 16px;
-height: 16px;
-background: #EB002A;
-border-radius: 50%;
-top:0;
-right:0;
-transform: translateX(50%);
-font-size: 6px;
-font-family: Source Han Sans CN;
-font-weight: 400;
-color: #FFFFFF;
-
+  height: 16px;
+  background: #eb002a;
+  border-radius: 50%;
+  top: 0;
+  right: 0;
+  transform: translateX(50%);
+  font-size: 6px;
+  font-family: Source Han Sans CN;
+  font-weight: 400;
+  color: #ffffff;
 }
-.reg-succes>.head-portrait{
+.head-portrait {
   width: 64px;
-height: 64px;
-border-radius: 50%;
-background: #000;
+  height: 64px;
+  border-radius: 50%;
+  position: absolute;
+  z-index: 2;
+}
+.head-photo {
+  // pointer-events: none;
+  position: absolute;
+  z-index: 100;
 }
 </style>

@@ -142,18 +142,26 @@ export default {
     // 查询我的回答
     //get_MeQuestionList
     get_MeAnswerList() {
-      let data = {
+      let params = {
         current: this.current,
         size: this.size,
       };
-      queryMeAnswerList(data).then((res) => {
+      queryMeAnswerList(params).then((res) => {
         console.log("查询我的问题", res);
-        //  判断返回的图片是否含有逗号，如果有，转为数组
-        if (res.imgUrl && res.imgUrl.indexOf(",") != -1) {
-          res.imgUrl = res.imgUrl.split(",");
+        let {code,data} = res;
+        if(code ==200){
+              //  判断返回的图片是否含有逗号，如果有，转为数组
+       data.list.forEach(item=>{
+          if (item.imgUrl) {
+          item.imgUrl = item.imgUrl.includes(",")?item.imgUrl.split(","):[].concat(item.imgUrl);
+        }else{
+          item.imgUrl = [];
         }
-        res[0].setValue = this.value;
-        this.questionSquareList = res;
+        })
+        data.list[0].setValue = this.value;
+        this.questionSquareList = data.list;
+        }
+      
       });
     },
     //跳转我的提问
@@ -165,18 +173,23 @@ export default {
     },
     get_QuestionSquareList() {
       //搜索问题
-      let data = {
+      let params = {
         conditions: this.seachTitle,
         current: this.current,
         size: this.size,
       };
-      queryQuestionSquareList(data).then((res) => {
+      queryQuestionSquareList(params).then((res) => {
+        let {code,data} = res;
         //  判断返回的图片是否含有逗号，如果有，转为数组
-        if (res.imgUrl && res.imgUrl.indexOf(",") != -1) {
-          res.imgUrl = res.imgUrl.split(",");
-          res[0].setValue = this.value;
+        data.list.forEach(item=>{
+          if (item.imgUrl) {
+          item.imgUrl = item.imgUrl.includes(",")?item.imgUrl.split(","):[].concat(item.imgUrl);
+        }else{
+          item.imgUrl = [];
         }
-        this.questionSquareList = res;
+        })
+          data.list[0].setValue = this.value;
+        this.questionSquareList = data.list;
         console.log("this.questionSquareList", this.questionSquareList);
       });
     },

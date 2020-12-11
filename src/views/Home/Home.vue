@@ -89,6 +89,8 @@ export default {
   created() {
     this.init();
   },
+  destroyed(){
+},
   methods: {
     async init() {
       this.getBanner(); //获取首页轮播页面

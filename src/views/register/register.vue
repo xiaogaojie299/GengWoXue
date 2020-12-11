@@ -25,6 +25,17 @@ export default {
       isVisible: 0,
     };
   },
+  mounted(){
+    
+  },
+  watch:{
+    $route(){
+      history.pushState(null, null, document.URL);
+        window.addEventListener('popstate', function () {
+            history.pushState(null, null, document.URL);
+        });
+    }
+  },
   methods: {
     backUpwdReg(data) {
       console.log("接收到了", data);

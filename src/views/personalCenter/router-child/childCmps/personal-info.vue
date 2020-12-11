@@ -275,9 +275,10 @@ export default {
     // 获取用户个人详情
     async getPersonalData() {
       let res = await queryPersonalData();
-      console.log("获取用户个人信息", res);
       let { code, data } = res;
       if (code == 200) {
+      console.log("获取用户个人信息", data.avatar);
+        this.$store.commit("setUserImg",data.avatar); //首页展示与当前更改头像保持一致
         this.info = data;
         this.form.birthday = data.birthday;     //用户姓名
         this.form.nickname = data.nickname;     //用户昵称
@@ -355,7 +356,6 @@ export default {
           if(res.code==200){
             this.$forceUpdate();
             this.$set(this.form,"avatar",res.data)
-        console.log("this.form.avatar==>",this.form.avatar);
        }else{
          this.$myAlert(res.msg);
        }

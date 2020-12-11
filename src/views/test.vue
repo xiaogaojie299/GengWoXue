@@ -81,7 +81,7 @@
 </template>
 <script>
 let routerUrl='/page/officeCenter/OfficeCenterIndex/';
-import {mapState} from "vuex"
+import {mapState,mapActions} from "vuex"
   export default {
     data() {
       const item = {
@@ -95,12 +95,24 @@ import {mapState} from "vuex"
     },
     computed:{
       userInfo(){
-        return this.$store.state.infoList
+        return this.$store.state.userInfo
       }
     },
     methods:{
       go_live(){
-        window.open("http://www.xiaogaojie.vip:99/")
+        let params = {id:2,scheduleId:2,caurseName:"火箭班直播",teacherName:"肖高杰"};
+        params.teacherId = this.userInfo.id;
+        params.token = this.userInfo.token;
+        params = JSON.stringify(params)
+        window.open("http://www.xiaogaojie.vip:99/"+"?params="+encodeURIComponent(params));
+        // this.$router.push({
+        //   path:"/test",
+        //   query:{
+        //     params:params
+        //   }
+        // })
+        // window.open("")
+        console.log(location.search)
       },
         go_url(path){
             console.log('跳转成功');

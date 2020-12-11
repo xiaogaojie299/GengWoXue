@@ -18,6 +18,10 @@ export default new Vuex.Store({
     kfList: [], //获取客服电话，引导页，推广中心图片
     infoList: [], //获取用户信息列表
     token: "", //登录token
+    userInfo:{},  //登录成功后返回的列表
+    personalIndex:"", //我的个人中心左侧的导航栏的下标选择
+    officeCenterIndex:"",   //办公中心下拉框
+    userImg:""
   },
   mutations: {
     setClassList(state, list) {
@@ -42,15 +46,37 @@ export default new Vuex.Store({
     setToken(state, value) {
       state.token = value;
     },
+    setUserInfo(state, value) {
+      state.userInfo = value;
+    },
+    setPersonalIndex(state,value){
+      state.personalIndex = value;
+    },
+    setOfficeCenterIndex(state,value){
+      state.officeCenterIndex =""+ value;
+    },
+    setUserImg(state,value){
+      state.userImg=value;
+    }
   },
   actions: {
     //获取登录状态的token
-    async getToken(context, data) {
-      let res = await captchaLogin(data.data);
-      context.commit("setToken", res.token);
-      data.$router.push({
+    async getToken(context, params) {
+      let res = await captchaLogin(params.data);
+      console.log("res==》验证",res.data)
+      // context.commit("setToken", res.data.token);
+      context.commit("setUserInfo",res.data);
+      context.commit("setUserImg",res.data.avatar);
+      // window.localStorage.setItem("userInfo", res.data);
+      // window.localStorage.setItem("token",res.data.token);
+      params.$router.push({
         path: "/page/home",
       });
+    },
+    //清空登录状态的token
+    cearToken(context){
+      context.commit("setToken","");
+      window.localStorage.setItem("token"," ");
     },
     // 获取所有年纪数据
     async getClassList(context) {
@@ -88,6 +114,8 @@ export default new Vuex.Store({
     async getPersonalData(context) {
       let res = await queryPersonalData();
       context.commit("setinfoList", res.data);
+      context.commit("setUserImg".res.data.avatar);
+      console.log("res.data.avatar",res.data.avatar);
     },
   },
   modules: {},

@@ -2,8 +2,8 @@
   <container>
   <el-container class="box banner">
     <!-- 侧边栏 -->
-    <el-aside>
-      <el-menu
+    <el-aside width="200px">
+      <!-- <el-menu
       unique-opened
       router
         :default-active="activeIndex"
@@ -43,7 +43,40 @@
           </template>
           <el-menu-item class="son-item" :index="routerUrl+'student'">我的学生</el-menu-item>
         </el-submenu>
-      </el-menu>
+      </el-menu> -->
+    
+      <el-menu @open="handleOpen" :default-active="activeIndex">
+          <el-menu-item index="1" @click="go_url('test2', '1')"
+            >课程表</el-menu-item>
+
+          <el-submenu index="2">
+            <template slot="title">
+          <span>课件中心</span>
+        </template>
+        <el-menu-item-group>
+          <el-menu-item index="2-1" @click="go_url('kejianku', '2-1')">课件库</el-menu-item>
+          <el-menu-item index="2-2" @click="go_url('mykejian', '2-2')">我的课件</el-menu-item>
+        </el-menu-item-group>
+          </el-submenu>
+         <el-submenu index="3">
+            <template slot="title">
+          <span>我的班级</span>
+        </template>
+        <el-menu-item-group>
+          <el-menu-item index="3-1" @click="go_url('myClass', '3-1')">我的班级</el-menu-item>
+          <el-menu-item index="3-2" @click="go_url('evaluation', '3-2')">班级测评</el-menu-item>
+        </el-menu-item-group>
+          </el-submenu>
+          <el-menu-item index="4" @click="go_url('student', 4)"
+            >我的学生</el-menu-item
+          >
+          <!-- <el-menu-item index="4">
+          <i class="el-icon-setting"></i>
+          <span slot="title">导航四</span>
+        </el-menu-item> -->
+        </el-menu>
+
+    
     </el-aside>
 
     <!-- 主要显示区 -->
@@ -54,7 +87,7 @@
   </container>
 </template>
 <script>
-
+import { mapState, mapActions } from "vuex";
 let routerUrl='/page/officeCenter/OfficeCenterIndex/';
   export default{
     data() {
@@ -65,16 +98,28 @@ let routerUrl='/page/officeCenter/OfficeCenterIndex/';
       };
       return {
         tableData: Array(20).fill(item),
-         activeIndex: "/page/officeCenter/OfficeCenterIndex/test2",
          routerUrl:routerUrl
       }
     },
+    computed:{
+      activeIndex(){
+        return this.$store.state.officeCenterIndex
+      }
+    },
+    created(){
+      // this.$store.commit("setOfficeCenterIndex",1)
+    },
     methods:{
-        go_url(path){
+      handleOpen(key,keyPath){
+        console.log("打开成功");
+       console.log(key, keyPath);
+      },
+        go_url(path,index){
             console.log('跳转成功');
             this.$router.push({
                 path:routerUrl+path
             })
+            this.$store.commit("setOfficeCenterIndex",index)
         },
         created() {
           console.log("执行成功");
@@ -84,52 +129,42 @@ let routerUrl='/page/officeCenter/OfficeCenterIndex/';
 </script>
 
 <style lang="scss" scoped>
-* {
-  box-sizing: border-box;
-}
-/deep/ .el-menu-item .son-item{
-  background: #EF6F3B !important;
+/deep/ .el-submenu__title{
+  text-align: center;
 }
 /deep/ .el-menu{
-  background-color: #fff !important
+  background: #FAFAFA;
 }
-/deep/ .el-submenu__title{
-background: #FAFAFA;
+/deep/ .el-submenu .el-menu-item{
+  background: #F9C8B4;
 }
-body {
-  background-color: #ccc !important;
+/deep/ .el-submenu .el-menu-item:hover{
+  color: #F13C33;
 }
-.box {
-  .el-aside {
-    width: 200px !important;
-    .el-menu {
-      height: 754px;
-      .el-submenu {
-        /deep/.el-menu-item,
-        /deep/.el-submenu__title {
-          &:hover {
-            background-color: rgba(255, 255, 255, 0.5) !important;
-          }
-        }
-        /deep/.el-submenu__title {
-          border-top: 1px solid #E9E9E9 !important;
+/deep/ .el-menu-item.is-active {
+  background: linear-gradient(110deg, #f13232, #ef763c);
+  font-size: 10px;
+  font-family: Source Han Sans CN;
+  font-weight: 500;
+  color: #ffffff;
+}
+/deep/ .el-menu-item {
+  text-align: center;
+}
+// 修改左侧导航栏选中时的样式
+.el-menu-item:hover {
+  // background-color: #EF703C !important;
+  // color: #38B2FF !important;
+}
 
-        }
-        .son-item {
-          background-color: rgba(255,255,255,.5) !important;
-        }
-        /deep/.el-menu {
-          /deep/.is-active {
-            background-color: #ef753c !important;
-            color: #ffffff !important;
-          }
-        }
-      }
-    }
-  }
-  .el-main {
-      margin-left: 13px;
-   padding: 0;
-  }
+.el-header {
+  background-color: #b3c0d1;
+  color: #333;
+  line-height: 60px;
 }
+
+.el-aside {
+  color: #333;
+}
+</style>
 </style>

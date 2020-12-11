@@ -1,7 +1,7 @@
 import axios from "axios";
 import vue from "../main";
+import store from "../store/index"
 import { BASE_URL, TIMEOUT } from "./config";
-let token = localStorage.getItem("token");
 const instance = axios.create({
   baseURL: BASE_URL+"teacher",
   method: "POST",
@@ -9,8 +9,9 @@ const instance = axios.create({
 // instance.defaults.withCredentials=true;
 instance.interceptors.request.use(
   (config) => {
+  let token = store.state.userInfo.token;
+  console.log("token===>",store.state.userInfo.token)
     // 1.发送网络请求时, 在界面的中间位置显示Loading的组件
-    console.log("token=", token);
     // 2.某一些请求要求用户必须携带token, 如果没有携带, 那么直接跳转到登录页面
     if (token) {
       config.headers.Authorization = "Bearer" + " " + token;

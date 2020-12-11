@@ -11,6 +11,13 @@
         <footers></footers>
       </div>
     </my-box>
+
+    <!-- <el-container>
+    <el-header><nav-bar></nav-bar></el-header>
+    <el-main><router-view></router-view></el-main>
+    <el-footer><footers></footers></el-footer>
+</el-container> -->
+
   </div>
 </template>
 <script>

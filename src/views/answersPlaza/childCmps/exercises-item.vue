@@ -21,20 +21,19 @@
             :preview-src-list="srcList"
           >
           </el-image> -->
-          <el-image
-            v-if="!Array.isArray(item.imgUrl)"
+          <!-- <el-image
             style="width: 105px; height: 105px"
-            :src="item.imgUrl"
+            src="https://xixisuxi.obs.cn-southwest-2.myhuaweicloud.com/16054585862.png"
+          >
+          </el-image> -->
+          <div v-for="(it,index) in info.imgUrl" :key="index">
+              <el-image
+            style="width: 105px; height: 105px"
+            :src="it.imgUrl"
           >
           </el-image>
-
-          <el-image
-            v-else
-            v-for="(it,index) in imgUrl" :key="index"
-            style="width: 105px; height: 105px"
-            :src="item.imgUrl"
-          >
-          </el-image>
+          </div>
+        
 
         </div>
       </div>
@@ -42,7 +41,7 @@
       <div class="footer">
         <div class="footer-left">
           <img src="@/assets/img/answers/icon_coin.png" alt="" />
-          <span>{{item.golds}}</span>
+          <span>{{info.golds}}</span>
         </div>
         <div class="footer-center">{{item.answerNum}}个回答</div>
         <div class="footer-right">{{item.insertTime}}</div> 
@@ -63,14 +62,27 @@ export default {
         "https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg",
         "https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg",
       ],
+      info:{
+        imgUrl:["https://xixisuxi.obs.cn-southwest-2.myhuaweicloud.com/16054585862.png"]
+      }
     };
   },
   inject:["_this"],
   props: { 
     item: {
       type: Object,
-      default: {},
+      default:()=>{
+        return {
+          imgUrl:["https://xixisuxi.obs.cn-southwest-2.myhuaweicloud.com/16054585862.png"]
+        }
+      },
     },
+  },
+  mounted(){
+    this.$nextTick(()=>{
+      this.info = JSON.parse(JSON.stringify(this.item));
+    console.log("info==>",this.info);
+    })
   },
   methods: {
     go_exDetail() {
