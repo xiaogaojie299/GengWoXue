@@ -3,7 +3,7 @@
     <!-- 顶部面包屑 -->
     <container>
       <breadcrumb-nav>
-        <span slot="nav-name" @click="go_black">问答广场</span>
+        <span class="hand" slot="nav-name" @click="go_black">问答广场</span>
         <span slot="nav-child">{{ routeNme }}</span>
       </breadcrumb-nav>
 
@@ -34,7 +34,7 @@
           </div>
           <!-- 底部详情 -->
           <div class="footer">
-            <span>{{ exercisesDetail.answerNum }}个回答</span>
+            <span>{{ total }}个回答</span>
           </div>
         </div>
         <!-- 回答列表 -->
@@ -47,14 +47,14 @@
             <div class="answer-people">
               <div class="right-box">
                 <span class="answer-people-name">{{ it.answerUserName }}</span>
-                <span class="answer-people-tag" v-show="it.isAdopt == 1"
+                <span class="answer-people-tag hand" v-show="it.isAdopt == 1"
                   >已采纳</span
                 >
-                <span class="answer-people-tag" v-show="it.state == 2"
+                <span class="answer-people-tag hand" v-show="it.state == 2"
                   >我的回答</span
                 >
                 <span
-                  class="answer-delete"
+                  class="answer-delete hand"
                   @click="deleteMyAswer(i)"
                   v-show="it.state == 2"
                   >删除回答</span
@@ -70,7 +70,10 @@
         </div>
 
         <div class="page-device">
-          <page-device @handleCurrentChange="handleCurrentChange" />
+          <page-device
+            :total="total"
+            @handleCurrentChange="handleCurrentChange"
+          />
         </div>
       </div>
 
@@ -81,7 +84,7 @@
           placeholder="回答被采纳后将会获得奖励哦（100字内）"
           v-model="myAnswer"
         />
-        <div class="btn" @click="letMeAnswer">我来回答</div>
+        <div class="btn hand" @click="letMeAnswer">我来回答</div>
       </div>
     </container>
   </div>
@@ -106,6 +109,7 @@ export default {
       answer: [],
       current: 1,
       size: 10,
+      total: 0,
       myAnswer: "",
     };
   },
@@ -132,7 +136,8 @@ export default {
       console.log("data=====>", data);
       queryQuestionAnswerList(data).then((res) => {
         console.log("问题详情加载成功", res);
-        this.answer = res;
+        this.answer = res.data.list;
+        this.total = res.data.total;
       });
     },
     // 删除我的回答
@@ -144,7 +149,10 @@ export default {
       };
       optDeleteAnswer(data).then((res) => {
         console.log("删除问题成功", res);
-        this.get_AnswerList();
+        if (res.code == 200) {
+          this.get_AnswerList();
+          this.$myMessage("删除问题成功");
+        }
       });
     },
     //我来回答

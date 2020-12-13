@@ -10,17 +10,21 @@
         <!-- icon -->
         <img src="@/assets/img/answers/icon_coin.png" alt="" />
         <!-- 我的学习币 -->
-        <div><span>{{peopelInfo.balance}} </span> 学习币（个）</div>
+        <div>
+          <span>{{ peopelInfo.balance }} </span> 学习币（个）
+        </div>
       </div>
       <div class="row2 my-font">
-        <div><span>{{peopelInfo.money ||0}}</span> 人民币（元）</div>
+        <div>
+          <span>{{ peopelInfo.money || 0 }}</span> 人民币（元）
+        </div>
       </div>
 
       <!-- 按钮组 -->
       <div class="btn-groups">
-        <div class="btn1" @click="go_url('recharge/detail')">充值</div>
-        <div class="btn2" @click="go_url('withdraw')">提现</div>
-        <div class="btn3" @click="go_url('bind')">绑定支付宝</div>
+        <div class="btn1 hand" @click="go_url('recharge/detail')">充值</div>
+        <div class="btn2 hand" @click="go_url('withdraw')">提现</div>
+        <div class="btn3 hand" @click="go_url('bind')">绑定支付宝</div>
       </div>
 
       <!-- 表格数据 -->
@@ -29,7 +33,10 @@
         <div><money-table :tableData="tableData"></money-table></div>
         <!-- 分页 -->
         <div class="page-next">
-          <page-device @handleCurrentChange="handleCurrentChange" :total="total"></page-device>
+          <page-device
+            @handleCurrentChange="handleCurrentChange"
+            :total="total"
+          ></page-device>
         </div>
       </div>
     </div>
@@ -37,46 +44,46 @@
 </template>
 <script>
 import moneyTable from "./childCmps/money-table";
-import {queryMyBalanceChange,withdrawal} from "@/network/personalCenter"
-import {mapState,mapActions} from "vuex";
+import { queryMyBalanceChange, withdrawal } from "@/network/personalCenter";
+import { mapState, mapActions } from "vuex";
 export default {
   data() {
     return {
-      current:1,
-      size:10,
-      tableData:[],
-      total:9
+      current: 1,
+      size: 10,
+      tableData: [],
+      total: 9,
     };
   },
-  computed:{
-    peopelInfo(){
-      return this.$store.state.infoList
-    }
+  computed: {
+    peopelInfo() {
+      return this.$store.state.infoList;
+    },
   },
-  created(){
+  created() {
     this.init();
   },
   methods: {
-    init(){
+    init() {
       this.$store.dispatch("getPersonalData");
-      this.get_MyBalanceChange()
+      this.get_MyBalanceChange();
     },
     //分页
-    handleCurrentChange(data){
-      console.log("分页==>",data);
-      this.current=data;
-      this.get_MyBalanceChange()
+    handleCurrentChange(data) {
+      console.log("分页==>", data);
+      this.current = data;
+      this.get_MyBalanceChange();
     },
     // 获取金额变动列表
-    async get_MyBalanceChange(){
-      let data={
-        current:this.current,
-        size:10
-      }
-     let res =await queryMyBalanceChange(data);
-     console.log("res===>",res);
-     this.tableData=res.list;
-     this.total=res.total;
+    async get_MyBalanceChange() {
+      let data = {
+        current: this.current,
+        size: 10,
+      };
+      let res = await queryMyBalanceChange(data);
+      console.log("res===>", res);
+      this.tableData = res.list;
+      this.total = res.total;
     },
     go_url(url) {
       this.$router.push({

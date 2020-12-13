@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="title">课件库</div>
+    <div class="title">我的课件</div>
     <div class="box">
       <!-- 上面标签 -->
       <div class="header">
@@ -75,7 +75,7 @@
         <div class="header-tag">
           <div class="tag-left">课件名称:</div>
           <div>
-            <input class="kjName" type="text" />
+            <input class="kjName" v-model="kejianName" type="text" />
           </div>
           <div></div>
           <!-- 下面按钮组 -->
@@ -105,21 +105,29 @@
       </div>
 
       <div class="btn-groups">
-        <div class="btn1" @click="reset">重置</div>
-        <div @click="query" class="btn2">查询</div>
+        <div class="btn1 hand" @click="reset">重置</div>
+        <div @click="query" class="btn2 hand">查询</div>
       </div>
       <!-- 顶部表格 -->
       <div>
-        <mykejiankuTable :tableData="tableData" @selectRow="selectRow" />
+        <mykejiankuTable
+          ref="chekcout"
+          :tableData="tableData"
+          @selectRow="selectRow"
+        />
       </div>
       <div class="btn-groups">
         <!-- 分页 -->
         <div class="page-device">
-          <page-device :total="total" @handleCurrentChange="handleCurrentChange" />
+          <page-device
+            :total="total"
+            @handleCurrentChange="handleCurrentChange"
+            :current="current"
+          />
         </div>
-        <div class="btn1" @click="del">删除</div>
+        <div class="btn1 hand" @click="del">删除</div>
         <!-- 分割开始 -->
-        <div @click="dialogVisible = true" class="btn2">上传</div>
+        <div @click="dialogVisible = true" class="btn2 hand">上传</div>
         <!-- 分割结束 -->
         <!-- <div class="btn2" @click="upload">上传</div> -->
       </div>
@@ -173,7 +181,7 @@ export default {
       baseUrl: BASE_URL, //IP地址
       tableData: [{ id: 0 }], //课件库列表
       kjId: "", //课件id
-      row:{},   //table中选择的单元格
+      row: {}, //table中选择的单元格
       fileList: [
         {
           name: "food.jpeg",
@@ -181,6 +189,7 @@ export default {
             "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
         },
       ],
+      i: 0,
 
       // headerObj:{'ContentType':'multipart/form-data'}
     };
@@ -194,9 +203,6 @@ export default {
       return this.$store.state.subjectList;
     },
 
-    kejianName() {
-      return "";
-    },
     auditList() {
       return [
         { name: "全部", id: "" },
@@ -257,9 +263,14 @@ export default {
         status: this.auditValue, //课件类型
       };
       queryMyAllCourseware(data).then((res) => {
+        this.i++;
         this.tableData = res.data.list;
         this.total = res.data.total;
         this.kjId = res.data.list[0].id || 0;
+        if (this.i == 1) {
+          //判断是否是第一次进来
+          this.$refs.chekcout.chekcout(res.data.list[0].id);
+        }
       });
     },
     loadPage() {
@@ -267,23 +278,23 @@ export default {
       this.get_AllCourseware();
     },
     // 选择状态
-    change(val) {
-    },
+    change(val) {},
     // 删除课件
     del() {
       let data = { id: this.kjId };
       delMyCourseware(data).then((res) => {
         if (res.code == 200) {
           this.get_AllCourseware();
+          this.$myMessage("删除课件成功");
         }
       });
     },
     // 测试预览
-    test(){
+    test() {
       console.log("预览");
-    console.log(this.row)
-    this.$preview(this.tableData[0].url);
-     // window.open("http://view.officeapps.live.com/op/view.aspx?src=" + Courseware.seItem.url);
+      console.log(this.row);
+      this.$preview(this.tableData[0].url);
+      // window.open("http://view.officeapps.live.com/op/view.aspx?src=" + Courseware.seItem.url);
     },
     //给耕我学服务器上传
     uploadGwx() {
@@ -294,12 +305,12 @@ export default {
     },
     selectRow(id) {
       // 监听哪个课件的id
-      this.kjId =id;
+      this.kjId = id;
     },
     handleSuccess(response, file, fileList) {
       console.log(response, file, fileList);
       console.log(response.data);
-    }
+    },
   },
   components: {
     mykejiankuTable,

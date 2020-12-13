@@ -12,7 +12,7 @@
             placeholder="选择开始日期"
           >
           </el-date-picker>
-          <img class="calendar_Icon" src="@/assets/img/calendar.png" alt="">
+          <img class="calendar_Icon" src="@/assets/img/calendar.png" alt="" />
         </div>
       </div>
       <div class="inline"></div>
@@ -23,13 +23,13 @@
           placeholder="选择结束日期"
         >
         </el-date-picker>
-        <img class="calendar_Icon" src="@/assets/img/calendar.png" alt="">
+        <img class="calendar_Icon" src="@/assets/img/calendar.png" alt="" />
       </div>
       <!-- 处理状态 -->
       <div class="dispose m-r">
         <div class="my-font m-r">处理状态:</div>
         <!-- 下拉多选框 -->
-        <div class="select-box">
+        <div class="select-box hand">
           <div>
             <el-select
               @change="change"
@@ -51,8 +51,8 @@
       </div>
       <!-- 按钮组 -->
       <div class="btn-group">
-        <div class="btn1 m-r" @click="reset">重置</div>
-        <div class="btn2" @click="query">查询</div>
+        <div class="btn1 m-r hand" @click="reset">重置</div>
+        <div class="btn2 hand" @click="query">查询</div>
       </div>
     </div>
     <!-- 中间表格 -->
@@ -90,7 +90,7 @@
 
         <el-table-column align="center" label="处理状态">
           <template slot-scope="scope">
-            <span>{{scope.row.status==1?"未处理":"已处理"}}</span>
+            <span>{{ scope.row.status == 1 ? "未处理" : "已处理" }}</span>
           </template>
         </el-table-column>
         <!-- 课后习题 -->
@@ -100,7 +100,10 @@
     </div>
     <!-- 底部分页 -->
     <div class="footer">
-      <page-device></page-device>
+      <page-device
+        @handleCurrentChange="handleCurrentChange"
+        :total="total"
+      ></page-device>
     </div>
   </div>
 </template>
@@ -116,6 +119,7 @@ export default {
       current: 1,
       size: 10,
       auditValue: "",
+      total: 0,
     };
   },
   computed: {
@@ -133,77 +137,60 @@ export default {
   methods: {
     // 查询历史反馈记录
     async getFeedbackList() {
-      let timeStr="";
-      if(!this.startTime ||!this.endTime){
-        timeStr="";
-      }else{
-      timeStr = utils.getTimeType(this.startTime)+ " - " +utils.getTimeType(this.endTime)
+      let timeStr = "";
+      if (!this.startTime || !this.endTime) {
+        timeStr = "";
+      } else {
+        timeStr =
+          utils.getTimeType(this.startTime) +
+          " - " +
+          utils.getTimeType(this.endTime);
       }
-      let data = {
+      let params = {
         current: 1,
         size: 10,
         status: this.auditValue,
-        timeStr:timeStr
+        timeStr: timeStr,
       };
-      let res = await queryFeedbackList(data);
-      if(Object.keys(res).length==0){
-        res=[
-           {
-          insertTime: "2016-05-02",
-          status: 0,
-          content: "功能不全",
-          reply:"已经联系开发处理"
-        },
-        {
-          insertTime: "2016-05-04",
-           status: 1,
-          content: "资质审核不通过",
-          reply:"请上传高清大图"
-        },
-        {
-          insertTime: "2016-05-01",
-           status: 0,
-          content: "就像写点啥",
-          reply:"好的"
-        },
-        {
-          insertTime: "2016-05-03",
-           status: 0,
-          content: "功能不全",
-          reply:"已经联系开发处理"
-        },
-        ]
+      let { code, data } = await queryFeedbackList(params);
+      if (code == 200) {
+        this.tableData = data.list;
+        this.total = data.total;
+      } else {
+        this.$myAlert("网络错误");
       }
-      this.tableData=res
-      console.log("res=", this.tableData);
     },
     //查询
     query() {
-      if(!this.startTime && this.endTime){
-        this.$myAlert("请选择您的开始时间")
-        return 
+      if (!this.startTime && this.endTime) {
+        this.$myAlert("请选择您的开始时间");
+        return;
       }
-      if(!this.endTime && this.startTime){
-        this.$myAlert("请选择您的结束时间")
-        return 
+      if (!this.endTime && this.startTime) {
+        this.$myAlert("请选择您的结束时间");
+        return;
       }
-      if(this.startTime!=""&&(this.startTime.getTime() > this.endTime.getTime())){
-        this.$myAlert("开始时间不能大于起始时间")
-        return 
+      if (
+        this.startTime != "" &&
+        this.startTime.getTime() > this.endTime.getTime()
+      ) {
+        this.$myAlert("开始时间不能大于起始时间");
+        return;
       }
       this.getFeedbackList();
     },
     //重置
-    reset(){
-      this.startTime=0;
-      this.endTime=0;
-      this.auditValue=""
+    reset() {
+      this.startTime = 0;
+      this.endTime = 0;
+      this.auditValue = "";
     },
+    // 下拉框选择
+    change(val) {},
     // 分页
-    change(val) {
-      console.log("val=", val);
-      this.current=val;
-    this.getFeedbackList() 
+    handleCurrentChange(current) {
+      this.current = current;
+      this.getFeedbackList();
     },
   },
 };
@@ -233,14 +220,14 @@ export default {
   color: #fff;
 }
 // 日历的样式
-/deep/ .el-input__prefix >i{
+/deep/ .el-input__prefix > i {
   // position: absolute;
   display: none;
   height: 0;
   width: 0;
 }
 /deep/ .el-input--prefix .el-input__inner {
-    padding-left: 16px;
+  padding-left: 16px;
 }
 
 .my-font {
@@ -326,13 +313,13 @@ export default {
   display: flex;
   justify-content: center;
 }
-.calendar{
+.calendar {
   position: relative;
-  & img{
+  & img {
     position: absolute;
     width: 18px;
     height: 18px;
-    top:50%;
+    top: 50%;
     right: 12px;
     transform: translateY(-50%);
   }

@@ -8,7 +8,11 @@
           <div class="header-tag">
             <div class="tag-left">学生:</div>
             <!-- 下拉多选框 -->
-            <input class="tag-right" v-model="inputStudentName" placeholder="请输入学生姓名" />
+            <input
+              class="tag-right"
+              v-model="inputStudentName"
+              placeholder="请输入学生姓名"
+            />
           </div>
         </div>
 
@@ -16,120 +20,139 @@
           <div class="header-tag">
             <div class="tag-left">班级:</div>
             <!-- 下拉多选框 -->
-            <input class="tag-right" v-model="inputClassName" placeholder="请输入班级" />
+            <input
+              class="tag-right"
+              v-model="inputClassName"
+              placeholder="请输入班级"
+            />
           </div>
         </div>
         <!-- 下面按钮组 -->
         <div class="btn-groups">
-          <div class="btn1">重置</div>
-          <div class="btn2" @click="query">查询</div>
+          <div class="btn1 hand" @click="reset">重置</div>
+          <div class="btn2 hand" @click="query">查询</div>
         </div>
       </div>
 
       <!-- 查看课表按钮组 -->
       <div class="btn-groups1">
-        <div class="btn1" @click="look_student">查看课表</div>
-        <div class="btn1" @click="go_stuDetail">学生详情</div>
+        <div class="btn1 hand" @click="look_student">查看课表</div>
+        <div class="btn1 hand" @click="go_stuDetail">学生详情</div>
       </div>
       <!-- 顶部表格 -->
       <div>
-        <my-studentTable ref="stuCheck" @selectRow="selectRow" :tableData="tableData" />
+        <my-studentTable
+          ref="stuCheck"
+          @selectRow="selectRow"
+          :tableData="tableData"
+        />
       </div>
     </div>
     <!-- 底部分页 -->
 
     <div class="footer">
-      <page-device :current="current" @handleCurrentChange="handleCurrentChange" :total="total"  />
+      <page-device
+        :current="current"
+        @handleCurrentChange="handleCurrentChange"
+        :total="total"
+      />
     </div>
-
   </div>
 </template>
 <script>
 import myStudentTable from "./compontsCmps/my-studentTable";
-import {queryAllMyStudent} from "@/network/officeCenter.js"
+import { queryAllMyStudent } from "@/network/officeCenter.js";
 export default {
   data() {
     return {
       dialogVisible: false,
-      inputStudentName:"",
-      inputClassName:"",
-      current:1,
-      size:10,
-      tableData:[],
-      total:1,
-      classIndex:0,
-      selectStudent:[]
+      inputStudentName: "",
+      inputClassName: "",
+      current: 1,
+      size: 10,
+      tableData: [],
+      total: 1,
+      classIndex: 0,
+      selectStudent: [],
+      i: 1,
     };
   },
   created() {
     this.init();
   },
   methods: {
-    init(){
-      this.get_AllMyStudent()
-    },
-    // 查询
-    query(){
-      this.current=1;
+    init() {
       this.get_AllMyStudent();
     },
-      // 调用子组件切换下标的方法
-    childMethod(id=this.tableData[0].id){
-      this.current>1||this.$refs.stuCheck.chekcout(id);
+    // 查询
+    query() {
+      this.current = 1;
+      this.get_AllMyStudent();
+    },
+    reset() {
+      // 重置
+      this.inputStudentName = "";
+      this.inputClassName = "";
+    },
+    // 调用子组件切换下标的方法
+    childMethod() {
+      this.i == 1 && this.$refs.stuCheck.chekcout(this.tableData[0].id);
     },
     // 查看课表
-    look_student(){
-      console.log("查看课表",this.selectStudent)
+    look_student() {
+      console.log("查看课表", this.selectStudent);
       this.$router.push({
         path: "/page/officeCenter/OfficeCenterIndex/test2",
-        query:{
-          studentInfo:JSON.stringify(this.selectStudent)
-        }
+        query: {
+          studentInfo: JSON.stringify(this.selectStudent),
+        },
       });
     },
     //选中的学生信息
-    selectRow(data){
+    selectRow(data) {
       // this.classIndex = data;
-      this.selectStudent=data
+      this.selectStudent = data;
     },
     // 跳转到学生详情
-    go_stuDetail(){
-      let studyInfo=this.selectStudent;
-      console.log("studyInfo=",studyInfo);
-      this.go_url('studentDetail',studyInfo)
+    go_stuDetail() {
+      let studyInfo = this.selectStudent;
+      console.log("studyInfo=", studyInfo);
+      this.go_url("studentDetail", studyInfo);
     },
     go_myStudent() {
       this.$router.push({
         path: "/page/officeCenter/OfficeCenterIndex/myStudent",
       });
     },
-    go_url(path,data) {
-      let routerUrl='/page/officeCenter/OfficeCenterIndex/';
-      console.log('跳转成功');
+    go_url(path, data) {
+      let routerUrl = "/page/officeCenter/OfficeCenterIndex/";
+      console.log("跳转成功");
       this.$router.push({
-          path:routerUrl+path,
-          query:{stuInfo:JSON.stringify(data)}
-      })
+        path: routerUrl + path,
+        query: { stuInfo: JSON.stringify(data) },
+      });
     },
-    async get_AllMyStudent(){ //获取我的学生列表
-        let params={
-          className:this.inputClassName,
-          studentName:this.inputStudentName,
-          current:this.current,
-          size:this.size
-        }
-        let res= await queryAllMyStudent(params);
-        this.tableData=res.data.list;
-        this.childMethod(res.data.list[0].id)
-        if(this.current==1){
-          this.selectStudent = res.data.list[0];
-        }
-        this.total=res.data.total;
-},
-handleCurrentChange(current){//分页组件传过来的页码
-    this.current = current;
-    this.get_AllMyStudent()
-}
+    async get_AllMyStudent() {
+      //获取我的学生列表
+      let params = {
+        className: this.inputClassName,
+        studentName: this.inputStudentName,
+        current: this.current,
+        size: this.size,
+      };
+      let res = await queryAllMyStudent(params);
+      this.tableData = res.data.list;
+      if (this.i == 1) {
+        this.childMethod(); //重复
+        this.selectStudent = res.data.list[0];
+      }
+      this.total = res.data.total;
+    },
+    handleCurrentChange(current) {
+      //分页组件传过来的页码
+      this.current = current;
+      this.get_AllMyStudent();
+    },
   },
   components: {
     myStudentTable,
@@ -168,7 +191,7 @@ handleCurrentChange(current){//分页组件传过来的页码
       }
       .tag-right {
         outline: none;
-        padding-left:6px;
+        padding-left: 6px;
         width: 98px;
         height: 34px;
         background: #ffffff;

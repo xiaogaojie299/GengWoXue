@@ -65,7 +65,7 @@
     </div>
     <!-- footer提交按钮 -->
     <div class="footer">
-      <div class="footer-btn" @click="submit">提交</div>
+      <div class="footer-btn hand" @click="submit">提交</div>
     </div>
   </div>
 </template>
@@ -174,13 +174,13 @@ export default {
       type == 2 ? (this.serverCode = res) : (this.newServerCode = res);
     },
     // 传给后端，后端校验验证码
-    get_checkCaptcha(phone,code) {
-      let data = { phone,code };
+    get_checkCaptcha(phone, code) {
+      let data = { phone, code };
       return checkCaptcha(data);
     },
     // 提交表单给后台
-    async submit(type = 2) {
-      if (type == 2) {
+    async submit() {
+      if (this.currentActive == 0) {
         if (!this.phone) {
           alert("手机号码不能为空");
           return;
@@ -190,62 +190,66 @@ export default {
           return;
         }
         if (!this.userUpwd) {
-          alert("新密码不能为空");
+          this.$myAlert("新密码不能为空");
           return;
         }
         if (!this.redoUserUpwd) {
-          alert("请再次输入密码");
+          this.$myAlert("请再次输入密码");
           return;
         }
         if (!validatePhoneNumber(this.phone)) {
-          alert("请输入正确的手机格式");
+          this.$myAlert("请输入正确的手机格式");
           return;
         }
         if (this.userUpwd !== this.redoUserUpwd) {
-          alert("两次输入的密码不一致");
+          this.$myAlert("两次输入的密码不一致");
           return;
         }
-        let result = await this.get_checkCaptcha(this.phone,this.code);
+        let result = await this.get_checkCaptcha(this.phone, this.code);
         // 后端校验验证码，如果正确，调用修改密码接口，否则return 重新输入验证码
-        let data = {
+        let params = {
           code: this.code,
           newPassword: this.userUpwd,
           phone: this.phone,
         };
-        let res = await optResetPassword(data);
-        this.$myAlert("重置密码成功");
-      }else{
+        let { data, code } = await optResetPassword(params);
+        if (code == 200) {
+          this.$myAlert("重置密码成功");
+        } else {
+          this.$myAlert("重置密码失败，网络错误");
+        }
+      } else {
         if (!this.phone) {
-          alert("手机号码不能为空");
+          this.$myAlert("手机号码不能为空");
           return;
         }
         if (!this.code) {
-          alert("验证码不能为空");
+          this.$myAlert("验证码不能为空");
           return;
         }
         if (!this.newPhone) {
-          alert("新密码不能为空");
+          this.$myAlert("新手机不能为空");
           return;
         }
         if (!this.newCode) {
-          alert("验证码不能为空");
+          this.$myAlert("验证码不能为空");
           return;
         }
         if (!validatePhoneNumber(this.phone)) {
-          alert("请输入正确的手机格式");
+          this.$myAlert("请输入正确的手机格式");
           return;
         }
         if (!validatePhoneNumber(this.newPhone)) {
-          alert("请输入正确的手机格式");
+          this.$myAlert("请输入正确的手机格式");
           return;
         }
-        let result = await this.get_checkCaptcha(this.newPhone,this.newCode);
+        let result = await this.get_checkCaptcha(this.newPhone, this.newCode);
         // 后端校验验证码，如果正确，调用修改密码接口，否则return 重新输入验证码
         let data = {
-          code: this.code,    //原手机号验证码
+          code: this.code, //原手机号验证码
           newCode: this.newCode, //新手机号验证码
-          newPhone: this.newPhone,  //新手机号码
-          phone:this.phone    //原手机号码
+          newPhone: this.newPhone, //新手机号码
+          phone: this.phone, //原手机号码
         };
         let res = await optResetPassword(data);
         // this.$myAlert("重置密码成功");
@@ -257,6 +261,10 @@ export default {
 <style lang="scss" scoped>
 input {
   padding: 13px 16px;
+  outline: none;
+}
+input:focus {
+  border: 1px solid #f13232 !important;
 }
 .box {
   margin-left: 0px;

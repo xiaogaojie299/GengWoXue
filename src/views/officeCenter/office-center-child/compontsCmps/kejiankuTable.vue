@@ -23,8 +23,12 @@
           <img
             @click="selectRow(scope.$index, scope.row)"
             style="width: 20px; height: 20px"
-            :src="isActive==scope.$index?require('@/assets/img/success.png'):require('@/assets/img/icon_radiobutton.png')"
-            :alt="scope.$index+','+isActive"
+            :src="
+              isActive == scope.$index
+                ? require('@/assets/img/success.png')
+                : require('@/assets/img/icon_radiobutton.png')
+            "
+            :alt="scope.$index + ',' + isActive"
           />
         </template>
       </el-table-column>
@@ -77,24 +81,23 @@
 
 <script>
 export default {
-    data() {
+  data() {
     return {
-      isActive:0
+      isActive: 0,
     };
   },
-  props:{
-    tableData:{
-      type:Array,
-      dedefault:()=>{
-        return []
-      }
-    }
+  props: {
+    tableData: {
+      type: Array,
+      dedefault: () => {
+        return [];
+      },
+    },
   },
-  created(){
-    console.log('tableData==>',this.tableData);
+  created() {
+    console.log("tableData==>", this.tableData);
   },
   methods: {
-
     tableRowClassName({ row, rowIndex }) {
       if (rowIndex % 2 == 0) {
         return "warning-row";
@@ -103,10 +106,14 @@ export default {
       }
     },
     // 点击单元格
-  handleSelectionChange() {
-        this.isActive=row.id;
-      this.$emit("selectRow",row);
-      },
+    handleSelectionChange(row) {
+      this.isActive = row.id;
+      this.$emit("selectRow", row);
+    },
+    // 切换actice的下标
+    chekcout(id) {
+      this.isActive = id;
+    },
     // selectRow(index, rows) {
     //   console.log("isActive=",this.isActive)
     //   console.log(index, rows);
@@ -119,11 +126,10 @@ export default {
       });
     },
   },
-
 };
 </script>
 <style lang="scss" scoped>
-  /deep/ .cell{
-  color:#666666;
+/deep/ .cell {
+  color: #666666;
 }
 </style>

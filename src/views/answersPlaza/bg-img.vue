@@ -31,7 +31,7 @@
           <!-- 中间内容 -->
           <div class="center-content">
             <!-- input搜索框 -->
-            <div>
+            <div class="hand">
               <input v-model="seachTitle" type="text" placeholder="搜索问答" />
               <img
                 @click="get_QuestionSquareList"
@@ -41,7 +41,7 @@
             </div>
           </div>
           <!-- 右侧内容 -->
-          <div class="right-content" @click="go_myAnswer">
+          <div class="right-content hand" @click="go_myAnswer">
             <span>我要提问</span>
           </div>
         </div>
@@ -54,7 +54,11 @@
     </div>
     <!-- 底部分页按钮 -->
     <div class="footer">
-      <page-device></page-device>
+      <page-device
+        @handleCurrentChange="handleCurrentChange"
+        :total="total"
+        :current="current"
+      ></page-device>
     </div>
   </div>
 </template>
@@ -72,8 +76,8 @@ export default {
   data() {
     return {
       seachTitle: "",
-      current: 1, //当前页  /* mixins中定义好了 */
-      size: 10, //分页条数  /* mixins中定义好了 */
+      //current: 1, //当前页  /* mixins中定义好了 */
+      //size: 10, //分页条数  /* mixins中定义好了 */
       elTitle: "回答广场",
       options: [
         {
@@ -105,6 +109,9 @@ export default {
     questionSquareList1(e) {
       console.log(e);
       return this.questionSquareList;
+    },
+    value() {
+      this.current = 1;
     },
   },
   created() {
@@ -138,6 +145,17 @@ export default {
       }
       */
     },
+    handleCurrentChange(current) {
+      //分页
+      this.current = current;
+      if (this.value == 1) {
+        this.get_QuestionSquareList();
+      } else if (this.value == 2) {
+        this.get_MeAnswerList();
+      } else {
+        this.get_MeQuestionList();
+      }
+    },
 
     // 查询我的回答
     //get_MeQuestionList
@@ -148,20 +166,22 @@ export default {
       };
       queryMeAnswerList(params).then((res) => {
         console.log("查询我的问题", res);
-        let {code,data} = res;
-        if(code ==200){
-              //  判断返回的图片是否含有逗号，如果有，转为数组
-       data.list.forEach(item=>{
-          if (item.imgUrl) {
-          item.imgUrl = item.imgUrl.includes(",")?item.imgUrl.split(","):[].concat(item.imgUrl);
-        }else{
-          item.imgUrl = [];
+        let { code, data } = res;
+        this.total = data.total;
+        if (code == 200) {
+          //  判断返回的图片是否含有逗号，如果有，转为数组
+          data.list.forEach((item) => {
+            if (item.imgUrl) {
+              item.imgUrl = item.imgUrl.includes(",")
+                ? item.imgUrl.split(",")
+                : [].concat(item.imgUrl);
+            } else {
+              item.imgUrl = [];
+            }
+          });
+          data.list[0].setValue = this.value;
+          this.questionSquareList = data.list;
         }
-        })
-        data.list[0].setValue = this.value;
-        this.questionSquareList = data.list;
-        }
-      
       });
     },
     //跳转我的提问
@@ -179,16 +199,19 @@ export default {
         size: this.size,
       };
       queryQuestionSquareList(params).then((res) => {
-        let {code,data} = res;
+        let { code, data } = res;
+        this.total = data.total;
         //  判断返回的图片是否含有逗号，如果有，转为数组
-        data.list.forEach(item=>{
+        data.list.forEach((item) => {
           if (item.imgUrl) {
-          item.imgUrl = item.imgUrl.includes(",")?item.imgUrl.split(","):[].concat(item.imgUrl);
-        }else{
-          item.imgUrl = [];
-        }
-        })
-          data.list[0].setValue = this.value;
+            item.imgUrl = item.imgUrl.includes(",")
+              ? item.imgUrl.split(",")
+              : [].concat(item.imgUrl);
+          } else {
+            item.imgUrl = [];
+          }
+        });
+        data.list[0].setValue = this.value;
         this.questionSquareList = data.list;
         console.log("this.questionSquareList", this.questionSquareList);
       });

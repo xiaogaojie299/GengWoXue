@@ -2,7 +2,7 @@
   <div>
     <container>
       <breadcrumb-nav>
-        <span slot="nav-name" @click="go_black">问答广场</span>
+        <span slot="nav-name" class="hand" @click="go_black">问答广场</span>
         <span slot="nav-child">我要提问</span>
       </breadcrumb-nav>
       <!-- 主题内容 -->
@@ -11,7 +11,11 @@
         <div class="my-question">
           <span>*我的问题</span>
           <!-- 输入框 -->
-          <input type="text" v-model="problem" placeholder="请输入您的问题（20字内）" />
+          <input
+            type="text"
+            v-model="problem"
+            placeholder="请输入您的问题（20字内）"
+          />
         </div>
         <!-- 问题描述 -->
         <div class="problem-description">
@@ -27,13 +31,25 @@
         </div>
         <!-- 图片上传 -->
         <div class="upload-img">
+          <!-- 
+            <el-upload
+  action="https://jsonplaceholder.typicode.com/posts/"
+  :show-file-list="false"
+  :on-success="handleAvatarSuccess"
+  :before-upload="beforeAvatarUpload">
+  <img v-if="imageUrl" :src="imageUrl" class="avatar">
+  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+</el-upload> -->
+
           <el-upload
-            action="http://ip:80/student/base/uploadImg"
+            :show-file-list="false"
+            :action="BASE_URL + 'student/base/uploadImg'"
             list-type="picture-card"
             :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
             :on-success="handleSuccess"
             :on-progress="handleProgress"
+            :before-upload="beforeAvatarUpload"
           >
             <i class="el-icon-plus"></i>
           </el-upload>
@@ -44,97 +60,117 @@
 
         <!-- 悬赏金额 -->
         <div>
-            <div class="my-question">
-          <span>*悬赏金额</span>
-          <!-- 输入框 -->
-          <input type="text" v-model="golds" placeholder="据说悬赏越高，回答的人越多哦" />
-        </div>
+          <div class="my-question">
+            <span>*悬赏金额</span>
+            <!-- 输入框 -->
+            <input
+              type="text"
+              v-model="golds"
+              placeholder="据说悬赏越高，回答的人越多哦"
+            />
+          </div>
         </div>
         <!-- 可用状元币 -->
-        <div class="usable-gold">可用状元币：10个</div>
+        <div class="usable-gold">可用状元币：{{ myGold }}个</div>
       </div>
       <!-- 底部按钮 -->
       <div class="footer">
-          <div @click="submit" class="btn">提交</div>   
+        <div @click="submit" class="btn hand">提交</div>
       </div>
     </container>
   </div>
 </template>
 <script>
-import {optAddQuestion} from "@/network/answersPlaza"
+import { optAddQuestion } from "@/network/answersPlaza";
+import { BASE_URL } from "@/network/config";
+import { state } from "vuex";
 export default {
-    data(){
-        return{
-            dialogImageUrl: '',
-            dialogVisible: false, //控制遮罩层开关
-            describe:"",     //问题描述
-            problem:"",      //输入问题
-            golds:"",       //状元币个数
-            imgUrl:"https://xixisuxi.obs.cn-southwest-2.myhuaweicloud.com/16055437650.png"       //图片上传的路径
-        }
+  data() {
+    return {
+      dialogImageUrl: "",
+      dialogVisible: false, //控制遮罩层开关
+      describe: "", //问题描述
+      problem: "", //输入问题
+      golds: "", //状元币个数
+      BASE_URL: BASE_URL,
+      imgUrl: [], //图片上传的路径
+    };
+  },
+  computed: {
+    myGold() {
+      return this.$store.state.infoList.balance;
     },
-    methods: {
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-      handlePictureCardPreview(file) {
-        console.log("file",file);
-        this.dialogImageUrl = file.url;
-        this.dialogVisible = true;
-      },
-      handleSuccess(event, file, fileList){
-        console.log("上传中 event=",event)
-        console.log("上传 file",file)
-        console.log("上传 fileList",fileList)
-      },
-      handleProgress(){
-
-      },
-      // 初始化
-      init(){
-        this.describe="";
-        this.describe="";
-        this.golds="";
-      },
-      // 提交提问
-      submit(){
-        if(!this.problem){
-          this.$myAlert("请输入您的问题");
-          return
-        }
-        if(!this.describe){
-          this.$myAlert("请输入您的问题描述");
-          return
-        }
-        if(!this.imgUrl){
-          this.$myAlert("请上传您的问题图片");
-        }
-        let data={
-          question:this.problem,
-          describe:this.describe,
-          golds:this.golds,
-          imgUrl:this.imgUrl 
-        };
-        optAddQuestion(data).then(res=>{
-          console.log("问题上传成功");
-          this.init();
-          this.$myAlert("提交问题成功");
-        })
-      },
-      // 返回上一页
-      go_black(){
-        this.$router.go(-1);
+  },
+  methods: {
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePictureCardPreview(file) {
+      console.log("file", file);
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
+    handleSuccess(event, file, fileList) {
+      this.imgUrl = event.data;
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isPNG = file.type === "image/png";
+      if (!isJPG && !isPNG) {
+        this.$message.error("上传头像图片只能是 JPG或者PNG 格式!");
       }
-    }
+      return isJPG || isPNG;
+    },
+    handleProgress() {},
+    // 初始化
+    init() {
+      this.describe = "";
+      this.problem = "";
+      this.golds = "";
+    },
+    // 提交提问
+    submit() {
+      if (!this.problem) {
+        this.$myAlert("请输入您的问题");
+        return;
+      }
+      if (!this.describe) {
+        this.$myAlert("请输入您的问题描述");
+        return;
+      }
+      if (this.golds > this.myGold) {
+        this.$myAlert("状元币余额不足");
+        return;
+      }
+      // if (!this.imgUrl) {
+      //   this.$myAlert("请上传您的问题图片");
+      // }
+      let data = {
+        question: this.problem,
+        describe: this.describe,
+        golds: this.golds,
+        imgUrl: this.imgUrl,
+      };
+      optAddQuestion(data).then((res) => {
+        this.this.init();
+        this.$myAlert("提交问题成功");
+      });
+    },
+    // 返回上一页
+    go_black() {
+      console.log("跳转");
+      this.$router.go(-1);
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 // 修改elmentui中图片上传的样式
-/deep/ .el-upload--picture-card{
-background: #F7F7F7;
-border: 1px solid #DDDDDD;
-border-radius: 6px;
+/deep/ .el-upload--picture-card {
+  background: #f7f7f7;
+  border: 1px solid #dddddd;
+  border-radius: 6px;
 }
 input {
   border: none;
@@ -143,7 +179,6 @@ input {
   font-size: 16px;
   font-family: Source Han Sans CN;
   font-weight: 400;
-  color: #9a9a9a;
   height: 90%;
 }
 textarea {
@@ -205,36 +240,35 @@ textarea {
       padding-top: 16px;
     }
   }
-  .upload-img{
-      margin-bottom: 15px;
+  .upload-img {
+    margin-bottom: 15px;
   }
-  .usable-gold{
-font-size: 14px;
-font-family: Source Han Sans CN;
-font-weight: 300;
-color: #9A9A9A;
-line-height: 36px;
-padding-left:34px;
+  .usable-gold {
+    font-size: 14px;
+    font-family: Source Han Sans CN;
+    font-weight: 300;
+    color: #9a9a9a;
+    line-height: 36px;
+    padding-left: 34px;
   }
 }
-.footer{
-    margin-top:100px;
-    .btn{
-        margin:0 auto;
-        width: 274px;
-        height: 45px;
-        background: linear-gradient(110deg, #F13232, #EF763C);
-        box-shadow: 1px 6px 9px 0px rgba(68, 6, 6, 0.32);
-        border-radius: 4px;
-        // 字体颜色
-        font-size: 19px;
-        font-family: Source Han Sans CN;
-        font-weight: 400;
-        color: #FFFFFF;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
+.footer {
+  margin-top: 100px;
+  .btn {
+    margin: 0 auto;
+    width: 274px;
+    height: 45px;
+    background: linear-gradient(110deg, #f13232, #ef763c);
+    box-shadow: 1px 6px 9px 0px rgba(68, 6, 6, 0.32);
+    border-radius: 4px;
+    // 字体颜色
+    font-size: 19px;
+    font-family: Source Han Sans CN;
+    font-weight: 400;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 </style>

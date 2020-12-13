@@ -80,51 +80,52 @@
           </div>
         </div>
       </div>
-          <!-- 下面按钮组 -->
+      <!-- 下面按钮组 -->
       <div class="btn-groups">
-        <div class="btn1" @click="reset">重置</div>
-        <div @click="query" class="btn2">查询</div>
+        <div class="btn1 hand" @click="reset">重置</div>
+        <div @click="query" class="btn2 hand">查询</div>
       </div>
       <!-- 顶部表格 -->
       <div>
-        <kejiankuTable :tableData="tableData" />
+        <kejiankuTable ref="childMethod" :tableData="tableData" />
       </div>
       <div class="page-device">
-          <page-device />
+        <page-device
+          :total="total"
+          @handleCurrentChange="handleCurrentChange"
+          :current="current"
+        />
       </div>
       <div class="btn-groups">
-        <div class="btn1" @click="previewPPT">预览</div>
+        <div class="btn1 hand" @click="previewPPT">预览</div>
         <!-- <a class="btn2" style="text-decoration: none;" :href="selectKejian.url">下载</a> -->
-        <a class="btn2" @click="uploadPPT" style="text-decoration: none;">下载</a>
+        <a class="btn2 hand" @click="uploadPPT" style="text-decoration: none;"
+          >下载</a
+        >
       </div>
     </div>
     <!-- 弹框，遮罩层 -->
-    <el-dialog
-      title="下载课件"
-      :visible.sync="dialogVisible"
-      width="60%"
-      >
+    <el-dialog title="下载课件" :visible.sync="dialogVisible" width="60%">
       <div style="display:flex">
         <div class="label">支付方式：</div>
         <div>
-        <radio-button @chekoutIndex="chekoutIndex">
-          <span slot="radio1" class="my-font">微信支付</span>
-          <span slot="radio2" class="my-font">支付宝支付</span>
-        </radio-button>
-      </div>
+          <radio-button @chekoutIndex="chekoutIndex">
+            <span slot="radio1" class="my-font">微信支付</span>
+            <span slot="radio2" class="my-font">支付宝支付</span>
+          </radio-button>
+        </div>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="pay">确 定</el-button>
       </span>
-</el-dialog>
-
+    </el-dialog>
   </div>
 </template>
 <script>
 import kejiankuTable from "./compontsCmps/kejiankuTable";
 import { state, actions } from "vuex";
-import {queryAllCourseware,addCoursewareOrder} from "@/network/officeCenter"
+import { queryAllCourseware, addCoursewareOrder } from "@/network/officeCenter";
 export default {
   data() {
     return {
@@ -132,13 +133,14 @@ export default {
       subjectValue: "",
       classValue: "",
       kejianName: "",
-      current:1,
-      size:10,
-      total:0,    //数据总数
-      tableData:[],  //列表详情
-      selectKejian:{},
-      dialogVisible:false, //控制遮罩层开关
-      type:1
+      current: 1,
+      size: 10,
+      total: 0, //数据总数
+      tableData: [], //列表详情
+      selectKejian: {},
+      dialogVisible: false, //控制遮罩层开关
+      type: 1,
+      i: 0,
     };
   },
   computed: {
@@ -150,7 +152,7 @@ export default {
     },
     kejianType() {
       return [
-        {name:"全部",id:""},
+        { name: "全部", id: "" },
         { name: "视频", id: 1 },
         { name: "PPT", id: 2 },
         { name: "文档", id: 3 },
@@ -161,7 +163,7 @@ export default {
     this.init();
   },
   methods: {
-        //单选框选中
+    //单选框选中
     chekoutIndex(data) {
       //是从公共组件传过来的下标
       switch (data) {
@@ -179,76 +181,85 @@ export default {
     init() {
       this.subjectList = this.$store.dispatch("getSubjectList");
       this.classList = this.$store.dispatch("getClassList");
-      this.get_AllCourseware()
+      this.get_AllCourseware();
     },
-    pay(){
-
-    this.pushCoursewareOrder()
+    pay() {
+      this.pushCoursewareOrder();
     },
     // 查询
-    query(){
-      this.get_AllCourseware()
+    query() {
+      this.get_AllCourseware();
       // http://139.9.154.145/teacher-server/api/officeCenter/queryAllCourseware?current=1&gradeId=1&name=1&size=10&subjectsId=1&type=1
     },
-    reset(){//清空选项框
-      this.kejianTypeValue="";    //课件类型下拉款
-      this.subjectValue="";       //科目下拉框
-      this.kejianName="";         //课件名称
-      this.classValue=""          //选择的年级
+    reset() {
+      //清空选项框
+      this.kejianTypeValue = ""; //课件类型下拉款
+      this.subjectValue = ""; //科目下拉框
+      this.kejianName = ""; //课件名称
+      this.classValue = ""; //选择的年级
     },
-
-    previewPPT(){// 预览PPT
+    // 分页
+    handleCurrentChange(data) {
+      this.current = data;
+      this.get_AllCourseware();
+    },
+    previewPPT() {
+      // 预览PPT
       this.$preview(this.selectKejian.url);
     },
-    uploadPPT(){//下载PPT
+    uploadPPT() {
+      //下载PPT
       this.dialogVisible = true;
       let a = document.getElementsByClassName("btn2")[1];
       //用户付款操作
     },
-    pushCoursewareOrder(){ //调用支付接口
+    pushCoursewareOrder() {
+      //调用支付接口
       let params = {
-        payType:this.type,
+        payType: this.type,
         // coursewareId:this.selectKejian.id
-        coursewareId:2
- }
-        addCoursewareOrder(params).then(res=>{
-          console.log("res",res);
-        let {code,data} = res;
-        if(code == 0){
-          console.log("data==>",data);
-        } 
-      })
-      
+        coursewareId: 2,
+      };
+      addCoursewareOrder(params).then((res) => {
+        console.log("res", res);
+        let { code, data } = res;
+        if (code == 0) {
+          console.log("data==>", data);
+        }
+      });
     },
 
-    selectRow(row){//课件库选择的row
-      this.selectKejian=row;  
+    selectRow(row) {
+      //课件库选择的row
+      this.selectKejian = row;
     },
     // 查询课件列表
-    get_AllCourseware(){
-      let data={
-        current:this.current, //当前页码
-        size:this.size,       //每页多少条数据
-        gradeId:this.classValue,  //班级id
-        name:this.kejianName,    //课件名称
-        subjectsId:this.subjectValue,  //科目id
-        type:this.kejianTypeValue   //课件类型
-      }
-      queryAllCourseware(data).then(res=>{
+    get_AllCourseware() {
+      let data = {
+        current: this.current, //当前页码
+        size: this.size, //每页多少条数据
+        gradeId: this.classValue, //班级id
+        name: this.kejianName, //课件名称
+        subjectsId: this.subjectValue, //科目id
+        type: this.kejianTypeValue, //课件类型
+      };
+      queryAllCourseware(data).thein((res) => {
+        this.i++;
         console.log("课件库列表");
-        this.tableData=res.list;
-        this.total=res.total;
-        if(this.current==1){
-          this.selectKejian=res.list[0]   //页面刷新的时候，给row赋值一个初始值
+        this.tableData = res.list;
+        this.total = res.total;
+        if (this.i == 1) {
+          this.selectKejian = res.list[0]; //页面刷新的时候，给row赋值一个初始值
+          this.$refs.childMethod.chekcout(res.list[0].id);
         }
-      })
+      });
     },
     // 点击分页出发回调
-    handleCurrentChange(val){
-      this.current=val;
+    handleCurrentChange(val) {
+      this.current = val;
       get_AllCourseware;
     },
-   
+
     change(val) {
       console.log("val=", val);
     },
@@ -275,8 +286,8 @@ export default {
   // width: 100%;
   width: 101px;
   height: 32px;
-  background: #FFFFFF;
-  border: 1px solid #EFEFEF;
+  background: #ffffff;
+  border: 1px solid #efefef;
   border-radius: 3px;
   font-size: 10px;
   font-family: Source Han Sans CN;
@@ -299,14 +310,14 @@ export default {
   color: #484949;
 }
 /deep/ .el-select-dropdown__item.hover {
-  background: linear-gradient(110deg, #F13232, #EF753C);
+  background: linear-gradient(110deg, #f13232, #ef753c);
   color: #fff;
 }
-.label{
+.label {
   display: flex;
   align-items: center;
   font-size: 18px;
-  margin-right:12px;
+  margin-right: 12px;
 }
 .box {
   background: #f9f9f9;
@@ -338,8 +349,8 @@ export default {
         width: 100%;
         width: 180px;
         height: 32px;
-        background: #FFFFFF;
-        border: 1px solid #EFEFEF;
+        background: #ffffff;
+        border: 1px solid #efefef;
         border-radius: 3px;
         font-size: 10px;
         font-family: Source Han Sans CN;
@@ -364,7 +375,7 @@ export default {
         color: #4d4d4d;
       }
     }
-    .w-100{
+    .w-100 {
       width: 250px;
     }
   }

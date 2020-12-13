@@ -18,10 +18,11 @@ export default new Vuex.Store({
     kfList: [], //获取客服电话，引导页，推广中心图片
     infoList: [], //获取用户信息列表
     token: "", //登录token
-    userInfo:{},  //登录成功后返回的列表
-    personalIndex:"", //我的个人中心左侧的导航栏的下标选择
-    officeCenterIndex:"",   //办公中心下拉框
-    userImg:""
+    userInfo: {}, //登录成功后返回的列表
+    personalIndex: "", //我的个人中心左侧的导航栏的下标选择
+    officeCenterIndex: "", //办公中心下拉框
+    userImg: "",
+    kfInfo: {},
   },
   mutations: {
     setClassList(state, list) {
@@ -49,24 +50,28 @@ export default new Vuex.Store({
     setUserInfo(state, value) {
       state.userInfo = value;
     },
-    setPersonalIndex(state,value){
-      state.personalIndex = value;
+    setPersonalIndex(state, value) {
+      state.personalIndex = "" + value;
     },
-    setOfficeCenterIndex(state,value){
-      state.officeCenterIndex =""+ value;
+    setOfficeCenterIndex(state, value) {
+      state.officeCenterIndex = "" + value;
     },
-    setUserImg(state,value){
-      state.userImg=value;
-    }
+    setUserImg(state, value) {
+      state.userImg = value;
+    },
+    setKfInfo(state, value) {
+      state.kfInfo = value;
+    },
   },
   actions: {
     //获取登录状态的token
-    async getToken(context, params) {
+    async getToken({ dispatch, commit }, params) {
       let res = await captchaLogin(params.data);
-      console.log("res==》验证",res.data)
+      console.log("res==》验证", res.data);
       // context.commit("setToken", res.data.token);
-      context.commit("setUserInfo",res.data);
-      context.commit("setUserImg",res.data.avatar);
+      commit("setUserInfo", res.data);
+      commit("setUserImg", res.data.avatar);
+      dispatch("getMessageList");
       // window.localStorage.setItem("userInfo", res.data);
       // window.localStorage.setItem("token",res.data.token);
       params.$router.push({
@@ -74,48 +79,57 @@ export default new Vuex.Store({
       });
     },
     //清空登录状态的token
-    cearToken(context){
-      context.commit("setToken","");
-      window.localStorage.setItem("token"," ");
+    cearToken(context) {
+      context.commit("setToken", "");
+      window.localStorage.setItem("token", " ");
     },
     // 获取所有年纪数据
     async getClassList(context) {
       // 发送ajax 异步请求
       let res = await queryAllGrade();
       let teamArr = res.data.unshift({ name: "全部", id: "" });
-      context.commit("setClassList", res);
+      context.commit("setClassList", res.data);
     },
     // 获取所有科目
     async getSubjectList(context) {
       let res = await queryAllSubjects();
-      let {code,data} = res
+      let { code, data } = res;
       data.unshift({ name: "全部", id: "" });
-      console.log("res.data=",data);
+      console.log("获取年级=", data);
       context.commit("setSubjectList", data);
     },
     //获取消息通知列表
-    async getMessageList(context, data) {
-      console.log("data==>", data);
+    async getMessageList(
+      context,
+      data = {
+        current: 1, //页码
+        size: 10, //条数
+        read: 1,
+        type: 3,
+      }
+    ) {
+      data || console.log("data==>", data);
       let res = await queryMessageList(data);
-      res.data.forEach((item) => {
-        item.ischeckout;
-      });
+      console.log("res==", res);
+      // res.data.forEach((item) => {
+      //   item.ischeckout;
+      // });
       context.commit("setMsgCenterList", res.data);
     },
     // 获取客服列表
     async getKfList(context, data) {
       let pamars = { type: data };
       let res = await querySystemSetByType(pamars);
-      console.log('客服',res.data);
-      context.commit("setKfList", res.data);
-
+      console.log("客服", res.data);
+      // context.commit("setKfList", res.data);
+      context.commit("setKfInfo", res.data);
     },
     //获取个人资料
     async getPersonalData(context) {
       let res = await queryPersonalData();
       context.commit("setinfoList", res.data);
       context.commit("setUserImg".res.data.avatar);
-      console.log("res.data.avatar",res.data.avatar);
+      console.log("res.data.avatar", res.data.avatar);
     },
   },
   modules: {},

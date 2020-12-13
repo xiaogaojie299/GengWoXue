@@ -23,11 +23,14 @@
 // import navBar from "./components/nav-bar"
 // import container from "./components/container"
 // import footers from "./components/footers"
+import { mapActions } from "vuex";
 export default {
   data() {
     return {};
   },
-  mounted() {},
+  mounted() {
+    this.$store.dispatch("getKfList", 1);
+  },
   components: {},
 };
 </script>
@@ -58,11 +61,11 @@ button {
   border: none;
   outline: none;
 }
- input::-webkit-outer-spin-button,
- input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    appearance: none;
-    margin: 0;
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
 }
 
 // html {

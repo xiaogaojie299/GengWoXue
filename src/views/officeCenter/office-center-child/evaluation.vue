@@ -149,24 +149,36 @@
         </div>
       </div>
       <div class="btn-groups">
-        <div class="btn1">重置</div>
-        <div class="btn2" @click="query">查询</div>
+        <div class="btn1 hand" @click="reset">重置</div>
+        <div class="btn2 hand" @click="query">查询</div>
       </div>
       <!-- 查看课表按钮组 -->
       <div class="btn-groups1">
-        <div class="btn1" @click="go_evalDetails">测评详情</div>
-        <div class="btn1" @click="go_readWork">阅卷</div>
-        <div class="btn1" @click="publish">发布成绩</div>
+        <div class="btn1 hand" @click="go_evalDetails">测评详情</div>
+        <div class="btn1 hand" @click="go_readWork">阅卷</div>
+        <div class="btn1 hand" @click="publish">
+          发布成绩
+        </div>
+        <div class="beizhu">（仅能发布课后习题成绩）</div>
       </div>
       <!-- 底部表格 -->
       <div>
-        <evaluation-table ref="evaCheck" @selectRow="selectRow" :active="active" :tableData="tableData" />
+        <evaluation-table
+          ref="evaCheck"
+          @selectRow="selectRow"
+          :active="active"
+          :tableData="tableData"
+        />
       </div>
     </div>
     <!-- 底部分页 -->
 
     <div class="footer">
-      <page-device @handleCurrentChange="handleCurrentChange" :current="current" :total="total" />
+      <page-device
+        @handleCurrentChange="handleCurrentChange"
+        :current="current"
+        :total="total"
+      />
     </div>
     <!-- 遮罩层弹框 -->
 
@@ -216,7 +228,8 @@ export default {
       pushAnswerValue: "",
       tableData: [], //表格数据
       selectTest: [],
-      active:0
+      active: 0,
+      i: 0, //判断是否是第一次获取数据
     };
   },
   created() {
@@ -227,15 +240,26 @@ export default {
       this.get_ClassEvaluation();
     },
     // 调用子组件切换下标的方法
-    childMethod(id=this.tableData[0].id){
-      this.current>1||this.$refs.evaCheck.chekcout(id);
-      console.log("调用成功",this.tableData[0]);
+    childMethod(id) {
+      console.log("this.i==", this.i);
+      this.i == 1 && this.$refs.evaCheck.chekcout(this.tableData[0].id);
+      console.log("调用成功", this.tableData[0]);
     },
     // 查询
     query() {
-      this.current=1;
+      this.current = 1;
       this.get_ClassEvaluation();
       this.childMethod();
+    },
+    // 重置
+    reset() {
+      this.className = ""; //班级名称
+      this.studentName = ""; //学生姓名
+      this.examStatusValue = "";
+      this.scoreValue = "";
+      this.examPaper = "";
+      this.testPaperTypeValue = "";
+      this.pushAnswerValue = "";
     },
     go_myStudent() {
       this.$router.push({
@@ -274,17 +298,17 @@ export default {
         id: this.selectTest.id,
       };
       pushExamination(params).then((res) => {
-        console.log("res==>",res);
-        if(res.code == 200){
+        console.log("res==>", res);
+        if (res.code == 200) {
           this.$message({
-            message:"发布成绩成功",
-            type:"success"
-          })
+            message: "发布成绩成功",
+            type: "success",
+          });
           this.get_ClassEvaluation();
-        }else{
+        } else {
           this.$message.error({
-            message:"发布成绩失败",
-          })
+            message: "发布成绩失败",
+          });
         }
       });
     },
@@ -302,13 +326,13 @@ export default {
       };
       let { code, data } = await queryClassEvaluation(params);
       if (code == 200) {
+        this.i++;
         this.tableData = data.list;
         this.total = data.total;
-        this.childMethod(data.list[0].id)
-        if (this.current == 1) {
+        this.childMethod(data.list[0].id);
+        if (this.i == 1) {
           //this.active = data.list[0].id;  //根据ID来进行选择的判定
           this.selectTest = data.list[0];
-
         }
       }
 
@@ -484,6 +508,11 @@ input {
     align-items: center;
     justify-content: center;
     margin-right: 20px;
+  }
+  .beizhu {
+    margin-left: -12px;
+    display: flex;
+    flex-direction: column-reverse;
   }
 }
 .footer {

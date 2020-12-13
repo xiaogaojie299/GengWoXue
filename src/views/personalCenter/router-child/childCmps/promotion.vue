@@ -10,7 +10,13 @@
           <!-- 链接 -->
           <div class="title my-font">{{ infoList.extensionUrl }}</div>
           <!-- 复制链接按钮 -->
-          <div class="btn my-font" :data-clipboard-text="infoList.extensionUrl" @click="copy">复制链接</div>
+          <div
+            class="btn my-font hand"
+            :data-clipboard-text="infoList.extensionUrl"
+            @click="copy"
+          >
+            复制链接
+          </div>
         </div>
       </div>
 
@@ -21,7 +27,11 @@
         <invite-table :tableData="tableData"></invite-table>
         <!-- 分页 -->
         <div class="pageNext">
-          <page-device :total="total"></page-device>
+          <page-device
+            @handleCurrentChange="handleCurrentChange"
+            current="current"
+            :total="total"
+          ></page-device>
         </div>
       </div>
     </div>
@@ -60,29 +70,40 @@ export default {
   methods: {
     // 获取二维码图片
     async getExtensionImg() {
-      this.QR_code = await queryExtensionImg();
+      let { data, code } = await queryExtensionImg();
+      if (code == 200) {
+        this.QR_code = data;
+      } else {
+        this.$myMeassage("获取推广二维码失败", "fail");
+      }
       console.log("QR_code==>", this.QR_code);
     },
     //获取推广历史列表
     async getRechargeRecordList() {
-      let data = {
+      let params = {
         current: this.current,
         size: this.size,
       };
-      let res = await queryRechargeRecordList(data);
-      if (res) {
-        this.tableData = res.list;
+      let { code, data } = await queryRechargeRecordList(params);
+      if (code == 200) {
+        this.tableData = data.list;
         console.log("this.tableData==>", this.tableData);
-        this.total=res.total
+        this.total = data.total;
+      } else {
+        this.$myAlert("网络错误");
       }
+    },
+    handleCurrentChange(cuurent) {
+      this.current = current;
+      this.getRechargeRecordList();
     },
     // 复制
     copy() {
       var clipboard = new Clipboard(".btn");
       clipboard.on("success", (e) => {
         this.$message({
-          message: '复制成功',
-          type: 'success'
+          message: "复制成功",
+          type: "success",
         });
         // 释放内存
         clipboard.destroy();
@@ -97,7 +118,7 @@ export default {
   },
 };
 </script>
- <style lang="scss" scoped>
+<style lang="scss" scoped>
 .my-font {
   font-size: 14px;
   font-family: PingFang SC;
@@ -156,7 +177,7 @@ export default {
     .pageNext {
       display: flex;
       justify-content: center;
-      margin:20px;
+      margin: 20px;
       // margin: 34px 0 30px 318px;
     }
   }

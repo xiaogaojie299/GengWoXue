@@ -1,13 +1,17 @@
 <template>
   <div>
-    <div class="title">我的班级</div>
+    <div class="title hand">我的班级</div>
     <div class="box">
       <!-- 上面标签 -->
       <div style="display: flex;">
         <div class="header">
           <div class="header-tag">
             <div class="tag-left">班级:</div>
-            <input class="tag-right" v-model="inputClassName" placeholder="请输入班级" />
+            <input
+              class="tag-right"
+              v-model="inputClassName"
+              placeholder="请输入班级"
+            />
             <!-- 下拉多选框 -->
             <!--<div>
                <el-select @change="change"  :popper-append-to-body="false" v-model="value" placeholder="请选择">
@@ -24,147 +28,153 @@
         </div>
         <!-- 下面按钮组 -->
         <div class="btn-groups">
-          <div class="btn1">重置</div>
-          <div class="btn2" @click="query">查询</div>
+          <div class="btn1 hand" @click="reset">重置</div>
+          <div class="btn2 hand" @click="query">查询</div>
         </div>
-        
       </div>
 
       <!-- 查看课表按钮组 -->
       <div class="btn-groups1">
-        <div class="btn1" @click="courseTimetable">查看课表</div>
-        <div class="btn1" @click="watchStudent">查看学生</div>
+        <div class="btn1 hand" @click="courseTimetable">查看课表</div>
+        <div class="btn1 hand" @click="watchStudent">查看学生</div>
       </div>
       <!-- 顶部表格 -->
       <div>
-        <myclass-table @selectClass="selectClass" :tableData="tableData" />
+        <myclass-table
+          ref="childMethod"
+          @selectClass="selectClass"
+          :tableData="tableData"
+        />
       </div>
     </div>
     <!-- 底部分页 -->
 
     <div class="footer">
-        <page-device :total="total" @handleCurrentChange="handleCurrentChange" />
+      <page-device
+        :total="total"
+        :current="current"
+        @handleCurrentChange="handleCurrentChange"
+      />
     </div>
     <!-- 遮罩层弹框 -->
 
-    <el-dialog
-        :visible.sync="dialogVisible"
-        :show-close="false"
-        center
-        >
-        <myStudent :classId="classId" @handleClose="closeMask" />
-        
-</el-dialog>
+    <el-dialog :visible.sync="dialogVisible" :show-close="false" center>
+      <myStudent :classId="classId" @handleClose="closeMask" />
+    </el-dialog>
   </div>
 </template>
 <script>
 import myclassTable from "./compontsCmps/myclassTable";
-import myStudent from "./compontsCmps/my-student"
-import {queryMyAllClassList,queryClassStudent} from "@/network/officeCenter"
-import {mapState,mapGetters,mapActions} from "vuex"
+import myStudent from "./compontsCmps/my-student";
+import { queryMyAllClassList, queryClassStudent } from "@/network/officeCenter";
+import { mapState, mapGetters, mapActions } from "vuex";
 export default {
   data() {
     return {
-     dialogVisible:false,     // 遮罩层弹出开关
-     current:1,               // 页码
-     size:10,                 //页条数
-      total:0,                 //用来分页的总数
-      inputClassName:"",      //输入班级名
-      tableData:[],           //获取的列表数据
-      classIndex:"",          //班级下标 
-      classId:1,              //班级Id
-      selectClassObj:{}
+      dialogVisible: false, // 遮罩层弹出开关
+      current: 1, // 页码
+      size: 10, //页条数
+      total: 0, //用来分页的总数
+      inputClassName: "", //输入班级名
+      tableData: [], //获取的列表数据
+      classIndex: "", //班级下标
+      classId: 0, //班级Id
+      selectClassObj: {},
+      i: 1, //判断是否是第一次获取数据
     };
   },
-  computed:{
-    classList(){
-      return this.$store.state.classList
-    }
+  computed: {
+    classList() {
+      return this.$store.state.classList;
+    },
   },
-  created(){
+  created() {
     // this.getAllGrade();
     this.init();
   },
-  methods:{
-    async init(){
+  methods: {
+    async init() {
       // 页面加载时，给classId初始值
       let pamars = {
-        current:1,
-        size:10,
-      }
-     let {data,code} = await queryMyAllClassList(pamars);
-     if(code==200){
-       this.tableData = data.list;
+        current: 1,
+        size: 10,
+      };
+      let { data, code } = await queryMyAllClassList(pamars);
+      if (code == 200) {
+        this.tableData = data.list;
         this.total = data.toal;
-      this.selectClassObj=data.list[0];
-     }
+        this.selectClassObj = data.list[0];
+        this.classId = data.list[0].id;
+        this.$refs.childMethod.chekcout(data.list[0].id);
+      }
     },
-      change(val){
-    },
+    change(val) {},
     // 选中的班级
-    selectClass(data){
-      this.selectClassObj = data
+    selectClass(data) {
+      this.selectClassObj = data;
       this.classId = data.id;
-      console.log("classId==>",this.classId);
-      // this.classIndex = data;
     },
     //查看班级表格栏
-    watchStudent(){
-      let that=this;
-      that.dialogVisible=true;
+    watchStudent() {
+      let that = this;
+      that.dialogVisible = true;
     },
 
     // 查看班级课表
-    courseTimetable(){
-      let that=this;
+    courseTimetable() {
+      let that = this;
       that.$router.push({
         path: "/page/officeCenter/OfficeCenterIndex/test2",
-        query:{
-          classInfo:JSON.stringify(that.selectClassObj)
-        }
+        query: {
+          classInfo: JSON.stringify(that.selectClassObj),
+        },
       });
     },
     // 查询班级列表
-    query(){
-      this.get_MyAllClassList()
+    query() {
+      this.get_MyAllClassList();
+    },
+    // 清空
+    reset() {
+      this.inputClassName = "";
     },
     // 获取我的班级列表
-    async get_MyAllClassList(){
+    async get_MyAllClassList() {
       let pamars = {
-        current:this.current,
-        size:this.size,
-        name:this.inputClassName
-      }
-     let {data,code} = await queryMyAllClassList(pamars)
-      if(code==200){
+        current: this.current,
+        size: this.size,
+        name: this.inputClassName,
+      };
+      let { data, code } = await queryMyAllClassList(pamars);
+      if (code == 200) {
         this.tableData = data.list;
         this.total = data.toal;
       }
     },
     // 跳转我的学生详情
-      go_myStudent(){
-           this.$router.push({
-                path: "/page/officeCenter/OfficeCenterIndex/myStudent",
+    go_myStudent() {
+      this.$router.push({
+        path: "/page/officeCenter/OfficeCenterIndex/myStudent",
       });
-      },
+    },
     // 获取所有年级
-    getAllGrade(){
+    getAllGrade() {
       this.$store.dispatch("getClassList");
     },
     // 分页
-     handleCurrentChange(current){
+    handleCurrentChange(current) {
       // data   分页页数
-      this.current=current;
-      this.get_MyAllClassList()
+      this.current = current;
+      this.get_MyAllClassList();
     },
     //   关闭遮罩层
-      closeMask(){
-          this.dialogVisible=false;
-      }
+    closeMask() {
+      this.dialogVisible = false;
+    },
   },
   components: {
     myclassTable,
-    myStudent
+    myStudent,
   },
 };
 </script>
@@ -176,32 +186,32 @@ export default {
   border: none;
   // width: 100%;
   width: 121px;
-height: 32px;
-background: #FFFFFF;
-border: 1px solid #EFEFEF;
-border-radius: 3px;
+  height: 32px;
+  background: #ffffff;
+  border: 1px solid #efefef;
+  border-radius: 3px;
   font-size: 10px;
-        font-family: Source Han Sans CN;
-        font-weight: 400;
-        color: #343434;
+  font-family: Source Han Sans CN;
+  font-weight: 400;
+  color: #343434;
 }
 /deep/ .el-input__icon {
   display: none;
 }
-/deep/ .el-select-dropdown{
-   font-size: 16px;
+/deep/ .el-select-dropdown {
+  font-size: 16px;
   font-family: Source Han Sans CN;
   font-weight: 400;
   color: #262626;
 }
-/deep/ .el-select-dropdown__list li{
+/deep/ .el-select-dropdown__list li {
   font-size: 16px;
   font-family: Source Han Sans CN;
   font-weight: 400;
   color: #484949;
 }
-  /deep/ .el-select-dropdown__item.hover{
-  background: linear-gradient(110deg, #F13232, #EF753C);
+/deep/ .el-select-dropdown__item.hover {
+  background: linear-gradient(110deg, #f13232, #ef753c);
   color: #fff;
 }
 
@@ -235,7 +245,7 @@ border-radius: 3px;
       }
       .tag-right {
         outline: none;
-        padding-left:6px;
+        padding-left: 6px;
         width: 98px;
         height: 34px;
         background: #ffffff;
@@ -285,7 +295,7 @@ border-radius: 3px;
   font-family: Source Han Sans CN;
   font-weight: 550;
   display: flex;
-  margin:20px 0;
+  margin: 20px 0;
   .btn1 {
     width: 108px;
     height: 38px;
@@ -299,11 +309,11 @@ border-radius: 3px;
     margin-right: 20px;
   }
 }
-.footer{
-    margin:20px 0 !important;
-    width: 100%;
-    margin:0 auto;
-    display: flex;
-    justify-content: center;
+.footer {
+  margin: 20px 0 !important;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
 }
 </style>

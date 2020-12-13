@@ -44,10 +44,11 @@
             alt=""
           />
           <!-- 数字 -->
-          <div class="num">{{ kfList.content }}</div>
+          <div class="num">{{ KfInfo.content }}</div>
         </div>
         <!-- 登录注册 -->
-        <div v-if="!userInfo.nickname"
+        <div
+          v-if="!userInfo.nickname"
           :class="{
             regist: true,
             active1: $route.path.indexOf('/register') != -1,
@@ -94,10 +95,10 @@
   </div>
 </template>
 <script>
-import preventBack from 'vue-prevent-browser-back';
-import { state, mutations,actions } from "vuex";
+import preventBack from "vue-prevent-browser-back";
+import { state, mutations, actions } from "vuex";
 export default {
-  mixins:[preventBack],
+  // mixins: [preventBack],
   data() {
     const url = "/page";
     return {
@@ -113,21 +114,20 @@ export default {
   },
   computed: {
     //所有未读的消息条数
-    msgTotal() {
-      return this.$store.state.msgCenterList.total;
+    // msgTotal() {
+    //   return this.$store.state.msgCenterList.total;
+    // },
+    KfInfo() {
+      return this.$store.state.kfInfo;
     },
-    kfList() {
-      return this.$store.state.KfList;
-    },
-    userInfo(){
+    userInfo() {
       return this.$store.state.userInfo;
     },
-    userImg(){
-      return this.$store.state.userImg
-    }
+    userImg() {
+      return this.$store.state.userImg;
+    },
   },
-  mounted(){
-  },
+  mounted() {},
   created() {
     this.init();
     console.log(this.$store.state);
@@ -143,11 +143,9 @@ export default {
         type: 3,
       };
       this.$store.dispatch("getMessageList", data);
-      this.$store.dispatch("getKfList", 1);
     },
     quite() {
       console.log("跳转成功");
-
     },
     /* 跳转写的有点啰嗦。可以封装一个方法 */
     // 点击nav-bar切换路由
@@ -155,7 +153,8 @@ export default {
       this.$router.push({
         path,
       });
-      console.log("$router", this.$route);
+      this.$store.commit("setOfficeCenterIndex", 1);
+      this.$store.commit("setPersonalIndex", 1);
       // this.activeRouter=this.$route.path;
     },
     go_personalCenter() {
@@ -174,13 +173,12 @@ export default {
       this.$router.push({
         path: "/page/register",
       });
-      this.$store.commit('setToken',"");
-      this.$store.commit('setUserInfo',{});
+      this.$store.commit("setToken", "");
+      this.$store.commit("setUserInfo", {});
       // history.pushState(null, null, document.URL);
-      //           window.addEventListener("popstate",function(e) {  
+      //           window.addEventListener("popstate",function(e) {
       //               history.pushState(null, null, document.URL);
       // }, false);
-
     },
     // 获取消息列表
   },
@@ -189,7 +187,7 @@ export default {
 <style lang="scss" scoped>
 /deep/ .el-dropdown {
   opacity: 0;
-  padding:0;
+  padding: 0;
   margin: 0;
   width: 64px;
   height: 64px;

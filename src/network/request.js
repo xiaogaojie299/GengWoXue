@@ -1,16 +1,15 @@
 import axios from "axios";
 import vue from "../main";
-import store from "../store/index"
+import store from "../store/index";
 import { BASE_URL, TIMEOUT } from "./config";
 const instance = axios.create({
-  baseURL: BASE_URL+"teacher",
+  baseURL: BASE_URL + "teacher",
   method: "POST",
 });
 // instance.defaults.withCredentials=true;
 instance.interceptors.request.use(
   (config) => {
-  let token = store.state.userInfo.token;
-  console.log("token===>",store.state.userInfo.token)
+    let token = store.state.userInfo.token;
     // 1.发送网络请求时, 在界面的中间位置显示Loading的组件
     // 2.某一些请求要求用户必须携带token, 如果没有携带, 那么直接跳转到登录页面
     if (token) {
@@ -35,8 +34,8 @@ instance.interceptors.response.use(
         case 700:
           vue.$router.push({ path: "/page/register" });
           break;
-          case 500:
-            vue.$myAlert('code500,服务器出错')
+        case 500:
+          vue.$myAlert("服务器出错");
       }
     }
   },

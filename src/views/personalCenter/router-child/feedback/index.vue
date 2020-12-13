@@ -2,7 +2,7 @@
   <div class="box">
     <my-title>问题反馈</my-title>
     <!-- 右上问题反馈 -->
-    <div class="right-top" @click="go_historyFeedback">历史反馈</div>
+    <div class="right-top hand" @click="go_historyFeedback">历史反馈</div>
     <!-- 留言板 -->
     <div class="msg-border">
       <textarea
@@ -14,7 +14,7 @@
         rows="10"
       ></textarea>
       <!-- 输入字符限制 -->
-      <div class="char">0/200</div>
+      <div class="char">{{ textarea.length }}/200</div>
     </div>
     <!-- <div class="msg-border">
       <el-input
@@ -26,11 +26,13 @@
     </div> -->
 
     <!-- 底部提交按钮 -->
-    <div class="footer"><button class="btn" @click="submit">提交</button></div>
+    <div class="footer">
+      <button class="btn hand" @click="submit">提交</button>
+    </div>
   </div>
 </template>
 <script>
-import {optFeedback} from "@/network/personalCenter"
+import { optFeedback } from "@/network/personalCenter";
 export default {
   data() {
     return {
@@ -44,18 +46,23 @@ export default {
         path: "/page/personalCenter/personal/historyFeedback",
       });
     },
-    submit(){
-      if(!this.textarea){
-        return this.$myAlert("留言板不能为空")
+    submit() {
+      if (!this.textarea) {
+        return this.$myAlert("留言板不能为空");
       }
-      let data={
-        content:this.textarea
-      }
-      console.log("optFeedback=",optFeedback);
-      optFeedback(data).then(res=>{
-        console.log("提交成功",res)
+      let params = {
+        content: this.textarea,
+      };
+      console.log("optFeedback=", optFeedback);
+      optFeedback(params).then((res) => {
+        let { code, data } = res;
+        console.log("提交成功", res);
+        if (code == 200) {
+          this.$myMessage("提交反馈成功");
+          this.textarea = "";
+        }
       });
-    }
+    },
   },
 };
 </script>
@@ -87,7 +94,7 @@ textarea {
     font-family: Source Han Sans CN;
     font-weight: 500;
     color: #ef743c;
-    line-height:44px;
+    line-height: 44px;
     position: absolute;
     right: 0;
     top: 2px;
@@ -96,7 +103,7 @@ textarea {
     width: 100%;
     height: 347px;
     background: #f8f9f9;
-    padding:12px;
+    padding: 12px;
     .char {
       margin-right: auto;
       text-align: right;

@@ -7,15 +7,15 @@
         <!-- 右边内容 -->
         <div class="right-content hand">
           <el-upload
-                  :show-file-list="false" 
-                  :action="BASE_URL+'student/base/uploadImg'"
-                  :before-upload="beforeImgUpload"
-                  :on-success="handleAvatar"
-                  :on-preview="handlePictureCardPreview"
-                  :on-remove="handleImgRemove"
-                >
-                  <img :src="form.avatar" alt="" />
-                </el-upload>
+            :show-file-list="false"
+            :action="BASE_URL + 'student/base/uploadImg'"
+            :before-upload="beforeImgUpload"
+            :on-success="handleAvatar"
+            :on-preview="handlePictureCardPreview"
+            :on-remove="handleImgRemove"
+          >
+            <img :src="form.avatar" alt="" />
+          </el-upload>
           <!-- <img :src="form.avatar" alt="" /> -->
         </div>
       </div>
@@ -167,7 +167,7 @@
       </div>
       <!-- 资质 -->
       <!-- <div v-for="(item, index) in form.qualificationType" :key="index"> -->
-        <div>
+      <div>
         <div class="row">
           <div class="col1">
             <div class="left-box my-font">资质：</div>
@@ -184,42 +184,48 @@
         <!-- 图片上传 -->
         <div class="upload-box">
           <div class="left-title my-font"></div>
-          <div v-for="(item,index) in this.form.qualificationImg" :key="index" class="right-content">
+          <div
+            v-for="(item, index) in this.form.qualificationImg"
+            :key="index"
+            class="right-content"
+          >
             <div v-if="item.url" class="upload-img">
-              <img :src="item.url" alt="">
+              <img :src="item.url" alt="" />
               <div class="del-icon">
-              <img @click="delImg(index)" src="@/assets/img/icon_del.png" alt="">
+                <img
+                  @click="delImg(index)"
+                  src="@/assets/img/icon_del.png"
+                  alt=""
+                />
               </div>
             </div>
           </div>
           <div></div>
-            <div v-if="form.qualificationImg.length<3 && form.qualificationImg">
-              <el-upload
-                  :show-file-list="false" 
-                  :action="BASE_URL+'student/base/uploadImg'"
-                  :before-upload="beforeImgUpload"
-                  :on-success="handleImg"
-                  :on-preview="handlePictureCardPreview"
-                  :on-remove="handleImgRemove"
-                >
-                  <!-- <i class="el-icon-plus"></i> -->
-                  <img
-              style="margin-left: 12px"
-              src="@/assets/img/icon_photo_update.png"
-              alt=""
-            />
-                </el-upload>
-                <el-dialog :visible.sync="dialogVisible">
-                  <img width="100%" :src="dialogImageUrl" alt="" />
-                </el-dialog>
-            </div>
-
+          <div v-if="form.qualificationImg.length < 3 && form.qualificationImg">
+            <el-upload
+              :show-file-list="false"
+              :action="BASE_URL + 'student/base/uploadImg'"
+              :before-upload="beforeImgUpload"
+              :on-success="handleImg"
+              :on-preview="handlePictureCardPreview"
+              :on-remove="handleImgRemove"
+            >
+              <!-- <i class="el-icon-plus"></i> -->
+              <img
+                style="margin-left: 12px"
+                src="@/assets/img/icon_photo_update.png"
+                alt=""
+              />
+            </el-upload>
+            <el-dialog :visible.sync="dialogVisible">
+              <img width="100%" :src="dialogImageUrl" alt="" />
+            </el-dialog>
+          </div>
         </div>
-        
       </div>
 
       <!-- 底部按钮 -->
-      <div class="footer-btn"><button @click="submit">保存</button></div>
+      <div class="footer-btn hand"><button @click="submit">保存</button></div>
     </div>
   </div>
 </template>
@@ -236,18 +242,14 @@ export default {
         birthday: "", //出生日期
         subjectValue: "", //选择科目按钮
         sex: 1, //选择性别
-        qualificationImg:[]
+        qualificationImg: [],
       },
-      fileList:[],
-      upLoadList:[
-        {url:""},
-        {url:""},
-        {url:""}
-      ],
-      imgIndex:"",
-      dialogVisible:false,   // 预览图片放大
-      dialogImageUrl:"",     //预览图片路径
-      BASE_URL:BASE_URL,    // 上传接口头
+      fileList: [],
+      upLoadList: [{ url: "" }, { url: "" }, { url: "" }],
+      imgIndex: "",
+      dialogVisible: false, // 预览图片放大
+      dialogImageUrl: "", //预览图片路径
+      BASE_URL: BASE_URL, // 上传接口头
       sexList: [
         { name: "男", sex: 1 },
         { name: "女", sex: 2 },
@@ -262,7 +264,6 @@ export default {
       arr.shift();
       return arr;
     },
-    
   },
   created() {
     this.getPersonalData();
@@ -277,99 +278,104 @@ export default {
       let res = await queryPersonalData();
       let { code, data } = res;
       if (code == 200) {
-      console.log("获取用户个人信息", data.avatar);
-        this.$store.commit("setUserImg",data.avatar); //首页展示与当前更改头像保持一致
+        console.log("获取用户个人信息", data.avatar);
+        this.$store.commit("setUserImg", data.avatar); //首页展示与当前更改头像保持一致
         this.info = data;
-        this.form.birthday = data.birthday;     //用户姓名
-        this.form.nickname = data.nickname;     //用户昵称
-        this.form.sex = data.sex;               //用户性别
-        this.form.avatar = data.avatar;         //用户头像
-        this.form.introduction = data.introduction;   
+        this.form.birthday = data.birthday; //用户姓名
+        this.form.nickname = data.nickname; //用户昵称
+        this.form.sex = data.sex; //用户性别
+        this.form.avatar = data.avatar; //用户头像
+        this.form.introduction = data.introduction;
         // 资质图片 多个用,连接
-         let imgArr = data.qualificationImg.includes(",")
-            ? data.qualificationImg.split(",")
-            : data.qualificationImg.split(" ");
-            this.form.qualificationImg = imgArr.map((item,index,arr)=>{
-            let obj ={};
-            obj.url = item;
-            return obj
-          })
-          console.log("upLoadList==",this.form.qualificationImg);
+        let imgArr = data.qualificationImg.includes(",")
+          ? data.qualificationImg.split(",")
+          : data.qualificationImg.split(" ");
+        this.form.qualificationImg = imgArr.map((item, index, arr) => {
+          let obj = {};
+          obj.url = item;
+          return obj;
+        });
+        console.log("upLoadList==", this.form.qualificationImg);
         // 判断当前是否有多选个擅长科目
         if (data.coursesubjectsIds.indexOf(",") != -1) {
-          this.form.subjectValue = data.coursesubjectsIds.split(",").map(Number);
+          this.form.subjectValue = data.coursesubjectsIds
+            .split(",")
+            .map(Number);
         } else {
           this.form.subjectValue = [].concat(Number(data.coursesubjectsIds));
         }
-        this.form.qualificationType = data.qualificationType  //资质证书
+        this.form.qualificationType = data.qualificationType; //资质证书
       }
-
     },
     // 修改个人资料
     async setPersonalData() {
       let arr = [];
-      let params={};
-      for (let i = 0;i<this.form.qualificationImg.length;i++){
-        arr.push(this.form.qualificationImg[i].url)
-      } 
-      this.form.qualificationImg=arr;
-      this.form.coursesubjectsIds=this.form.subjectValue;
+      let params = {};
+      for (let i = 0; i < this.form.qualificationImg.length; i++) {
+        arr.push(this.form.qualificationImg[i].url);
+      }
+      this.form.qualificationImg = arr;
+      this.form.coursesubjectsIds = this.form.subjectValue;
       delete this.form.subjectValue;
-      params=JSON.parse(JSON.stringify(this.form));
-      // params.qualificationImg;  
-      console.log("str==",params);
+      params = JSON.parse(JSON.stringify(this.form));
+      // params.qualificationImg;
+      console.log("str==", params);
       console.log(params.qualificationImg[2]);
       let res = await optPersonalData(qs(params));
       this.$myAlert("修改成功");
       this.rotate = [];
       this.getPersonalData();
     },
-    checkIndex(index){  //选中图片的下标
-      this.imgIndex=index;
-      console.log("imgIndex==",this.imgIndex);
+    checkIndex(index) {
+      //选中图片的下标
+      this.imgIndex = index;
+      console.log("imgIndex==", this.imgIndex);
     },
-    delImg(i){//删除图片的下标
-      this.form.qualificationImg.splice(i,1);
+    delImg(i) {
+      //删除图片的下标
+      this.form.qualificationImg.splice(i, 1);
       // console.log(this.upLoadList);
     },
-    beforeImgUpload(file){  // 校验上传的文件类型是否是图片
-      const isJPG = file.type === 'image/jpeg';
-      const isPNG =file.type ==='image/png';
-      if(!isJPG&&!isPNG){
-          this.$message.error('上传头像图片只能是 JPG或者PNG 格式!');
+    beforeImgUpload(file) {
+      // 校验上传的文件类型是否是图片
+      const isJPG = file.type === "image/jpeg";
+      const isPNG = file.type === "image/png";
+      if (!isJPG && !isPNG) {
+        this.$message.error("上传头像图片只能是 JPG或者PNG 格式!");
       }
-       return isJPG||isPNG
+      return isJPG || isPNG;
     },
-    handleImg(res,fileList){
-      console.log(res,fileList);
-       //上传图片接口
-       if(res.code==200){
-         let obj = {}
-         obj.url =res.data
+    handleImg(res, fileList) {
+      console.log(res, fileList);
+      //上传图片接口
+      if (res.code == 200) {
+        let obj = {};
+        obj.url = res.data;
         this.form.qualificationImg.push(obj);
-       }else{
-         this.$myAlert(res.msg);
-       }
-       console.log(this.form.qualificationImg);
+      } else {
+        this.$myAlert(res.msg);
+      }
+      console.log(this.form.qualificationImg);
     },
-        handleAvatar(res,file){
-          if(res.code==200){
-            this.$forceUpdate();
-            this.$set(this.form,"avatar",res.data)
-       }else{
-         this.$myAlert(res.msg);
-       }
+    handleAvatar(res, file) {
+      if (res.code == 200) {
+        this.$forceUpdate();
+        this.$set(this.form, "avatar", res.data);
+      } else {
+        this.$myAlert(res.msg);
+      }
     },
-    handlePictureCardPreview(file) {  //查看图片
+    handlePictureCardPreview(file) {
+      //查看图片
       //查看图片操作
       console.log(file);
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
 
-     handleImgRemove(file,fileList) {
+    handleImgRemove(file, fileList) {
       //删除图片操作
-      console.log(file,fileList)
+      console.log(file, fileList);
       //   fileList.forEach(item=>{
       //     if(Object.keys(item).includes("response")){
       //       item.url = item.response.data
@@ -377,10 +383,11 @@ export default {
       // })
       // this.form.qualificationImg=fileList;
     },
-    handleExceed(files,fileList){ //限制音频上传个数
-        this.$message.warning("做多只能上传3张照片噢");
-        this.form.qualificationImg=fileList;
-        console.log(files,fileList);
+    handleExceed(files, fileList) {
+      //限制音频上传个数
+      this.$message.warning("做多只能上传3张照片噢");
+      this.form.qualificationImg = fileList;
+      console.log(files, fileList);
     },
     // 保存
     submit() {
@@ -478,18 +485,18 @@ textarea {
         width: 168px;
         height: 168px;
       }
-      .upload-img:hover>.del-icon{
-          opacity: 1;
+      .upload-img:hover > .del-icon {
+        opacity: 1;
       }
-      .upload-img{
+      .upload-img {
         position: relative;
-        .del-icon{
+        .del-icon {
           opacity: 0;
           position: absolute;
-          top:50%;
-          left:50%;
-          transform: translate(-50%,-50%);
-          img{
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          img {
             width: 22px;
             height: 22px;
           }

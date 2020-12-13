@@ -5,7 +5,7 @@
     <!-- 中间内容 -->
     <div class="main">
       <!-- 基本信息 -->
-      <div class="nav-bar">
+      <div class="nav-bar hand">
         <span
           @click="go_url(item.path), checkoutTitle(index)"
           :class="{ active: isRouter(item.path) }"

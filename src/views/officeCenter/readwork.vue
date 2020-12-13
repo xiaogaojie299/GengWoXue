@@ -275,7 +275,7 @@
     </div>
   </div>
 </template>
-  <script>
+<script>
 import {
   queryExaminationInfo,
   saveExamines,
@@ -436,7 +436,7 @@ export default {
       queryAnswerInfo(params).then((res) => {
         let { code, data } = res;
         if (code == 200) {
-           this.testList = data;
+          this.testList = data;
           this.testList.list.forEach((item) => {
             if (item.options) {
               let arr = [];
@@ -452,7 +452,7 @@ export default {
           });
         }
       });
-      console.log()
+      console.log();
     },
     myAudio() {
       this.audio = new Audio();
@@ -567,6 +567,18 @@ export default {
       });
       params.examines = JSON.stringify(examines);
       console.log("params.examines=", params.examines);
+      let canshu = [
+        {
+          id: 139,
+          answer: "好无聊的问题",
+          answerUrl: "",
+          score: 5,
+          audio: "",
+          remark: "老师批阅记录",
+          img: "",
+        },
+      ];
+      //{ examines: JSON.stringify(canshu) }
       saveExamines(params).then((res) => {
         console.log(res);
         let { code, data } = res;

@@ -4,7 +4,7 @@
     <div><button @click="go_studentDetail">学生详情</button></div> -->
     <div class="header">
       <span class="title">查看学生</span>
-      <span class="right-title1" @click="go_studentDetail">学生详情</span>
+      <span class="right-title1 hand" @click="go_studentDetail">学生详情</span>
     </div>
     <!-- 中间表格 -->
     <div class="main">
@@ -58,9 +58,11 @@
         </el-table-column>
       </el-table>
     </div>
-    <div class="page-device"><page-device @handleCurrentChange="handleCurrentChange" :total="total" /></div>
+    <div class="page-device">
+      <page-device @handleCurrentChange="handleCurrentChange" :total="total" />
+    </div>
     <!-- 底部关闭按钮 -->
-    <div class="footer-btn" @click="close">关闭</div>
+    <div class="footer-btn hand" @click="close">关闭</div>
   </div>
 </template>
 <script>
@@ -73,7 +75,7 @@ export default {
       size: 10,
       tableData: [],
       total: 0,
-      selectRow:{}
+      selectRow: "",
     };
   },
   props: {
@@ -84,7 +86,7 @@ export default {
   watch: {
     classId(newval, oldval) {
       console.log(newval);
-      this.current=1;
+      this.current = 1;
       this.get_classStudent();
     },
   },
@@ -99,16 +101,18 @@ export default {
         return "success-row";
       }
     },
-    handleCurrentChange(current){
-      this.current =current;
+    handleCurrentChange(current) {
+      this.current = current;
       this.get_classStudent();
     },
     // 点击单元格
     handleSelectionChange(row, column, cell) {
       this.isActive = row.id;
-      this.selectRow=row;
+      this.selectRow = row;
     },
     go_studentDetail() {
+      this.selectRow = this.selectRow || this.tableData[0];
+      console.log(this.selectRow);
       this.$router.push({
         path: "/page/officeCenter/OfficeCenterIndex/studentDetail",
         query: {
@@ -139,7 +143,7 @@ export default {
       // data   分页页数
       this.current = data;
       this.get_classStudent();
-    }
+    },
   },
 };
 </script>
