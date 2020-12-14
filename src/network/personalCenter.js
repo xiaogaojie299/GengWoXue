@@ -33,8 +33,17 @@ export function optFeedback(data){
 }
 // 充值中心
 export function recharge(data){
+    data = qs(data).substr(1);;
+    console.log(data);
     return request({
-        url:api+"recharge"+qs(data)
+        url:api+"recharge",
+        data:qs(data)
+    })
+}
+// 查询充值结果
+export function queryRecharge(data){
+    return request({
+        url:api+"queryRecharge"+qs(data)
     })
 }
 // 提现记录
@@ -55,6 +64,7 @@ export function queryMyBalanceChange(data){
         url:api+"queryMyBalanceChange"+qs(data)
     })
 }
+
 // 获取推广中心照片
 export function queryExtensionImg(){
     return request({

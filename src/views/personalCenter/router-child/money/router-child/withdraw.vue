@@ -49,7 +49,7 @@
         </div>
       </div>
       <!-- 底部按钮 -->
-      <div class="footer" @click="submit">提交</div>
+      <div class="footer hand" @click="submit">提交</div>
     </div>
   </div>
 </template>
@@ -89,11 +89,16 @@ export default {
       //   this.$myAlert("提现金额不能大于余额");
       //   return
       // }
-      let data = {
+      let params = {
         number: this.money,
         type: this.moneyTypeValue,
       };
-      let res = await withdrawal(data);
+      let {code,data} = await withdrawal(params);
+      if(code ==200){
+        this.$myMessage("恭喜你提现成功");
+      }else{
+        this.$myMessage("恭喜你提现失败","error");
+      }
       console.log("res==>", res);
     },
   },

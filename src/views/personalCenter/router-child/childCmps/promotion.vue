@@ -74,7 +74,7 @@ export default {
       if (code == 200) {
         this.QR_code = data;
       } else {
-        this.$myMeassage("获取推广二维码失败", "fail");
+        this.$myMeassage("获取推广二维码失败", "error");
       }
       console.log("QR_code==>", this.QR_code);
     },

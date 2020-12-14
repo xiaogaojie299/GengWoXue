@@ -22,3 +22,9 @@ export function querySystemSetByType(data){
     //http://139.9.154.145/teacher-server/base/web/agreement/querySystemSetByType?type=1
 
 }
+// 获取未读消息总数
+export function queryNoReadNumber(){
+    return request({
+       url:"/api/web/message/queryNoReadNumber" 
+    })
+}

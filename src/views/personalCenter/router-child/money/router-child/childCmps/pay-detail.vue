@@ -19,13 +19,14 @@
     </div>
     <!-- 遮罩层 -->
     <el-dialog :visible.sync="dialogVisible" :show-close="false" center>
-      <pay @closeMask="closeMask()"></pay>
+      <pay :qrCode="qrCode" @closeMask="closeMask()"></pay>
     </el-dialog>
+    <div v-html="payHtml"></div>
   </div>
 </template>
 <script>
 import pay from "./pay";
-import { recharge } from "@/network/personalCenter";
+import { recharge, queryRecharge } from "@/network/personalCenter";
 import { mapState, mapActions } from "vuex";
 export default {
   data() {
@@ -33,7 +34,16 @@ export default {
       dialogVisible: false, //控制遮罩层
       money: 0, //充值金额
       type: 2, //1.支付宝 2.微信 3.苹果内购
+      payHtml: "",
+      qrCode: "",
+      timers: null,
     };
+  },
+  // 还有一步是最容易被忽略的 跳转页面的时候应该关闭查询订单定时器
+  beforeDestroy() {
+    if (this.timers) {
+      clearInterval(this.timers); //关闭
+    }
   },
   methods: {
     //单选框选中
@@ -50,31 +60,88 @@ export default {
           this.type = 3;
       }
     },
+    test() {
+      this.dialogVisible = true;
+    },
     go_back() {
       this.$router.back(-1);
     },
     async go_pay() {
+      //调用支付
       let money = Number(this.money).toFixed(2);
-      if(money==0){
+      if (money == 0) {
         this.$myAlert("充值金额不能为0");
-        return
+        return;
       }
-        if(money<0){
+      if (money < 0) {
         this.$myAlert("充值金额不能小于0");
-        return
+        return;
       }
-      let data = {
+      let params = {
         money: money,
         payType: this.type,
       };
-      let res =await recharge(data);
-      console.log("res=>",res);
-      this.dialogVisible = true;
+      let { code, data } = await recharge(params);
+      if (code == 200) {
+        console.log("res=>", data);
+        if (this.type == 1) {
+          // 支付宝
+          const div = document.createElement("divform");
+          div.innerHTML = data;
+          document.body.appendChild(div);
+          document.forms[0].acceptCharset = "GBK"; //保持与支付宝默认编码格式一致，如果不一致将会出现：调试错误，请回到请求来源地，重新发起请求，错误代码 invalid-signature 错误原因: 验签出错，建议检查签名字符串或签名私钥与应用公钥是否匹配
+          document.forms[0].submit();
+        } else {
+          this.qrCode = data; //微信二维码
+          this.dialogVisible = true;
+          this.getOrderstate();
+        }
+      }
+    },
+    //获取支付成功还是失败
+    // 调用一个判断支付是否成功的接口，用这个接口我们监听微信是否支付成功
+    getOrderstate() {
+      let money = Number(this.money).toFixed(2);
+      let self = this;
+      let num = 0;
+      self.timers = setInterval(() => {
+        //创建一个全局的定时器
+        num++;
+        let params = {
+          money: money,
+          payType: self.type,
+        };
+        queryRecharge(params).then((res) => {
+          console.log("查询是否支付成功", res);
+          if (res.code == 200) {
+            //判断就是订单支付成功
+            if (res.data == 2) {
+              //data ==1 成功  data==2 失败
+              self.$router.push({
+                path: "/page/personalCenter/personal/recharge/succee",
+                query: {
+                  money: money,
+                },
+              });
+              clearInterval(self.timers); //别忘记关闭定时器，否则会一直调这个接口
+            }
+          }
+        });
+        if (num == 500) {
+          //这里是判断num++到500的情况下用户还没有支付则自动关闭定时器和二维码
+          clearInterval(this.timers);
+          this.dialogVisible = false;
+        }
+      }, 1500);
     },
     closeMask() {
       this.dialogVisible = false;
+      clearInterval(this.timers);
       this.$router.push({
         path: "/page/personalCenter/personal/recharge/succee",
+        query: {
+          money: this.money,
+        },
       });
     },
   },

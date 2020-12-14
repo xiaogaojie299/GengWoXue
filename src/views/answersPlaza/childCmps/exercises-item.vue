@@ -13,6 +13,13 @@
         </div>
         <!-- 题目图片 -->
         <div class="exercises-img">
+          <div v-for="(it,index) in item.imgUrl" :key="index">
+              <el-image
+            style="width: 105px; height: 105px"
+            :src="it"
+          >
+          </el-image>
+          </div>
           <!-- <div class="exercises-img-item" v-for="i in 2" :key="i"></div> -->
           <!-- 图片预览功能 -->
           <!-- <el-image
@@ -26,14 +33,7 @@
             src="https://xixisuxi.obs.cn-southwest-2.myhuaweicloud.com/16054585862.png"
           >
           </el-image> -->
-          <div v-for="(it,index) in info.imgUrl" :key="index">
-              <el-image
-            style="width: 105px; height: 105px"
-            :src="it.imgUrl"
-          >
-          </el-image>
-          </div>
-        
+          
 
         </div>
       </div>
@@ -79,10 +79,9 @@ export default {
     },
   },
   mounted(){
-    this.$nextTick(()=>{
-      this.info = JSON.parse(JSON.stringify(this.item));
-    console.log("info==>",this.info);
-    })
+      // this.info = JSON.parse(JSON.stringify(this.item))
+      // console.log("this.info==>",this.info.imgUrl,this.item.imgUrl);
+      // this.$set(this.info.imgUrl,this.item.imgUrl);
   },
   methods: {
     go_exDetail() {

@@ -73,7 +73,7 @@
               src="@/assets/img/navbar/icon_envelope.png"
               alt=""
             />
-            <div class="num">1</div>
+            <div class="num">{{msgNum}}</div>
           </div>
 
           <div style="position: relative; width: 64px; height: 64px">
@@ -126,6 +126,9 @@ export default {
     userImg() {
       return this.$store.state.userImg;
     },
+    msgNum(){
+      return this.$store.state.unread;
+    }
   },
   mounted() {},
   created() {
@@ -143,6 +146,7 @@ export default {
         type: 3,
       };
       this.$store.dispatch("getMessageList", data);
+      // this.$store.dispatch()
     },
     quite() {
       console.log("跳转成功");

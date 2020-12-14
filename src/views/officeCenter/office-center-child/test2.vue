@@ -107,6 +107,7 @@ export default {
   },
   created() {
     this.init();
+    let url ='https://gengwoxue.com/live/index.html?id=5'
   },
   computed:{
     userInfo(){ //在vuex中拿到登录成功的列表{token,老师id} 传给直播页面
@@ -212,8 +213,9 @@ export default {
         params.avatar = this.userInfo.avatar;
        console.log("params==>",params);
         params = JSON.stringify(params)
-        window.open("http://www.xiaogaojie.vip:99/"+"?params="+encodeURIComponent(params));
+        // window.open("http://www.xiaogaojie.vip:99/"+"?params="+encodeURIComponent(params));
         // window.open("https://demo.qcloudtiw.com/web/latest/index.html");
+         window.open("https://gengwoxue.com/live/index.html"+"?params="+encodeURIComponent(params))
     },
     //分页页数
     handleCurrentChange(data) {

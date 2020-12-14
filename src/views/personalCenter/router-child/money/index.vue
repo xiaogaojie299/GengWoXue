@@ -76,14 +76,20 @@ export default {
     },
     // 获取金额变动列表
     async get_MyBalanceChange() {
-      let data = {
+      let params = {
         current: this.current,
         size: 10,
       };
-      let res = await queryMyBalanceChange(data);
-      console.log("res===>", res);
-      this.tableData = res.list;
-      this.total = res.total;
+      let {code,data} = await queryMyBalanceChange(params);
+      console.log("res123===>", data);
+      if(code ==200){
+
+        this.tableData = data.list;
+        this.total = data.total;
+      }else{
+        this.$myAlert("网络加载失败");
+      }
+      
     },
     go_url(url) {
       this.$router.push({

@@ -1,7 +1,9 @@
 <template>
   <div id="box">
     <!-- 背景图片 -->
-    <div class="bg-img"></div>
+    <div class="bg-img">
+      <img src="@/assets/img/banner@2x.png" alt="">
+    </div>
     <!-- 内容 -->
     <div class="content">
       <!-- 顶上搜索框 -->
@@ -279,7 +281,7 @@ input:-ms-input-placeholder {
     background: #ffffff;
     box-shadow: 0px 2px 30px 5px rgba(197, 197, 197, 0.27);
     border-radius: 12px;
-    margin-top: -72px;
+    margin-top: -52px;
 
     display: flex;
     justify-content: space-between;
@@ -352,7 +354,10 @@ input:-ms-input-placeholder {
   z-index: -1;
   width: 100%;
   height: 389px;
-  border: 1px solid blue;
+  img{
+    height: 100%;
+    width: 100%;
+  }
 }
 .footer {
   width: 100%;

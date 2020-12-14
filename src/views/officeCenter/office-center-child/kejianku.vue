@@ -99,7 +99,7 @@
       <div class="btn-groups">
         <div class="btn1 hand" @click="previewPPT">预览</div>
         <!-- <a class="btn2" style="text-decoration: none;" :href="selectKejian.url">下载</a> -->
-        <a class="btn2 hand" @click="uploadPPT" style="text-decoration: none;"
+        <a class="btn2 hand" @click="isuploadPPT" style="text-decoration: none;"
           >下载</a
         >
       </div>
@@ -116,16 +116,24 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="quite">取 消</el-button>
         <el-button type="primary" @click="pay">确 定</el-button>
       </span>
+      <div>
+          <vue-qr
+          :size="300"
+          :margin="0"
+          :auto-color="true"
+          :dot-scale="1"
+          :text="wxQRcode" />
+      </div>
     </el-dialog>
   </div>
 </template>
 <script>
 import kejiankuTable from "./compontsCmps/kejiankuTable";
 import { state, actions } from "vuex";
-import { queryAllCourseware, addCoursewareOrder } from "@/network/officeCenter";
+import { queryAllCourseware, addCoursewareOrder,queryCoursewareOrder } from "@/network/officeCenter";
 export default {
   data() {
     return {
@@ -137,10 +145,13 @@ export default {
       size: 10,
       total: 0, //数据总数
       tableData: [], //列表详情
-      selectKejian: {},
+      selectKejian: {},   //选择课件的这个对象信息
       dialogVisible: false, //控制遮罩层开关
-      type: 1,
-      i: 0,
+      type: 1,  //支付方式 1--微信支付  2--支付宝支付
+      wxQRcode:"",        //调用微信支付返回的链接
+      i: 0,       
+      timers:null,     //定时器开关
+      isPay:false       // 判断用户当前是否支付成功  成功 下载课件  否则  下载失败
     };
   },
   computed: {
@@ -158,6 +169,12 @@ export default {
         { name: "文档", id: 3 },
       ];
     },
+  },
+  watch:{
+    isPay(val){
+      console.log(val);
+      val && this.uploadPPT()
+    }
   },
   created() {
     this.init();
@@ -186,6 +203,10 @@ export default {
     pay() {
       this.pushCoursewareOrder();
     },
+    quite(){
+       this.dialogVisible = false;
+       clearInterval(this.timers)
+    },
     // 查询
     query() {
       this.get_AllCourseware();
@@ -207,26 +228,83 @@ export default {
       // 预览PPT
       this.$preview(this.selectKejian.url);
     },
-    uploadPPT() {
       //下载PPT
-      this.dialogVisible = true;
-      let a = document.getElementsByClassName("btn2")[1];
+    async isuploadPPT() {
+      // 判断当前的课件是否需要费用以及用户是否已经交费了
+        if(this.selectKejian.downloadFee!==0 && ""){
+        this.dialogVisible = true;
+        this.pushCoursewareOrder();
+      }else{
+        this.uploadPPT()
+      }
+      
       //用户付款操作
+    },
+    uploadPPT(){  //用户下载操作
+    console.log("下载成功");
+      let a = document.getElementsByClassName("btn2")[1];
+      a.herf = this.selectKejian.url;
     },
     pushCoursewareOrder() {
       //调用支付接口
       let params = {
         payType: this.type,
-        // coursewareId:this.selectKejian.id
-        coursewareId: 2,
+        coursewareId:this.selectKejian.id
+        // coursewareId: 2,
       };
       addCoursewareOrder(params).then((res) => {
-        console.log("res", res);
         let { code, data } = res;
-        if (code == 0) {
-          console.log("data==>", data);
+        if (code == 200) {
+          if(this.type==1){
+              // 微信支付返回二维码 
+              this.wxQRcode = data;
+              console.log(this.wxQRcode);
+              this.getOrderstate();
+          }else{
+            //支付宝支付返回form 表单
+            const div=document.createElement('divform');
+            div.innerHTML=data;
+            document.body.appendChild(div);
+            document.forms[0].acceptCharset='GBK';//保持与支付宝默认编码格式一致，如果不一致将会出现：调试错误，请回到请求来源地，重新发起请求，错误代码 invalid-signature 错误原因: 验签出错，建议检查签名字符串或签名私钥与应用公钥是否匹配
+            document.forms[0].submit();
+          }
         }
       });
+    },
+     // 调用一个判断支付是否成功的接口，用这个接口我们监听微信是否支付成功
+    getOrderstate() {
+      let self = this;
+      let num = 0;
+      self.timers = setInterval(() => {
+        //创建一个全局的定时器
+        num++;
+        let params = {
+          coursewareId:this.selectKejian.id,
+          // coursewareId: 2,
+          payType: self.type,
+        };
+        queryCoursewareOrder(params).then((res) => {
+          console.log("查询是否支付成功", res);
+          if (res.code == 200) {
+            //判断就是订单支付成功
+            if (res.data == 2) {
+              //data ==1 失败  data==2 成功
+              // 成功之后的的逻辑
+              this.uploadPPT()
+              clearInterval(self.timers); //别忘记关闭定时器，否则会一直调这个接口
+            }else{
+                // 支付不成功的逻辑
+                //  this.isPay = (num==4?true:false);
+            }
+          }
+        });
+        if (num == 500) {
+          //这里是判断num++到500的情况下用户还没有支付则自动关闭定时器和二维码
+          clearInterval(this.timers);
+           this.isPay =false;
+          this.dialogVisible = false;
+        }
+      }, 1500);
     },
 
     selectRow(row) {

@@ -3,11 +3,19 @@
     <div class="content">
       <div class="title">请您在<span class="font-color">15:00</span>内支付</div>
       <div class="RMB">￥100</div>
-      <div class="app-name">支付宝</div>
-      <!-- 二维码 -->
-      <div class="QR-code"></div>
-      <!-- 关闭按钮 -->
+      <div class="app-name">微信</div>
+      <div class="QR-code">
+        <vue-qr
+          :size="300"
+          :margin="0"
+          :auto-color="true"
+          :dot-scale="1"
+          :text="qrCode" />
+      </div>
       <div class="btn" @click="handleClose">关闭</div>
+    </div>
+    <div>
+
     </div>
   </div>
 </template>
@@ -16,10 +24,19 @@ export default {
   data() {
     return {};
   },
+  props:{
+    qrCode:{
+      type:String,
+      default:""
+    }
+  },
   methods:{
       handleClose(){
           this.$emit("closeMask")
       }
+  },
+  created(){
+    console.log("qrCode",this.qrCode)
   }
 };
 </script>

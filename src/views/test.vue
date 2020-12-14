@@ -1,82 +1,18 @@
 <template>
     <div class="header">
+      <div>
+        <!-- <qrCode value="weixin://wxpay/bizpayurl?pr=iDuENF400" :options="{ size: 170 }"></qrCode> -->
+        <vue-qr
+          :size="191"
+          :margin="0"
+          :auto-color="true"
+          :dot-scale="1"
+          text="weixin://wxpay/bizpayurl?pr=iDuENF400" />
+
+      </div>
+
       <el-button @click="go_live">测试跳转</el-button>
-        <div class="header-tag">
-          <div class="tag-left">课件类型:</div>
-          <!-- 下拉多选框 -->
-          <div>
-            <el-select
-              @change="change"
-              :popper-append-to-body="false"
-              v-model="kejianTypeValue"
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in kejianType"
-                :key="item.value"
-                :label="item.name"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-          </div>
-          <img src="@/assets/img/answers/icon_arrow.png" alt="" />
-          <!-- 下面按钮组 -->
-        </div>
 
-        <div class="header-tag">
-          <div class="tag-left">科目:</div>
-          <!-- 下拉多选框 -->
-          <div>
-            <el-select
-              @change="change"
-              :popper-append-to-body="false"
-              v-model="subjectValue"
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in subjectList"
-                :key="item.value"
-                :label="item.name"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-          </div>
-          <img src="@/assets/img/answers/icon_arrow.png" alt="" />
-          <!-- 下面按钮组 -->
-        </div>
-
-        <div class="header-tag">
-          <div class="tag-left">年级:</div>
-          <!-- 下拉多选框 -->
-          <div>
-            <el-select
-              @change="change"
-              :popper-append-to-body="false"
-              v-model="classValue"
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in classList"
-                :key="item.value"
-                :label="item.name"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-          </div>
-          <img src="@/assets/img/answers/icon_arrow.png" alt="" />
-          <!-- 下面按钮组 -->
-        </div>
-
-        <div class="header-tag">
-          <div class="tag-left">课件名称:</div>
-          <div>
-            <input class="kjName" type="text" />
-          </div>
-          <div></div>
-        </div>
       </div>
 </template>
 <script>
@@ -99,12 +35,25 @@ import {mapState,mapActions} from "vuex"
       }
     },
     methods:{
+
+      qrcode () {
+                let that = this;
+                let qrcode = new qrCode('qrcode', {
+                    width: 124,
+                    height: 124,        // 高度
+                    text:  "weixin://wxpay/bizpayurl?pr=iDuENF400",   // 二维码内容
+                    // render: 'canvas' ,   // 设置渲染方式（有两种方式 table和canvas，默认是canvas）
+                    // background: '#f0f',   // 背景色
+                    // foreground: '#ff0'    // 前景色
+                })
+            },
       go_live(){
+        this.$myMessage("错误消息","error")
         let params = {id:2,scheduleId:2,caurseName:"火箭班直播",teacherName:"肖高杰"};
         params.teacherId = this.userInfo.id;
         params.token = this.userInfo.token;
         params = JSON.stringify(params)
-        window.open("http://www.xiaogaojie.vip:99/"+"?params="+encodeURIComponent(params));
+        // window.open("http://www.xiaogaojie.vip:99/"+"?params="+encodeURIComponent(params));
         // this.$router.push({
         //   path:"/test",
         //   query:{
@@ -122,6 +71,9 @@ import {mapState,mapActions} from "vuex"
         },
         created() {
           console.log("执行成功");
+           this.$nextTick (function () {
+       this.qrcode();
+    })
         },
     }
   };

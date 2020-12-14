@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <div>
-      <my-title><span @click="go_back">我的钱包</span>>充值</my-title>
+      <my-title><span @click="go_back" class="hand">我的钱包</span>>充值</my-title>
     </div>
     <router-view></router-view>
   </div>
@@ -14,6 +14,8 @@ export default {
             dialogVisible:false
         }
     },
+    computed: {
+ },
     methods:{
         go_back(){
             this.$router.back(-1);

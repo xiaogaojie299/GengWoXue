@@ -26,7 +26,7 @@
           <!-- 下面按钮组 -->
         </div>
         <!-- 按钮 -->
-        <div class="btn" @click="resetRead">置为已读</div>
+        <div class="btn hand" @click="resetRead">置为已读</div>
       </div>
       <!-- 中间表格数据 -->
       <div class="main">
@@ -56,13 +56,14 @@ export default {
       msgTypeValue: 1,
       current:1,
       size:10,
-      noticeUserId:""
+      noticeUserId:"",
     };
   },
   computed: {
     msgCenterList() {
       return this.$store.state.msgCenterList;
     },
+    
   },
   components: {
     msgTable,

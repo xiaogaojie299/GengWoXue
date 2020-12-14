@@ -7,6 +7,7 @@ import {
 } from "@/network/messageCenter";
 import { queryPersonalData } from "@/network/personalCenter";
 import { captchaLogin } from "@/network/login";
+import {queryNoReadNumber} from "@/network/messageCenter"
 import createPersistedState from "vuex-persistedstate";
 Vue.use(Vuex);
 
@@ -21,8 +22,9 @@ export default new Vuex.Store({
     userInfo: {}, //登录成功后返回的列表
     personalIndex: "", //我的个人中心左侧的导航栏的下标选择
     officeCenterIndex: "", //办公中心下拉框
-    userImg: "",
-    kfInfo: {},
+    userImg: "",      //用户头像
+    kfInfo: {},       //客服电话
+    unread:{},        //未读消息条数  
   },
   mutations: {
     setClassList(state, list) {
@@ -62,6 +64,9 @@ export default new Vuex.Store({
     setKfInfo(state, value) {
       state.kfInfo = value;
     },
+    setUnread(state,value){
+      state.unread = value
+    }
   },
   actions: {
     //获取登录状态的token
@@ -72,6 +77,7 @@ export default new Vuex.Store({
       commit("setUserInfo", res.data);
       commit("setUserImg", res.data.avatar);
       dispatch("getMessageList");
+      dispatch("getUnread");     //调用获取未读消息展示
       // window.localStorage.setItem("userInfo", res.data);
       // window.localStorage.setItem("token",res.data.token);
       params.$router.push({
@@ -129,8 +135,16 @@ export default new Vuex.Store({
       let res = await queryPersonalData();
       context.commit("setinfoList", res.data);
       context.commit("setUserImg".res.data.avatar);
-      console.log("res.data.avatar", res.data.avatar);
     },
+    // 获取所有未读消息条数
+    async getUnread(context){
+      let {code,data} =await queryNoReadNumber();
+      if(code==200){
+        let msgTotal = Number(data.notice)+Number(data.activity);
+        console.log("msgTotal==",msgTotal);
+        context.commit("setUnread", msgTotal);
+      }
+    }
   },
   modules: {},
   plugins: [createPersistedState()], //默认情况是存储在localStory中

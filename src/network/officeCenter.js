@@ -140,6 +140,12 @@ export function addCoursewareOrder(data){
     url:api+"addCoursewareOrder"+qs(data)
   })
 }
+// 查询充值结果
+export function queryCoursewareOrder(data){
+  return request({
+      url:api+"queryCoursewareOrder"+qs(data)
+  })
+}
 
 // 提交阅卷激励
 export function saveExamines(data){

@@ -13,21 +13,49 @@
     <div class="row2">
       <div class="succe-content">
         <!-- 订单号 -->
-        <div class="order_list">订单号：<span>REO0917891 </span></div>
+        <!-- <div class="order_list">订单号：<span>REO0917891 </span></div> -->
         <!-- 充值金额 -->
-        <div class="credit">充值金额：<span>100 </span></div>
+        <div class="credit">充值金额：<span>{{money}} </span></div>
       </div>
       <!-- 充值成功 -->
       <div class="inform">充值成功</div>
-      <div class="inform">5秒后返回我的钱包</div>
+      <div class="inform">{{i}}秒后返回我的钱包</div>
     </div>
   </div>
 </template>
 <script>
 export default {
   data() {
-    return {};
+    return {
+      money:0,
+      timer:null,
+      i:5
+    };
   },
+  created(){
+    this.money = this.$route.query.money;
+    this.timer=setInterval(()=>{
+        this.i--;
+        console.log("i",this.i)
+        if(this.i==0){
+          this.$router.push({
+            path:"/page/personalCenter/personal/wallet"
+          })
+          clearInterval(this.timer)
+        }
+    },1000)
+  },
+  watch:{
+  },
+  beforeDestroy() {
+    console.log("组件被销毁");
+    this.$router.push({
+            path:"/page/personalCenter/personal/wallet"
+          })
+      if(this.timer) {
+           clearInterval(this.timer); //关闭
+      }  
+ },
 };
 </script>
 <style lang="scss" scoped>
