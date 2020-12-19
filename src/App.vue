@@ -16,13 +16,9 @@
     </my-box> -->
     <router-view></router-view>
     <!-- 引入ifraim -->
-    <!-- <iframe id="iframe1" width="100%" height="800" frameborder="0" scrolling="auto" src="../public/test.html"></iframe>  -->
   </div>
 </template>
 <script>
-// import navBar from "./components/nav-bar"
-// import container from "./components/container"
-// import footers from "./components/footers"
 export default {
   data() {
     return {};
