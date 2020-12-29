@@ -2,7 +2,7 @@
   <div id="box">
     <!-- 背景图片 -->
     <div class="bg-img">
-      <img src="@/assets/img/banner@2x.png" alt="">
+      <img src="@/assets/img/banner@2x.png" alt="" />
     </div>
     <!-- 内容 -->
     <div class="content">
@@ -48,12 +48,18 @@
           </div>
         </div>
         <!-- 例题列表 -->
-        <div>
+        <div v-if="questionSquareList.length > 0">
           <exercises :questionSquareList="questionSquareList" />
         </div>
-        <!-- 解析答案 -->
+
+        <div v-else>
+          <no-data-title>
+            暂未搜索到 <span style="color: red">{{ seachTitle }}</span> 相关问题
+          </no-data-title>
+        </div>
       </container>
     </div>
+
     <!-- 底部分页按钮 -->
     <div class="footer">
       <page-device
@@ -213,9 +219,10 @@ export default {
             item.imgUrl = [];
           }
         });
-        data.list[0].setValue = this.value;
+        if (data.list.length > 0) {
+          data.list[0].setValue = this.value;
+        }
         this.questionSquareList = data.list;
-        console.log("this.questionSquareList", this.questionSquareList);
       });
     },
   },
@@ -353,10 +360,11 @@ input:-ms-input-placeholder {
   position: relative;
   z-index: -1;
   width: 100%;
-  height: 389px;
-  img{
+  height: 589px;
+  img {
     height: 100%;
     width: 100%;
+    object-fit: cover;
   }
 }
 .footer {

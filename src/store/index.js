@@ -116,11 +116,11 @@ export default new Vuex.Store({
     ) {
       data || console.log("data==>", data);
       let res = await queryMessageList(data);
-      console.log("res==", res);
+      console.log("res==123", res);
       // res.data.forEach((item) => {
       //   item.ischeckout;
       // });
-      context.commit("setMsgCenterList", res.data);
+      context.commit("setMsgCenterList", res.data );
     },
     // 获取客服列表
     async getKfList(context, data) {
@@ -133,6 +133,7 @@ export default new Vuex.Store({
     //获取个人资料
     async getPersonalData(context) {
       let res = await queryPersonalData();
+      console.log("获取个人资料成功");
       context.commit("setinfoList", res.data);
       context.commit("setUserImg".res.data.avatar);
     },

@@ -234,7 +234,11 @@ export default {
     // 判断当前月哪天有课
     isMonthClass(data) {
       let day = utils.getTimeType(data);
-     let isDay = this.MonthClass.some((item, index) => {
+      /* 
+        // 测试数据
+        let MonthClass = [{number:1,strTime:"2020-12-20"},{number:2,strTime:"2020-12-29"}];
+      */
+      let isDay =this.MonthClass.some((item, index) => {
         return item.strTime==day
       });
       return isDay

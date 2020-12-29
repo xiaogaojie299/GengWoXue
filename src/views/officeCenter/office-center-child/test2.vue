@@ -14,11 +14,15 @@
       ></calendar>
     </div>
     <!-- 底部详情 -->
-    <div v-if="timerCourse.length>0">
+    <div v-if="timerCourse.length > 0">
       <div class="class-box" v-for="(it, i) in timerCourse" :key="i">
         <div class="class-title">{{ it.className }}</div>
         <!-- 课程列表 -->
-        <div v-for="(item, index) in it.list" :key="index" class="course-item m-20">
+        <div
+          v-for="(item, index) in it.list"
+          :key="index"
+          class="course-item m-20"
+        >
           <!-- 左侧图片 -->
           <img class="left-img" :src="item.teacherAvater" />
           <!-- 右侧内容 -->
@@ -52,14 +56,22 @@
                 </div>
 
                 <!-- 未开始或者开始按钮 -->
-                <div @click="go_live(item)" class="btn-start">
-                  {{
-                    item.status == 1
-                      ? "未开始"
-                      : item.status == 2
-                      ? "进行中"
-                      : "已结束"
-                  }}
+                <div
+                  v-if="item.status == 1"
+                  @click="go_live(item)"
+                  class="btn-start hand"
+                >
+                  未开始
+                </div>
+                <div
+                  v-else-if="item.status == 2"
+                  @click="go_live(item)"
+                  class="btn-start hand"
+                >
+                  进行中
+                </div>
+                <div v-else class="btn-start hand">
+                  已结束
                 </div>
               </div>
             </div>
@@ -73,7 +85,7 @@
       </div>
     </div>
     <div class="no-course" v-else>
-        <div>今日暂无课程安排</div>
+      <div>今日暂无课程安排</div>
     </div>
     <!-- 分页 -->
     <div class="page-device">
@@ -88,7 +100,7 @@
 import { queryDaySchedule, queryTeacherSchedule } from "@/network/officeCenter";
 import * as utils from "@/utils/getData";
 
-import {state} from "vuex";
+import { state } from "vuex";
 export default {
   data() {
     let { year, month, day } = utils.getYearMonthDay(new Date());
@@ -107,12 +119,23 @@ export default {
   },
   created() {
     this.init();
-    let url ='https://gengwoxue.com/live/index.html?id=5'
+    let url = "https://gengwoxue.com/live/index.html?id=5";
   },
-  computed:{
-    userInfo(){ //在vuex中拿到登录成功的列表{token,老师id} 传给直播页面
-      return this.$store.state.userInfo
-    }
+  mounted() {
+    let that = this;
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState == "hidden") {
+        that.getDaySchedule();
+      } else {
+        that.getDaySchedule();
+      }
+    });
+  },
+  computed: {
+    userInfo() {
+      //在vuex中拿到登录成功的列表{token,老师id} 传给直播页面
+      return this.$store.state.userInfo;
+    },
   },
   watch: {
     // 监听现在是按时间查询还是按月查询
@@ -161,24 +184,22 @@ export default {
     getMonthTeacherSchedule() {
       let day = utils.getTimeType(this.monthTimer, true);
       let params = {
-        current: this.current,
-        size: this.size,
-        day: day,
+        time: day,
       };
       queryTeacherSchedule(params).then((res) => {
         let { data, code } = res;
+        console.log("判断这个有无课",res);
         if (code == 200) {
-         if (data == "undefind" || data.length == 0) {  //测试给的初始值
-          this.MonthClass = [
-            { number: 1, strTime: "2020-12-25" },
-            { number: 2, strTime: "2020-12-22" },
-          ];
-        } else {
-          this.MonthClass = data;
+          /*   测试数据
+          if (data == "undefind" || data.length == 0) {
+            this.MonthClass = [
+              { number: 1, strTime: "2020-12-25" },
+              { number: 2, strTime: "2020-12-22" },
+            ];
+           */
+            this.MonthClass = data;
+          console.log("this.MonthClass==>", this.MonthClass);
         }
-        console.log("this.MonthClass==>",this.MonthClass);
-        }
-        
       });
     },
     // 跳转课程详情
@@ -206,16 +227,30 @@ export default {
     initCurrent(i) {
       this.current = 1;
     },
-    go_live(item){  //看直播
-       let params = item;
-        params.teacherId = this.userInfo.id;
-        params.token = this.userInfo.token;
-        params.avatar = this.userInfo.avatar;
-       console.log("params==>",params);
-        params = JSON.stringify(params)
-        // window.open("http://www.xiaogaojie.vip:99/"+"?params="+encodeURIComponent(params));
-        // window.open("https://demo.qcloudtiw.com/web/latest/index.html");
-         window.open("https://gengwoxue.com/live/index.html"+"?params="+encodeURIComponent(params))
+    go_live(item) {
+      //看直播
+      let params = item;
+      params.teacherId = this.userInfo.id;
+      params.token = this.userInfo.token;
+      params.avatar = this.userInfo.avatar;
+      console.log("params==>", params);
+      params = JSON.stringify(params);
+      window.open(
+        "https://gengwoxue.com:8443/index.html" +
+          "?params=" +
+          encodeURIComponent(params)
+      );
+      
+    //  window.open(
+    //     "http://127.0.0.1:5500/index.html" +
+    //       "?params=" +
+    //       encodeURIComponent(params)
+    //   );
+
+      // window.open("http://www.xiaogaojie.vip:99/"+"?params="+encodeURIComponent(params));
+      // window.open("https://demo.qcloudtiw.com/web/latest/index.html");
+      //  window.open("https://gengwoxue.com/live/index.html"+"?params="+encodeURIComponent(params))
+      // window.open("https://gengwoxue.com:8443/");
     },
     //分页页数
     handleCurrentChange(data) {
@@ -365,7 +400,7 @@ export default {
         .btn-start {
           width: 88px;
           height: 31px;
-          border: 1px solid #EA0830;
+          border: 1px solid #ea0830;
           border-radius: 15px;
           //字体颜色
           display: flex;
@@ -374,7 +409,7 @@ export default {
           font-size: 15px;
           font-family: Source Han Sans CN;
           font-weight: bold;
-          color: #EA0830;
+          color: #ea0830;
           margin-top: -4px;
         }
       }
@@ -389,7 +424,7 @@ export default {
   justify-content: center;
 }
 //暂无课程
-.no-course{
+.no-course {
   display: flex;
   align-items: center;
   justify-content: center;

@@ -259,10 +259,15 @@ export default {
     };
   },
   computed: {
-    subjectList() {
-      let arr = this.$store.state.subjectList;
-      arr.shift();
-      return arr;
+    subjectList: {
+      get() {
+        let arr = this.$store.state.subjectList;
+        arr.shift();
+        return arr;
+      },
+      set() {
+        
+      },
     },
   },
   created() {
@@ -280,6 +285,16 @@ export default {
       if (code == 200) {
         console.log("获取用户个人信息", data.avatar);
         this.$store.commit("setUserImg", data.avatar); //首页展示与当前更改头像保持一致
+        switch (data.type) {
+          case 1:
+            data.type = "平台教师";
+            break;
+          case 2:
+            data.type = "入驻教师";
+            break;
+          default:
+            data.type = "机构教师";
+        }
         this.info = data;
         this.form.birthday = data.birthday; //用户姓名
         this.form.nickname = data.nickname; //用户昵称
@@ -341,7 +356,7 @@ export default {
       const isJPG = file.type === "image/jpeg";
       const isPNG = file.type === "image/png";
       if (!isJPG && !isPNG) {
-        this.$message.error("上传头像图片只能是 JPG或者PNG 格式!");
+        this.$message.error("上传资质 JPG或者PNG 格式!");
       }
       return isJPG || isPNG;
     },
@@ -385,7 +400,7 @@ export default {
     },
     handleExceed(files, fileList) {
       //限制音频上传个数
-      this.$message.warning("做多只能上传3张照片噢");
+      this.$message.warning("最多只能上传3张照片噢");
       this.form.qualificationImg = fileList;
       console.log(files, fileList);
     },

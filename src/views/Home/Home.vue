@@ -27,10 +27,10 @@
       <container>
         <div class="rank-list-box">
           <div>
-            <rank-list></rank-list>
+            <rank-list type="1" :teacherRankList="teacherRankList"></rank-list>
           </div>
           <div>
-            <rank-list></rank-list>
+            <rank-list type="2" :teacherRankList="teacherExtension"></rank-list>
           </div>
         </div>
       </container>
@@ -48,6 +48,7 @@ import {
   queryBanner,
   queryClassHourRand,
   queryTodayCourse,
+  queryExtensionRand
 } from "@/network/home.js";
 export default {
   name: "Home",
@@ -79,6 +80,8 @@ export default {
       current: 1, //分页页码
       size: 10, //每页显示的条数
       total: 0, //后端传过来的总数
+      teacherRankList:[],     //老师课时排行数
+      teacherExtension:[]     //老师推广人数排行榜
     };
   },
   components: {
@@ -89,16 +92,28 @@ export default {
   created() {
     this.init();
   },
+  mounted(){
+    // 监听浏览器方法，跳转回来的时候刷新
+    let that = this;
+    document.addEventListener("visibilitychange", function() {
+    if(document.visibilityState == 'hidden'){
+     that.getTodayCourse()
+    }
+    else{
+        that.getTodayCourse()
+    }
+  });
+  },
   destroyed() {},
   methods: {
     async init() {
       this.getBanner(); //获取首页轮播页面
       this.getClassHourRand(); //获取老师课时数排行
-      this.getTodayCourse();
+      this.getTodayCourse();  //查询今日课程
     },
     // 获取首页轮播图
     async getBanner() {
-      let params = { type: 1 }; //1=学生APP端，2=学生网页端，3=老师端
+      let params = { type: 2 }; //1=学生端，2=老师端
       let { code, data } = await queryBanner(params);
       if (code == 200) {
         this.bannerList = data;
@@ -107,11 +122,19 @@ export default {
     // 获取老师课时数排行
     getClassHourRand() {
       queryClassHourRand().then((res) => {
-        console.log(res);
         let { code, data } = res;
         if (code == 200) {
+          this.teacherRankList = data;
         }
       });
+    },
+    getExtensionRand(){
+      queryExtensionRand().then((res) => {
+        let { code, data } = res;
+        if (code == 200) {
+          this.teacherExtension = data;
+        }
+      })
     },
     // 获取今日课程数
     getTodayCourse() {

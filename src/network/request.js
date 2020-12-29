@@ -35,7 +35,7 @@ instance.interceptors.response.use(
           vue.$router.push({ path: "/page/register" });
           break;
         case 500:
-          vue.$myAlert("服务器出错");
+          vue.$myAlert(res.data.msg);
       }
     }
   },

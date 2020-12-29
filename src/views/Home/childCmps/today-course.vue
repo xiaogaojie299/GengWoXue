@@ -2,14 +2,10 @@
   <div>
     <container>
       <!-- 班级 -->
-      <div
-        class="class-box"
-        v-for="(item, index) in TodayCourseList"
-        :key="index"
-      >
-        <div class="class-title">{{ item.className }}</div>
+      <div class="class-box" v-for="(it, i) in TodayCourseList" :key = "i">
+        <div class="class-title">{{ it.className }}</div>
         <!-- 课程列表 -->
-        <div class="course-item">
+        <div class="course-item"  v-for="(item, index) in it.list" :key="index">
           <!-- 左侧图片 -->
           <img class="left-img" :src="item.teacherAvater" />
           <!-- 右侧内容 -->
@@ -43,7 +39,7 @@
                 </div>
 
                 <!-- 未开始或者开始按钮 -->
-                <div class="btn-start">
+                <!-- <div @click="go_live(item)" class="btn-start">
                   {{
                     item.status == 1
                       ? "未开始"
@@ -51,7 +47,10 @@
                       ? "进行中"
                       : "已结束"
                   }}
-                </div>
+                </div> -->
+                <div v-if="item.status == 1" @click="go_live(item)" class="btn-start hand">未开始</div>
+                <div v-else-if="item.status == 2" @click="go_live(item)" class="btn-start hand">进行中</div>
+                <div v-else class="btn-start hand">已结束</div>
               </div>
             </div>
           </div>
@@ -61,6 +60,7 @@
   </div>
 </template>
 <script>
+import {state} from "vuex";
 export default {
   data() {
     return {};
@@ -71,9 +71,33 @@ export default {
       default: [],
     },
   },
-  created() {
-    console.log(this.TodayCourseList);
+  computed:{
+    userInfo(){ //在vuex中拿到登录成功的列表{token,老师id} 传给直播页面
+      return this.$store.state.userInfo
+    }
   },
+  methods:{
+    go_live(item){  //看直播
+    console.log("跳转成功");
+    console.log(item);
+       let params = item;
+        params.teacherId = this.userInfo.id;
+        params.token = this.userInfo.token;
+        params.avatar = this.userInfo.avatar;
+       console.log("params==>",params);
+        params = JSON.stringify(params)
+        // window.open("http://www.xiaogaojie.vip:99/"+"?params="+encodeURIComponent(params));
+        // window.open("https://demo.qcloudtiw.com/web/latest/index.html");
+         window.open("https://gengwoxue.com:8443/index.html"+"?params="+encodeURIComponent(params))
+        // window.open("https://gengwoxue.com:8443/");
+    },
+  },
+  created() {
+    console.log("123,",this.TodayCourseList);
+  },
+  mounted(){
+   
+  }
 };
 </script>
 <style lang="scss" scoped>

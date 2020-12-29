@@ -4,7 +4,7 @@
       <div slot="my-header">
           <nav-bar></nav-bar>
       </div>
-      <div style="height:100%" slot="my-main">
+      <div class="my-main" style="height:100%" slot="my-main">
         <router-view></router-view>
       </div>
       <div slot="my-footer">
@@ -34,6 +34,10 @@ export default {
 .test {
   width: 100%;
   height: 1000px;
-  border: 1px solid red;
+
+}
+.my-main{
+//  min-height:100vh;
+  // border: 1px solid red;
 }
 </style>

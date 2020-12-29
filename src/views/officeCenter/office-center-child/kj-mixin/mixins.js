@@ -9,9 +9,8 @@ export const kjMixin={
     computed:{
         kejianType1() {
             return [
-              { name: "视频", id: 1 },
               { name: "PPT", id: 2 },
-              { name: "文档", id: 3 },
+              { name: "文档", id: 3 }
             ];
           },
           classList1() {

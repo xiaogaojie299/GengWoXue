@@ -89,7 +89,7 @@ export default {
           const div = document.createElement("divform");
           div.innerHTML = data;
           document.body.appendChild(div);
-          document.forms[0].acceptCharset = "GBK"; //保持与支付宝默认编码格式一致，如果不一致将会出现：调试错误，请回到请求来源地，重新发起请求，错误代码 invalid-signature 错误原因: 验签出错，建议检查签名字符串或签名私钥与应用公钥是否匹配
+          document.forms[0].acceptCharset = "UTF-8"; //保持与支付宝默认编码格式一致，如果不一致将会出现：调试错误，请回到请求来源地，重新发起请求，错误代码 invalid-signature 错误原因: 验签出错，建议检查签名字符串或签名私钥与应用公钥是否匹配
           document.forms[0].submit();
         } else {
           this.qrCode = data; //微信二维码
@@ -116,7 +116,7 @@ export default {
           if (res.code == 200) {
             //判断就是订单支付成功
             if (res.data == 2) {
-              //data ==1 成功  data==2 失败
+              //data ==1 失败  data==2 成功
               self.$router.push({
                 path: "/page/personalCenter/personal/recharge/succee",
                 query: {
@@ -137,12 +137,12 @@ export default {
     closeMask() {
       this.dialogVisible = false;
       clearInterval(this.timers);
-      this.$router.push({
-        path: "/page/personalCenter/personal/recharge/succee",
-        query: {
-          money: this.money,
-        },
-      });
+      // this.$router.push({
+      //   path: "/page/personalCenter/personal/recharge/succee",
+      //   query: {
+      //     money: this.money,
+      //   },
+      // });
     },
   },
   components: {

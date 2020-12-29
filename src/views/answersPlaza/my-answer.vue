@@ -31,18 +31,9 @@
         </div>
         <!-- 图片上传 -->
         <div class="upload-img">
-          <!-- 
-            <el-upload
-  action="https://jsonplaceholder.typicode.com/posts/"
-  :show-file-list="false"
-  :on-success="handleAvatarSuccess"
-  :before-upload="beforeAvatarUpload">
-  <img v-if="imageUrl" :src="imageUrl" class="avatar">
-  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-</el-upload> -->
-
           <el-upload
-            :show-file-list="false"
+            ref="upload"
+            :show-file-list="true"
             :action="BASE_URL + 'student/base/uploadImg'"
             list-type="picture-card"
             :on-preview="handlePictureCardPreview"
@@ -50,9 +41,13 @@
             :on-success="handleSuccess"
             :on-progress="handleProgress"
             :before-upload="beforeAvatarUpload"
+            :limit="3"
+            
           >
             <i class="el-icon-plus"></i>
+
           </el-upload>
+          <span>上传问题图片（最多上传3张）</span>
           <el-dialog :visible.sync="dialogVisible">
             <img width="100%" :src="dialogImageUrl" alt="" />
           </el-dialog>
@@ -64,8 +59,8 @@
             <span>*悬赏金额</span>
             <!-- 输入框 -->
             <input
-              type="text"
               v-model="golds"
+              type="number"
               placeholder="据说悬赏越高，回答的人越多哦"
             />
           </div>
@@ -94,6 +89,7 @@ export default {
       golds: "", //状元币个数
       BASE_URL: BASE_URL,
       imgUrl: [], //图片上传的路径
+      i:1
     };
   },
   computed: {
@@ -104,6 +100,11 @@ export default {
   methods: {
     handleRemove(file, fileList) {
       console.log(file, fileList);
+     this.imgUrl = fileList.map(item=>{
+        return item.response.data
+      })
+      console.log(this.imgUrl);
+      this.i--;
     },
     handlePictureCardPreview(file) {
       console.log("file", file);
@@ -111,22 +112,35 @@ export default {
       this.dialogVisible = true;
     },
     handleSuccess(event, file, fileList) {
-      this.imgUrl = event.data;
+      this.imgUrl = this.imgUrl.concat(event.data);
+      this.i++
     },
     beforeAvatarUpload(file) {
+      if(this.i<=3){
       const isJPG = file.type === "image/jpeg";
       const isPNG = file.type === "image/png";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+
       if (!isJPG && !isPNG) {
-        this.$message.error("上传头像图片只能是 JPG或者PNG 格式!");
+        this.$message.error("上传图片只能是 JPG或者PNG 格式!");
       }
-      return isJPG || isPNG;
-    },
+      if (!isLt2M) {
+          this.$message.error('上传图片大小不能超过 2MB!');
+        }
+      return (isJPG || isPNG) && isLt2M;
+    }else{
+      this.$myMessage("有且之能上传三张图片","error")
+      return i==3
+    }
+      },
     handleProgress() {},
     // 初始化
     init() {
       this.describe = "";
       this.problem = "";
       this.golds = "";
+      this.imgUrl = "";
     },
     // 提交提问
     submit() {
@@ -138,22 +152,35 @@ export default {
         this.$myAlert("请输入您的问题描述");
         return;
       }
+      if (this.golds) {
+        this.$myAlert("请输入状元币个数");
+        return;
+      }
       if (this.golds > this.myGold) {
         this.$myAlert("状元币余额不足");
         return;
       }
-      // if (!this.imgUrl) {
-      //   this.$myAlert("请上传您的问题图片");
-      // }
-      let data = {
+      if (!this.imgUrl) {
+        this.$myAlert("请上传您的问题图片");
+      }
+      console.log(this.imgUrl);
+      this.imgUrl = this.imgUrl.length==0?this.imgUrl[0]:this.imgUrl.join(",")
+      let params = {
         question: this.problem,
         describe: this.describe,
         golds: this.golds,
         imgUrl: this.imgUrl,
       };
-      optAddQuestion(data).then((res) => {
-        this.this.init();
+      optAddQuestion(params).then((res) => {
+        let {code,data,msg} = res;
+        if(code==200){
+           this.init();
+           this.$refs.upload.clearFiles();
         this.$myAlert("提交问题成功");
+        }else{
+          this.$myAlert(msg);
+        }
+       
       });
     },
     // 返回上一页

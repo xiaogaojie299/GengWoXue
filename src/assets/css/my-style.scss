@@ -2,6 +2,11 @@ $base-color: #eb002a;
 .hand {
   cursor: pointer;
 }
+.nowrap-hidden{
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
+}
 .page-device {
   // height:80px;
   width: 100%;

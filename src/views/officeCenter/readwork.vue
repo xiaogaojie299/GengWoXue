@@ -101,9 +101,9 @@
               <div class="right-grade">
                 <div class="first-box">
                   <div>得分：</div>
-                  <input v-model="item.studentScore" />
+                  <input ref="piyue" v-model="item.studentScore" />
                   <!-- icon -->
-                  <img src="@/assets/img/officeCenter/icon_edit.png" alt="" />
+                  <img @click="inputFocus" src="@/assets/img/officeCenter/icon_edit.png" alt="" />
                 </div>
 
                 <el-upload
@@ -313,6 +313,12 @@ export default {
     }
   },
   methods: {
+    inputFocus(){
+      // 点击编辑icon。input获取焦点
+      this.$nextTick(()=>{
+        this.$refs.piyue.focus();
+      })
+    },
     uploadPPTindex(index) {
       //判断是哪一个上传的音频
       console.log("index=", index);

@@ -163,6 +163,7 @@ export default {
     },
     go_personalCenter() {
       console.log("跳转到个人中心");
+      this.$store.dispatch("getPersonalData");
       this.$router.push({
         path: "/page/personalCenter/personal",
       });

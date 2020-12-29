@@ -107,8 +107,8 @@ export default {
       password: "", //用户密码
       disabledBtn: false,
       inputList: [
-        { placeholder: "请输入您的手机号", value: "15828353333" },
-        { placeholder: "请输入您的手机号", value: "15828353333" },
+        { placeholder: "请输入您的手机号", value: "" },
+        { placeholder: "请输入您的手机号", value: "" },
       ], //选中ICON
       testURL: "@/assets/img/register/selected.png",
       textCode: "获取验证码",
@@ -289,8 +289,8 @@ input:-ms-input-placeholder {
   // width: 400px;
   // height: 564px;
   width: 504px;
-  // height: 795px;
-  height: 80%;
+  height: 595px;
+  // height: 80%;
   background: #ffffff;
   box-shadow: 1px 13px 18px 0px rgba(158, 158, 158, 0.3);
   border-radius: 10px;

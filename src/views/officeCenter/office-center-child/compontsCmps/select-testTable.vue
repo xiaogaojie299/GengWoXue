@@ -136,7 +136,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <div class="page-device"><page-device /></div>
+    <div class="page-device"><page-device :total="total" :current="current" /></div>
     <!-- 底部关闭按钮 -->
     <div class="footer-btn hand" @click="closeMask">关闭</div>
   </div>
@@ -157,77 +157,7 @@ export default {
           name: "王小虎",
           mailingInformation: 0,
           studentState: 2,
-        },
-        {
-          id: 4,
-          date: "2016-05-02",
-          name: "王小虎",
-          mailingInformation: 0,
-          studentState: 2,
-        },
-        {
-          id: 4,
-          date: "2016-05-02",
-          name: "王小虎",
-          mailingInformation: 0,
-          studentState: 2,
-        },
-        {
-          id: 4,
-          date: "2016-05-02",
-          name: "王小虎",
-          mailingInformation: 0,
-          studentState: 2,
-        },
-        {
-          id: 5,
-          date: "2016-05-02",
-          name: "张三",
-          mailingInformation: 0,
-          studentState: 1,
-        },
-        {
-          id: 5,
-          date: "2016-05-02",
-          name: "张三",
-          mailingInformation: 0,
-          studentState: 1,
-        },
-        {
-          id: 5,
-          date: "2016-05-02",
-          name: "张三",
-          mailingInformation: 0,
-          studentState: 1,
-        },
-        {
-          id: 5,
-          date: "2016-05-02",
-          name: "张三",
-          mailingInformation: 0,
-          studentState: 1,
-        },
-        {
-          id: 5,
-          date: "2016-05-02",
-          name: "张三",
-          mailingInformation: 0,
-          studentState: 1,
-        },
-        {
-          id: 5,
-          date: "2016-05-02",
-          name: "张三",
-          mailingInformation: 0,
-          studentState: 1,
-        },
-        {
-          id: 5,
-          date: "2016-05-02",
-          name: "张三",
-          mailingInformation: 0,
-          studentState: 1,
-        },
+        }
       ],
       i: 0, //第一次加载
     };
@@ -238,12 +168,17 @@ export default {
     },
   },
   watch: {
-    scheduleId() {
+    // scheduleId() {
+    //   this.get_classStudent();
+    // },
+    random(){
+      console.log(val);
       this.get_classStudent();
-    },
+    }
   },
   created() {
     console.log("传过来的id", this.scheduleId);
+    console.log("this.random",this.random);
     this.get_testPaperList();
   },
   methods: {
@@ -262,7 +197,13 @@ export default {
       };
       //上传课件
       let res = await uploadTestFile(data);
-      console.log("res===>上传", res);
+      if(res.code==200){
+        this.$myMessage("习题上传成功");
+        this.$emit("uploadSucc")
+
+      }else{
+        this.$myMessage("习题上传失败"+"--"+res.msg);
+      }
     },
     // 获取习题列表
     get_testPaperList() {
@@ -276,8 +217,9 @@ export default {
         let { code, data } = res;
         this.i++;
         if (code == 200) {
-          // this.tableData = data.list;
-          // this.testId = data.list[0].id;
+          this.tableData = data.list;
+          this.testId = data.list[0].id;
+          this.total = data.total;
           if (this.i == 1) {
             this.testId = this.tableData[0].id;
             this.isActive = this.tableData[0].id; //首次加载，默认选中第一个

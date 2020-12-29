@@ -24,6 +24,7 @@
   </div>
 </template>
 <script>
+import {action} from "vuex"
 export default {
   data() {
     return {
@@ -32,7 +33,9 @@ export default {
       i:5
     };
   },
+  computed:{},
   created(){
+    this.$store.dispatch('getPersonalData');
     this.money = this.$route.query.money;
     this.timer=setInterval(()=>{
         this.i--;

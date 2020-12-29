@@ -1,17 +1,50 @@
 <template>
   <div class="box">
     <div class="rank-list-box">
-      <div class="title">老师排行榜</div>
+      <div>
+        </div>
+      <div class="title pt-10"> {{type==1?'老师课时排行榜':"老师推广排行榜"}}</div>
       <!-- 列表数据 -->
       <div class="top-title-list">
         <div>排名</div>
         <div>老师</div>
-        <div>课时数</div>
+        <div>{{type==1?"课时数":"人数"}}</div>
       </div>
+
       <div class="listDetails-box">
         <div
           class="rank-list-item"
-          v-for="(item, index) in rankList"
+          v-for="(item, index) in teacherRankList"
+          :key="index"
+          v-if="teacherRankList.length>0"
+        >
+          <div class="rank">
+            <img v-if="index == 0" src="@/assets/img/home/NO1.png" alt="" />
+            <img
+              v-else-if="index == 1"
+              src="@/assets/img/home/NO2.png"
+              alt=""
+            />
+            <img
+              v-else-if="index == 2"
+              src="@/assets/img/home/NO3.png"
+              alt=""
+            />
+            <span v-else>{{ index + 1 }}</span>
+          </div>
+          <div class="teacher-name">
+            <img :src="item.teacherAvater" alt="" /><span>{{
+              item.teacherName
+            }}</span>
+          </div>
+          <div class="rank-num">{{ item.classNum }}</div>
+        </div>
+          <no-data-title v-else>暂无排行</no-data-title>
+        <!-- 老师推广人数排行 -->
+         <!-- <div
+          v-else
+          class="rank-list-item"
+          v-for="(item, index) in teacherExtension"
           :key="index"
         >
           <div class="rank">
@@ -29,15 +62,16 @@
             <span v-else>{{ index + 1 }}</span>
           </div>
           <div class="teacher-name">
-            <img src="@/assets/img/home/NO1.png" alt="" /><span>{{
-              item.tName
+            <img :src="item.teacherAvater" alt="" /><span>{{
+              item.teacherName
             }}</span>
           </div>
-          <div class="rank-num">{{ item.tNum }}</div>
-        </div>
+          <div class="rank-num">{{ item.classNum }}</div>
+        </div> -->
       </div>
       <!-- 第二名 -->
     </div>
+    
   </div>
 </template>
 <script>
@@ -45,27 +79,46 @@ export default {
   data() {
     return {
       rankList: [
-        { tName: "张老师", tNum: "1233" },
-        { tName: "肖老师", tNum: "1244" },
-        { tName: "李老师", tNum: "1355" },
-        { tName: "王老师", tNum: "1355" },
-        { tName: "张老师", tNum: "1233" },
-        { tName: "肖老师", tNum: "1244" },
-        { tName: "李老师", tNum: "1355" },
-        { tName: "王老师", tNum: "1355" },
-        { tName: "张老师", tNum: "1233" },
-        { tName: "肖老师", tNum: "1244" },
-        { tName: "李老师", tNum: "1355" },
-        { tName: "王老师", tNum: "1355" },
-        { tName: "李老师", tNum: "1355" },
-        { tName: "王老师", tNum: "1355" },
-        { tName: "李老师", tNum: "1355" },
-        { tName: "王老师", tNum: "1355" },
-        { tName: "李老师", tNum: "1355" },
-        { tName: "王老师", tNum: "1355" },
+       
       ],
     };
   },
+  props:{
+    teacherRankList:{
+      type:Array,
+      default:()=>{
+        return [
+          { tName: "张老师", tNum: "1233" },
+        { tName: "肖老师", tNum: "1244" },
+        { tName: "李老师", tNum: "1355" },
+        { tName: "王老师", tNum: "1355" },
+        { tName: "张老师", tNum: "1233" },
+        { tName: "肖老师", tNum: "1244" },
+        { tName: "李老师", tNum: "1355" },
+        { tName: "王老师", tNum: "1355" },
+        { tName: "张老师", tNum: "1233" },
+        { tName: "肖老师", tNum: "1244" },
+        { tName: "李老师", tNum: "1355" },
+        { tName: "王老师", tNum: "1355" },
+        { tName: "李老师", tNum: "1355" },
+        { tName: "王老师", tNum: "1355" },
+        { tName: "李老师", tNum: "1355" },
+        { tName: "王老师", tNum: "1355" },
+        { tName: "李老师", tNum: "1355" },
+        { tName: "王老师", tNum: "1355" }
+        ]
+      }
+    },
+    teacherExtension:{
+      type:Array,
+      default:()=>{
+        return []
+      }
+    },
+    type:{
+      type:String
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
@@ -88,7 +141,7 @@ export default {
 }
 .title {
   text-align: center;
-  font-size: 15px;
+  font-size: 18px;
   font-family: Source Han Sans CN;
   font-weight: bold;
   color: #343434;
@@ -96,7 +149,7 @@ export default {
 .top-title-list {
   display: flex;
   justify-content: space-around;
-  margin-top: 50px;
+  margin-top: 20px;
   text-align: center;
   & div {
     width: 30%;

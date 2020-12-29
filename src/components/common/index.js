@@ -12,6 +12,7 @@ import myTitle from "@/components/my-title"
 import radioButton from "@/components/radio-button"  
 import VueUeditorWrap from 'vue-ueditor-wrap'
 import VueQr from 'vue-qr'
+import noDataTitle from "../no-data-title.vue"
 function plugins(Vue){
         Vue.component("container",container)
         Vue.component("nav-bar",navBar)
@@ -26,5 +27,6 @@ function plugins(Vue){
         Vue.component("myTitle",myTitle)
         Vue.component("radioButton",radioButton)
         Vue.component("VueQr",VueQr)
+        Vue.component("noDataTitle",noDataTitle)
 }
 export default plugins

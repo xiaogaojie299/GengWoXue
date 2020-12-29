@@ -214,7 +214,6 @@ export default {
     kejianType() {
       return [
         { name: "全部", id: "" },
-        { name: "视频", id: 1 },
         { name: "PPT", id: 2 },
         { name: "文档", id: 3 },
       ];

@@ -19,8 +19,7 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  .my-header,
-  .my-footer {
+  .my-header,.my-footer {
     height: 80px;
   }
   .my-main {

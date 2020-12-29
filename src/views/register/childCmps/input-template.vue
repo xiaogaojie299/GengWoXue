@@ -55,6 +55,7 @@ input:-ms-input-placeholder {
 }
 
     .first-child {
+
       width: 100%;
     margin-top: 42px;
     padding-bottom: 6px;

@@ -25,11 +25,14 @@
             <div class="exercises-img">
               <!-- <div class="exercises-img-item" v-for="i in 2" :key="i"></div> -->
               <!-- :preview-src-list="[exercisesDetail.describe]" -->
+              <div v-for="(it,i) in exercisesDetail.imgUrl" :key="i">
               <el-image
                 style="width: 168px; height: 168px"
-                :src="exercisesDetail.imgUrl"
+                :src="it"
+                :preview-src-list="exercisesDetail.imgUrl"
               >
               </el-image>
+              </div>
             </div>
           </div>
           <!-- 底部详情 -->
@@ -42,13 +45,18 @@
         <div class="answer" v-for="(it, i) in answer" :key="i">
           <div class="answer-info">
             <!-- 回答人头像 -->
-            <div class="answer-people-img"></div>
+            <div class="answer-people-img">
+              <img :src="it.answerUserAvatar" alt="">
+            </div>
             <!-- 回答人回复时间和姓名 -->
             <div class="answer-people">
               <div class="right-box">
                 <span class="answer-people-name">{{ it.answerUserName }}</span>
-                <span class="answer-people-tag hand" v-show="it.isAdopt == 1"
+                <span class="answer-people-tag hand" v-if="it.isAdopt == 2"
                   >已采纳</span
+                >
+                <span @click="toAdopt(i)" class="answer-people-tag hand" v-show="isCaina"
+                  >置为采纳</span
                 >
                 <span class="answer-people-tag hand" v-show="it.state == 2"
                   >我的回答</span
@@ -94,6 +102,7 @@ import {
   queryQuestionAnswerList,
   optAddAnswer,
   optDeleteAnswer,
+  optAdoptAnswer
 } from "@/network/answersPlaza";
 export default {
   data() {
@@ -116,6 +125,7 @@ export default {
   created() {
     console.log("router=", this.$route.query.exercisesDetail);
     this.exercisesDetail = JSON.parse(this.$route.query.exercisesDetail);
+    console.log("exercisesDetail==",this.exercisesDetail);
     this.get_AnswerList();
   },
   mounted() {
@@ -133,17 +143,26 @@ export default {
         size: this.size,
         questionId: this.exercisesDetail.id,
       };
-      console.log("data=====>", data);
+      console.log("data1=====>", data);
       queryQuestionAnswerList(data).then((res) => {
         console.log("问题详情加载成功", res);
         this.answer = res.data.list;
+        this.answer.forEach(item=>{
+          item.isCaina = item.isAdopt==2;
+        })
         this.total = res.data.total;
+      console.log("this.answer==",this.answer);
       });
     },
     // 删除我的回答
     deleteMyAswer(index) {
       console.log(index, "====>", this.answer);
-      let data = {
+       this.$confirm('此操作将永久删除该问答, 是否继续?', '提示', {
+          confirmButtonText: '确定删除',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+           let data = {
         answerId: this.answer[index].id,
         questionId: this.exercisesDetail.id,
       };
@@ -151,9 +170,14 @@ export default {
         console.log("删除问题成功", res);
         if (res.code == 200) {
           this.get_AnswerList();
-          this.$myMessage("删除问题成功");
+          this.$myMessage("删除回答成功");
         }
       });
+        }).catch(() => {
+          
+        });
+
+     
     },
     //我来回答
     letMeAnswer() {
@@ -170,6 +194,21 @@ export default {
         this.myAnswer = "";
         this.get_AnswerList();
       });
+    },
+    // 置为采纳
+    toAdopt(index){
+       let params = {
+        answerId: this.answer[index].id,
+        questionId: this.exercisesDetail.id,
+      };
+      optAdoptAnswer(params).then(res=>{
+        let {code,data} = res;
+        if(code==200){
+          this.$myMessage("置为采纳成功");
+          this.get_AnswerList();
+        }
+        console.log(res,"设为采纳成功");
+      })
     },
 
     handleCurrentChange(data) {
@@ -251,6 +290,10 @@ export default {
         border-radius: 50%;
         background: #000;
         margin-right: 9px;
+        img{
+          width: 100%;
+          height: 100%;
+        }
       }
       .answer-people {
         .right-box {

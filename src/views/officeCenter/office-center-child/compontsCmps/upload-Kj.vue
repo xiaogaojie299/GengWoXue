@@ -83,13 +83,14 @@
       </div>
 
       <div class="upload-ppt">
-        <div>PPT上传:</div>
+        <div>{{kejianTypeValue==2?"PPT":"文档"}}上传:</div>
         <el-upload
-          action="http://139.9.154.145:80/student/base/uploadFile"
+          :action="BASE_URL+'student/base/uploadFile'"
           list-type="picture-card"
           :on-preview="handlePictureCardPreview"
           :on-remove="handleRemove"
           :on-success="handleSuccess"
+          :before-upload="beforeAvatarUpload"
         >
           <i class="el-icon-plus"></i>
         </el-upload>
@@ -106,6 +107,7 @@
 <script>
 import { kjMixin } from "../kj-mixin/mixins";
 import { saveMyCourseware } from "@/network/officeCenter";
+import {BASE_URL} from "@/network/config"
 export default {
   mixins: [kjMixin],
   props: {
@@ -124,7 +126,7 @@ export default {
   },
   data() {
     return {
-      kejianTypeValue: "",
+      kejianTypeValue: 2,
       subjectValue: "",
       classValue: "",
       kjName: "",
@@ -132,6 +134,7 @@ export default {
       pptUrl: "",
       copy_classList: [],
       copy_subject: [],
+      BASE_URL:BASE_URL
     };
   },
   created() {
@@ -150,6 +153,41 @@ export default {
     handleSuccess(file) {
       console.log("file==>", file);
       this.pptUrl = file.data;
+    },
+    beforeAvatarUpload(file){
+      // console.log("isLt2M==>",file);
+      // const isLt2M = file.size / 1024 / 1024 < 2;
+      // if (!isLt2M) {
+      //     this.$message.error('上传大小不能超过 2MB!');
+      //   }
+      //   return isLt2M
+
+      //音频上传校验
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      const type = "file";
+      const fileName = file.name;
+      const m = fileName.match(/\.(\w+)(#|\?|$)/);
+      const fileType = (m && m[1]).toString().toLowerCase();
+      console.log(fileType);
+      const allowHook = {
+        video: ["mp4", "ogv", "ogg", "webm"],
+        audio: ["wav", "mp3", "ogg", "acc", "webm", "amr"],
+        file: ["doc", "docx", "xlsx", "xls", "pdf","pptx"],
+        excel: ["xlsx", "xls"],
+        img: ["jpg", "jpeg", "png", "gif"],
+      };
+      const validType = (allowHook[type] || []).includes(fileType);
+      console.log("validType", validType);
+      if (!validType) {
+        const supprtTypes = allowHook[type].join(",");
+        this.$message.error(`只能上传${supprtTypes}类型的文件上传`);
+      }
+       if (!isLt2M) {
+          this.$message.error('上传图片大小不能超过 2MB!');
+        }
+      return validType && isLt2M;
+
+
     },
     submit() {
       if (!this.kejianTypeValue) {

@@ -4,19 +4,36 @@
     <div class="main">
       <div class="main-header">
         <!-- 二维码图片 -->
-        <img class="QR-code" :src="QR_code" />
+        <div class="QR-code">
+          <vue-qr
+          :size="290"
+          :margin="0"
+          :auto-color="true"
+          :dot-scale="1"
+          :text="extensionUrl" />
+        </div>
         <!-- 链接 -->
         <div class="link">
           <!-- 链接 -->
-          <div class="title my-font">{{ infoList.extensionUrl }}</div>
+          <!-- <div class="title my-font">{{ infoList.extensionUrl }}</div> -->
+          <div class="titles my-font nowrap-hidden">{{extensionUrl}}</div>
+          
           <!-- 复制链接按钮 -->
           <div
             class="btn my-font hand"
-            :data-clipboard-text="infoList.extensionUrl"
+            :data-clipboard-text="extensionUrl"
             @click="copy"
           >
             复制链接
           </div>
+
+          <!-- <div
+            class="btn my-font hand"
+            :data-clipboard-text="extensionUrl"
+            @click="copy"
+          >
+            复制图片
+          </div> -->
         </div>
       </div>
 
@@ -59,6 +76,12 @@ export default {
     infoList() {
       return this.$store.state.infoList;
     },
+    userInfo(){
+      return this.$store.state.userInfo;
+    },
+    extensionUrl(){
+      return `https://gengwoxue.com:8443/share/index.html?type=2&invitation=${this.userInfo.id}`
+    }
   },
   components: {
     inviteTable,
@@ -128,12 +151,16 @@ export default {
 .box {
   width: 100%;
 }
-.title {
+.titles {
+  width: 300px;
+  background:#fff;
+  // height: 70px;
   font-size: 24px;
   font-family: Source Han Sans CN;
   font-weight: 500;
   color: #343434;
   margin-bottom: 20px;
+  margin-right:8px;
 }
 .main {
   width: 100%;
@@ -144,7 +171,6 @@ export default {
     .QR-code {
       width: 298px;
       height: 299px;
-      background: chartreuse;
       margin: 16px 0;
     }
     .link {

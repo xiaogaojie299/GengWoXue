@@ -4,7 +4,7 @@
       <!-- <div class="exercises-item"> -->
       <!-- 顶部标题 -->
       <div class="top-title">{{item.question}}</div>
-      <div class="delete" @click.stop @click="deleteQuestion" v-show="item.setValue==3">删除提问</div>
+      <div class="delete hand" @click.stop @click="deleteQuestion" v-show="item.setValue==3">删除提问</div>
       <!-- 中间内容 -->
       <div class="main-content">
         <!-- 题目详情 -->
@@ -41,7 +41,7 @@
       <div class="footer">
         <div class="footer-left">
           <img src="@/assets/img/answers/icon_coin.png" alt="" />
-          <span>{{info.golds}}</span>
+          <span>{{info.golds||"0"}}</span>
         </div>
         <div class="footer-center">{{item.answerNum}}个回答</div>
         <div class="footer-right">{{item.insertTime}}</div> 
@@ -92,15 +92,28 @@ export default {
       });
     },
     deleteQuestion(){
-      let data={
-        questionId:this.item.id
-      };
-      optDeleteQuestion(data).then(res=>{
-        // this.isDel=!this.isDel;
-        this._this.get_MeQuestionList()
-      })
-      // console.log(this.questionSquareList)
-      // this._this.test1()
+      
+
+         this.$confirm('此操作将永久删除该问题, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+              let data={
+            questionId:this.item.id
+          };
+          optDeleteQuestion(data).then(res=>{
+            this._this.get_MeQuestionList()
+          })
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+         
+        });
+
+      
     }
   },
   created(){

@@ -48,14 +48,18 @@ export default {
 </script>
 <style lang="scss" scoped>
 /deep/ .bannaer {
+  padding:0 !important;
   * {
     margin: 0;
     padding: 0;
   }
 }
+/deep/ .bannaer[data-v-6d720fe5]{
+   padding:0 !important;
+}
 //[data-v-de181ef8] .el-carousel__indicator--horizontal
 /deep/ .el-carousel__indicator--horizontal {
-  padding: 12px 10px;
+  // padding: 12px 10px;
 }
 /deep/ .el-carousel__button {
   width: 18px;
@@ -73,24 +77,14 @@ export default {
 /deep/ .el-carousel__item {
   height: 100%;
 }
+/deep/ .el-carousel__container{
+  height: 550px;
+  overflow: hidden;
+}
 .box {
   width: 100%;
   background: #000000;
   opacity: 0.3;
 }
-.el-carousel__item h3 {
-  color: #475669;
-  font-size: 18px;
-  opacity: 0.75;
-  line-height: 300px;
-  margin: 0;
-}
 
-.el-carousel__item:nth-child(2n) {
-  background-color: #99a9bf;
-}
-
-.el-carousel__item:nth-child(2n + 1) {
-  background-color: #d3dce6;
-}
 </style>

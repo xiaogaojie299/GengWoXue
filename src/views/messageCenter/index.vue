@@ -30,12 +30,12 @@
       </div>
       <!-- 中间表格数据 -->
       <div class="main">
-        <msg-table @selectRows="selectRows" :tableData="msgCenterList"></msg-table>
+        <msg-table @selectRows="selectRows" :tableData="msgCenterList.list"></msg-table>
       </div>
 
       <!-- 底部分页 -->
       <div class="footer">
-        <page-device></page-device>
+        <page-device :total="msgCenterList.total"></page-device>
       </div>
     </container>
   </div>

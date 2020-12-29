@@ -79,6 +79,7 @@ import {
   test,
 } from "@/network/login";
 import { optResetPassword } from "@/network/personalCenter";
+import {state} from "vuex"
 export default {
   data() {
     return {
@@ -93,8 +94,8 @@ export default {
       disabledBtn: false, //是否禁用按钮
       newTextCode: "获取验证码", //获取验证码文本
       newDisabledBtn: false, //是否禁用按钮
-      phone: 15828353333, //用户手机号
-      code: 1234, //用户输入验证码
+      //phone: 15828353333, //用户手机号
+      code: "", //用户输入验证码
       newCode: "", //用户更换新手机出现验证手机号
       serverCode: "", //验证手机服务器返回来的验证码
       newServerCode: "", //更换手机服务器返回来的验证码
@@ -102,6 +103,11 @@ export default {
       redoUserUpwd: "", //用户重复输入密码
       newPhone: "", //用户更换的新手机号
     };
+  },
+  computed:{
+    phone(){
+      return this.$store.state.infoList.phone
+    }
   },
   methods: {
     checkoutBtn(i) {
@@ -191,6 +197,14 @@ export default {
         }
         if (!this.userUpwd) {
           this.$myAlert("新密码不能为空");
+          return;
+        }
+        if (this.userUpwd.length<6) {
+          this.$myAlert("密码长度不能低于6位");
+          return;
+        }
+        if (this.userUpwd.length>16) {
+          this.$myAlert("密码长度不能大于16位");
           return;
         }
         if (!this.redoUserUpwd) {

@@ -82,7 +82,7 @@
         <div class="class-situation">
           <span>授课班级：</span>
           <div>
-            <textarea name="" id="" cols="30" rows="10"></textarea>
+            <textarea style="padding-left:12px;" name="" id="" cols="30" rows="10"></textarea>
           </div>
         </div>
         <!-- 课后习题 -->
@@ -90,7 +90,7 @@
           <row-template>
             <span slot="title">课后习题：</span>
             <div style="display: flex;align-items: center;" slot="content">
-              <span class="input-style">{{
+              <span class="input-style" style="color:rgb(239, 116, 60);">{{
                 couseDetail.examinationName || "暂未上传习题"
               }}</span>
               <span
@@ -128,7 +128,7 @@
     </div>
 
     <el-dialog :visible.sync="dialogVisible" :show-close="false" center>
-      <selectTestTable :scheduleId="scheduleId" />
+      <selectTestTable @uploadSucc="uploadSucc" :scheduleId="scheduleId" />
     </el-dialog>
 
     <!-- 底部分页 -->
@@ -146,7 +146,7 @@
 <script>
 import studentTable from "./compontsCmps/studentTable";
 import selectTestTable from "./compontsCmps/select-testTable";
-import { queryCourseInfoDate, queryCourseInfo } from "@/network/officeCenter";
+import { queryCourseInfoDate, queryCourseInf,queryTestPaperList,queryCourseInfo } from "@/network/officeCenter";
 import { exmixin } from "./ex-mixin/mixin";
 export default {
   mixins: [exmixin],
@@ -202,6 +202,7 @@ export default {
     },
     // 获取排课详情中的列表数据
     getCourseInfo() {
+      console.log("getCourseInfo",123);
       let data = {
         scheduleId: this.scheduleId, //排课id
         current: this.current, //当前页
@@ -220,6 +221,11 @@ export default {
     handleCurrentChange(current) {
       this.current = current;
       this.getCourseInfo();
+    },
+    // 课件上传成功
+    uploadSucc(){
+      console.log("你好上传成功");
+      this.getDaySchedule()
     },
     //返回上一页
     go_back() {

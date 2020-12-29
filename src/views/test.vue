@@ -8,10 +8,10 @@
           :auto-color="true"
           :dot-scale="1"
           text="weixin://wxpay/bizpayurl?pr=iDuENF400" />
-
       </div>
 
       <el-button @click="go_live">测试跳转</el-button>
+      <el-button @click="goJump">跳转注册</el-button>
 
       </div>
 </template>
@@ -46,6 +46,9 @@ import {mapState,mapActions} from "vuex"
                     // background: '#f0f',   // 背景色
                     // foreground: '#ff0'    // 前景色
                 })
+            },
+            goJump(){
+               window.open("http://m.xiaogaojie.vip:717/#/"+"?type=2&invitation=33");
             },
       go_live(){
         this.$myMessage("错误消息","error")

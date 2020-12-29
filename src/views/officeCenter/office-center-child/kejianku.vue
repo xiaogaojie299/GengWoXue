@@ -87,7 +87,7 @@
       </div>
       <!-- 顶部表格 -->
       <div>
-        <kejiankuTable ref="childMethod" :tableData="tableData" />
+        <kejiankuTable ref="childMethod" @selectRow="selectRow" :tableData="tableData" />
       </div>
       <div class="page-device">
         <page-device
@@ -99,7 +99,7 @@
       <div class="btn-groups">
         <div class="btn1 hand" @click="previewPPT">预览</div>
         <!-- <a class="btn2" style="text-decoration: none;" :href="selectKejian.url">下载</a> -->
-        <a class="btn2 hand" @click="isuploadPPT" style="text-decoration: none;"
+        <a class="btn2 hand" @click="isuploadPPT" style="text-decoration: none;" target="_blank"
           >下载</a
         >
       </div>
@@ -115,11 +115,11 @@
           </radio-button>
         </div>
       </div>
-      <span slot="footer" class="dialog-footer">
+      <span slot="footer" class="dizhiofalog-footer">
         <el-button @click="quite">取 消</el-button>
         <el-button type="primary" @click="pay">确 定</el-button>
       </span>
-      <div>
+      <div v-show="type==1">
           <vue-qr
           :size="300"
           :margin="0"
@@ -189,6 +189,7 @@ export default {
           break;
         case 1:
           this.type = 2;
+          window.clearInterval(this.timers); 
           break;
         default:
           this.type = 3;
@@ -205,7 +206,8 @@ export default {
     },
     quite(){
        this.dialogVisible = false;
-       clearInterval(this.timers)
+       window.clearInterval(this.timers);
+       console.log(this.timers);
     },
     // 查询
     query() {
@@ -225,34 +227,46 @@ export default {
       this.get_AllCourseware();
     },
     previewPPT() {
+      console.log(this.selectKejian.url);
       // 预览PPT
       this.$preview(this.selectKejian.url);
     },
       //下载PPT
     async isuploadPPT() {
+      this.clearPPT();
+      let {downloadFee,isPay} = this.selectKejian
       // 判断当前的课件是否需要费用以及用户是否已经交费了
-        if(this.selectKejian.downloadFee!==0 && ""){
+        if(downloadFee!==0 &&isPay==1){
         this.dialogVisible = true;
         this.pushCoursewareOrder();
       }else{
-        this.uploadPPT()
+        this.uploadPPT();
+        console.log("PPT","下载失败")
       }
       
       //用户付款操作
     },
     uploadPPT(){  //用户下载操作
-    console.log("下载成功");
       let a = document.getElementsByClassName("btn2")[1];
-      a.herf = this.selectKejian.url;
+      if(a.href){
+      a.href ="";
+      }else{
+        a.href = this.selectKejian.url;
+      }
     },
-    pushCoursewareOrder() {
+    clearPPT(){
+      let a = document.getElementsByClassName("btn2")[1];
+      a.href="";
+    },
+    async pushCoursewareOrder() {
       //调用支付接口
       let params = {
         payType: this.type,
         coursewareId:this.selectKejian.id
         // coursewareId: 2,
       };
-      addCoursewareOrder(params).then((res) => {
+      let res = await addCoursewareOrder(params);
+        console.log("res",res);
         let { code, data } = res;
         if (code == 200) {
           if(this.type==1){
@@ -265,11 +279,12 @@ export default {
             const div=document.createElement('divform');
             div.innerHTML=data;
             document.body.appendChild(div);
-            document.forms[0].acceptCharset='GBK';//保持与支付宝默认编码格式一致，如果不一致将会出现：调试错误，请回到请求来源地，重新发起请求，错误代码 invalid-signature 错误原因: 验签出错，建议检查签名字符串或签名私钥与应用公钥是否匹配
+            document.forms[0].acceptCharset='UTF-8';//保持与支付宝默认编码格式一致，如果不一致将会出现：调试错误，请回到请求来源地，重新发起请求，错误代码 invalid-signature 错误原因: 验签出错，建议检查签名字符串或签名私钥与应用公钥是否匹配
             document.forms[0].submit();
           }
+        }else{
+          console.log("支付失败");
         }
-      });
     },
      // 调用一个判断支付是否成功的接口，用这个接口我们监听微信是否支付成功
     getOrderstate() {
@@ -290,17 +305,19 @@ export default {
             if (res.data == 2) {
               //data ==1 失败  data==2 成功
               // 成功之后的的逻辑
-              this.uploadPPT()
-              clearInterval(self.timers); //别忘记关闭定时器，否则会一直调这个接口
+              this.uploadPPT();
+              this.dialogVisible = false;
+              window.clearInterval(self.timers); //别忘记关闭定时器，否则会一直调这个接口
             }else{
                 // 支付不成功的逻辑
                 //  this.isPay = (num==4?true:false);
+                console.log("支付失败")
             }
           }
         });
         if (num == 500) {
           //这里是判断num++到500的情况下用户还没有支付则自动关闭定时器和二维码
-          clearInterval(this.timers);
+          window.clearInterval(this.timers);
            this.isPay =false;
           this.dialogVisible = false;
         }
@@ -310,10 +327,11 @@ export default {
     selectRow(row) {
       //课件库选择的row
       this.selectKejian = row;
+      console.log("row",row)
     },
     // 查询课件列表
     get_AllCourseware() {
-      let data = {
+      let params = {
         current: this.current, //当前页码
         size: this.size, //每页多少条数据
         gradeId: this.classValue, //班级id
@@ -321,15 +339,21 @@ export default {
         subjectsId: this.subjectValue, //科目id
         type: this.kejianTypeValue, //课件类型
       };
-      queryAllCourseware(data).thein((res) => {
-        this.i++;
-        console.log("课件库列表");
-        this.tableData = res.list;
-        this.total = res.total;
+      queryAllCourseware(params).then((res) => {
+        let {code,data} = res;
+        if(code ==200){
+          this.i++;
+          console.log("课件库列表");
+        this.tableData = data.list;
+        this.total = data.total;
         if (this.i == 1) {
-          this.selectKejian = res.list[0]; //页面刷新的时候，给row赋值一个初始值
-          this.$refs.childMethod.chekcout(res.list[0].id);
+          this.selectKejian = data.list[0]; //页面刷新的时候，给row赋值一个初始值
+          this.$refs.childMethod.chekcout(data.list[0].id);
         }
+        }else{
+          this.$myMessage("获取数据失败","error")
+        }
+        
       });
     },
     // 点击分页出发回调
