@@ -29,6 +29,5 @@ export const exmixin={
         // 获取列题ID
     },
     created() {
-        // scheduleId=thi
     },
 } 
