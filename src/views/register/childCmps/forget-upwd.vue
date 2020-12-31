@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <container>
+  <div class="forget-box">
+    <!-- <container> -->
       <div class="right-box">
         <!-- 头部 -->
         <div class="header">
-          <span class="back" @click="go_regist()"> ＜ </span>
+          <span class="back hand" @click="go_regist()"> ＜ </span>
           <span class="header-title">重置密码</span>
         </div>
         <!-- 中间主题 -->
@@ -19,7 +19,7 @@
                     v-model="upwdForm.userPhone"
                     style="width: 100%"
                     type="text"
-                    placeholder="请输入宁的手机号码"
+                    placeholder="请输入您的手机号码"
                   />
                 </div>
               </input-template>
@@ -36,7 +36,7 @@
               </div>
               <div slot="right-content">
                 <button
-                  class="send-btn"
+                  class="send-btn hand"
                   :disabled="disabledBtn"
                   @click="send_code"
                 >
@@ -55,7 +55,7 @@
                   <input
                     v-model="upwdForm.userUpwd"
                     style="width: 340px"
-                    type="text"
+                    type="password"
                     placeholder="输入新密码（6-16位任意字符，区分大小写）"
                   />
                 </div>
@@ -66,7 +66,7 @@
               <div slot="left-content">
                 <input
                   style="width: 100%"
-                  type="text"
+                  type="password"
                   v-model="upwdForm.redoUserUpwd"
                   placeholder="再次输入密码"
                 />
@@ -75,9 +75,9 @@
           </div>
         </div>
         <!-- 底部按钮 -->
-        <div @click="submit" class="footer-btn">确认重置</div>
+        <div @click="submit" class="footer-btn hand">确认重置</div>
       </div>
-    </container>
+    <!-- </container> -->
   </div>
 </template>
 <script>
@@ -117,7 +117,23 @@ export default {
     // 发送验证码
     send_code() {
       let phone = this.upwdForm.userPhone;
-      this.startTime(phone);
+      if (!phone) {
+        this.$myAlert("手机号码不能为空");
+        return;
+      }
+      if (!validatePhoneNumber(phone)) {
+        this.$myAlert("请输入正确的手机格式");
+        return;
+      }
+      let params = { phone, type :2 };
+      queryCaptcha(params).then((res) => {
+        if(res.code == 200){
+          this.$myMessage("验证码发送成功，请注意查收")
+        this.startTime(phone);
+        }else{
+          this.$myMessage(res.msg,"error")
+        }
+      });
     },
     // 传给后端，后端校验验证码
     get_checkCaptcha() {
@@ -126,8 +142,7 @@ export default {
     },
     // 开始倒计时
     startTime(phone) {
-      this.get_queryCaptcha(phone, 2, this.upwdForm.upwdCatch);
-      let i = 10;
+      let i = 60;
       let timer = null;
       timer = setInterval(() => {
         i--;
@@ -145,23 +160,31 @@ export default {
     async submit() {
       console.log("upwdForm", this.upwdForm);
       if (!this.upwdForm.userPhone) {
-        this.$Alert("手机号码不能为空");
+        this.$myAlert("手机号码不能为空");
         return;
       }
       if (!this.upwdForm.upwdCode) {
-        $this.$Alert("验证码不能为空");
+        $this.$myAlert("验证码不能为空");
         return;
       }
       if (!this.upwdForm.userUpwd) {
-        this.$Alert("新密码不能为空");
+        this.$myAlert("新密码不能为空");
+        return;
+      }
+      if (this.upwdForm.userUpwd.length<6) {
+        this.$myAlert("密码长度不能低于6位");
+        return;
+      }
+      if (this.upwdForm.userUpwd.length>16) {
+        this.$myAlert("密码长度不能高于16位");
         return;
       }
       if (!this.upwdForm.redoUserUpwd) {
-        this.$Alert("请再次输入密码");
+        this.$myAlert("请再次输入密码");
         return;
       }
-      if (validatePhoneNumber(this.upwdForm.userPhone)) {
-        this.$Alert("请输入正确的手机格式");
+      if (!validatePhoneNumber(this.upwdForm.userPhone)) {
+        this.$myAlert("请输入正确的手机格式");
         return;
       }
       // if(this.upwdForm.upwdCode!=this.upwdForm.upwdCatch){
@@ -169,11 +192,18 @@ export default {
       //   return
       // }
       if (this.upwdForm.userUpwd !== this.upwdForm.redoUserUpwd) {
-        this.$Alert("两次输入的密码不一致");
+        this.$myAlert("两次输入的密码不一致");
         return;
       }
-      let result = await get_checkCaptcha();
       this.forgetUpwd();
+      /* 
+      let result = await this.get_checkCaptcha();
+      if(result.code==200){
+        this.forgetUpwd();
+      }else{
+        this,$$myMessage(result.msg,"error")
+      }
+    */
     },
     forgetUpwd() {
       let data = {
@@ -182,7 +212,9 @@ export default {
         phone: this.upwdForm.userPhone,
       };
       forgetPassword(data).then((res) => {
-        console.log("修改密码成功", res);
+        if(res.code == 200){
+          this.$myMessage("修改密码成功")
+        }
       });
     },
   },
@@ -192,6 +224,15 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.forget-box{
+  position: relative;
+  height: calc(100vh - 160px);
+}
+@media screen and (max-height: 700px) {
+    .forget-box {
+        height: 775px;
+    }
+}
 .right-box {
   // padding: 0 20px;
   // width: 400px;
@@ -202,11 +243,10 @@ export default {
   // position: absolute;
   // right: 0;
   // top: 42px;
-
   padding: 0 20px;
   width: 504px;
   // height: 80%;
-  height: 595px;
+  height: 564px;
   background: #ffffff;
   box-shadow: 1px 13px 18px 0px rgba(158, 158, 158, 0.3);
   border-radius: 10px;
@@ -214,7 +254,6 @@ export default {
   right: 0;
   top: 50%;
   transform: translateY(-50%);
-
   .header {
     position: relative;
     display: flex;

@@ -81,9 +81,10 @@
         <!-- 授课班级 -->
         <div class="class-situation">
           <span>授课班级：</span>
-          <div>
-            <textarea style="padding-left:12px;" name="" id="" cols="30" rows="10"></textarea>
+          <div class="mr-20">
+            <textarea v-model="content" style="padding-left:12px;" name="" id="" cols="30" rows="10"></textarea>
           </div>
+          <div><el-button @click="submit">提交</el-button> </div>
         </div>
         <!-- 课后习题 -->
         <div class="exercise">
@@ -146,7 +147,7 @@
 <script>
 import studentTable from "./compontsCmps/studentTable";
 import selectTestTable from "./compontsCmps/select-testTable";
-import { queryCourseInfoDate, queryCourseInf,queryTestPaperList,queryCourseInfo } from "@/network/officeCenter";
+import { queryCourseInfoDate, queryCourseInf,queryTestPaperList,queryCourseInfo,saveScheduleContent } from "@/network/officeCenter";
 import { exmixin } from "./ex-mixin/mixin";
 export default {
   mixins: [exmixin],
@@ -158,6 +159,7 @@ export default {
       total: 0,
       current: 1,
       size: 10,
+      content:""    //用户输入上课情况
     };
   },
   provide() {
@@ -216,6 +218,18 @@ export default {
         }
         console.log("获取table==", res);
       });
+    },
+    async submit(){
+      let params = {
+        content :this.content,
+        scheduleId:this.scheduleId
+      }
+      let {code,data,msg} =await saveScheduleContent(params);
+      if(code ==200){
+        this.$myMessage("提交上课情况成功");
+      }else{
+        this.$myMessage(msg,"error")
+      }
     },
     //分页组件传过来的页码
     handleCurrentChange(current) {
@@ -306,8 +320,12 @@ textarea {
     font-weight: 400;
     color: #343434;
   }
-  & div {
+  & div:nth-of-type(1) {
     width: 100%;
+  }& div:nth-of-type(2) {
+    width: 100px;
+    display: flex;
+    flex-direction: column-reverse;
   }
 }
 .student-info {

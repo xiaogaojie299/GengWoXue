@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div class="loging-box">
     <div class="right-box">
       <!-- 顶部标题 -->
       <div class="top-title">
-        <div @click="checkout(0)" :class="currentIndex == 0 ? 'active' : ''">
+        <div @click="checkout(0)" :class="currentIndex == 0 ? 'active' : 'hand'">
           密码登录
         </div>
-        <div @click="checkout(1)" :class="currentIndex == 1 ? 'active' : ''">
+        <div @click="checkout(1)" :class="currentIndex == 1 ? 'active' : 'hand'">
           验证码登录
         </div>
       </div>
@@ -36,7 +36,7 @@
               "
               alt=""
             />
-            <div class="right-txt">记住登录名</div>
+            <div class="right-txt hand">记住登录名</div>
           </div>
         </input-template>
 
@@ -48,7 +48,7 @@
             placeholder="请输入您的密码"
           />
           <div slot="right-content">
-            <div style="color: #eb002a" class="right-txt">
+            <div style="color: #eb002a" class="right-txt hand">
               <span @click="forfet_upwd">忘记密码</span>
             </div>
           </div>
@@ -79,11 +79,11 @@
         <div class="btn" @click="go_home">登录</div>
         <!-- 还没有账号？ -->
         <div class="ling-title">
-          还没有账号？申请<span style="color: #2d4cd6">入驻平台</span>获取账号
+          还没有账号？申请<span @click="goCooperation" class="hand" style="color: #2d4cd6">入驻平台</span>获取账号
         </div>
       </div>
       <!-- 底部跳转到学生登陆 -->
-      <div class="footer">学生登录 》</div>
+      <div @click="goStudent" class="footer hand">学生登录 》</div>
     </div>
   </div>
 </template>
@@ -98,6 +98,8 @@ import {
   test,
 } from "@/network/login";
 import { validatePhoneNumber } from "@/utils/regular";
+import {studentURL} from "@/network/config"
+
 export default {
   data() {
     return {
@@ -118,6 +120,13 @@ export default {
   },
 
   methods: {
+    goStudent(){  //点击学生登录跳转学生详情
+    console.log(studentURL);
+     window.location.href=studentURL;
+    },
+    goCooperation(){  //跳转到入驻
+      this.$router.push("/page/coIndex/teacherCo")
+    },
     //   判断用户点击的密码登录还是验证码登录 0：密码登录。2：验证码登录
     checkout(i) {
       (this.userName = ""),
@@ -283,13 +292,21 @@ input:-ms-input-placeholder {
   font-weight: 400;
   color: #b8b8bf;
 }
-
+.loging-box{
+  position: relative;
+  height: calc(100vh - 160px);
+}
+// 媒体查询
+@media screen and (max-height: 700px) {
+    .loging-box {
+        height: 775px;
+    }
+}
 .right-box {
   padding: 0 20px;
   // width: 400px;
-  // height: 564px;
+  height: 564px;
   width: 504px;
-  height: 595px;
   // height: 80%;
   background: #ffffff;
   box-shadow: 1px 13px 18px 0px rgba(158, 158, 158, 0.3);

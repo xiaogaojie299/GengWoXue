@@ -152,6 +152,24 @@ const routes = [
         component: () =>
           import(/* webpackChunkName: "about" */ "../views/About/About.vue"),
       },
+      // 入驻合作
+      {
+        path:"coIndex",
+        name:"coIndex",
+        component:()=>import("../views/coIndex/index.vue"),
+        children:[
+          {
+            path: "teacherCo",
+            name: "入住合作",
+            component: () => import("../views/coIndex/teacherCo.vue"),
+          },
+        {
+          path: "organizatCo",
+          name: "机构合作",
+          component: () => import("../views/coIndex/organizatCo.vue"),
+      }
+      ]
+      },
       // 登录/注册
       {
         path: "register",

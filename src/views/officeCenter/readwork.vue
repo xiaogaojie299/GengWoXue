@@ -100,10 +100,10 @@
               <!-- 右侧打分批阅 -->
               <div class="right-grade">
                 <div class="first-box">
-                  <div>得分：</div>
+                  <div>得分1：</div>
                   <input ref="piyue" v-model="item.studentScore" />
                   <!-- icon -->
-                  <img @click="inputFocus" src="@/assets/img/officeCenter/icon_edit.png" alt="" />
+                  <img @click.stop="inputFocus" src="@/assets/img/officeCenter/icon_edit.png" alt="" />
                 </div>
 
                 <el-upload
@@ -281,6 +281,7 @@ import {
   saveExamines,
   queryAnswerInfo,
 } from "@/network/officeCenter";
+import qs from "qs";
 import { BASE_URL, TIMEOUT } from "@/network/config";
 export default {
   data() {
@@ -316,7 +317,7 @@ export default {
     inputFocus(){
       // 点击编辑icon。input获取焦点
       this.$nextTick(()=>{
-        this.$refs.piyue.focus();
+        this.$refs.piyue[0].focus();
       })
     },
     uploadPPTindex(index) {
@@ -556,7 +557,6 @@ export default {
       return validType;
     },
     submit() {
-      console.log(this.testList.list);
       let testList = [...this.testList.list];
       let params = {}; //上传的参数列表
       let examines = []; //批阅内容
@@ -571,8 +571,15 @@ export default {
         arr.img = item.teacherImg.join("%&"); //老师批阅图片
         examines.push(arr); //已JSON自符串的形式
       });
-      params.examines = JSON.stringify(examines);
-      console.log("params.examines=", params.examines);
+      // qs
+         params.examines =JSON.stringify(examines);
+         console.log("params.examines",params.examines);
+      //  let params = {
+      //     data: JSON.stringify(newArr),
+      //     questionnaireUserId: 0
+      //   }
+      params = qs.stringify(params,{ indices: false })
+      console.log("params.examines=", params);
       let canshu = [
         {
           id: 139,
@@ -584,6 +591,7 @@ export default {
           img: "",
         },
       ];
+      
       //{ examines: JSON.stringify(canshu) }
       saveExamines(params).then((res) => {
         console.log(res);

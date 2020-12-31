@@ -1,6 +1,5 @@
 <template>
-  <div class="box">
-    <el-carousel style="height:550px;" :interval="5000" arrow="never">
+    <!-- <el-carousel style="height:550px;" :interval="5000" arrow="never">
       <el-carousel-item
         style="height:550px overflow:hidden"
         v-for="(item, index) in bannerList"
@@ -9,8 +8,12 @@
         <img style="width:100%;height:550px" :src="item.url" alt="" />
         <h3>{{ item.url }}</h3>
       </el-carousel-item>
+    </el-carousel> -->
+      <el-carousel height="550px">
+        <el-carousel-item v-for="(item,index) in bannerList" :key="index">
+          <img @click="jump(item.jumpUrl)" :src="item.url" alt="">
+        </el-carousel-item>
     </el-carousel>
-  </div>
 </template>
 
 <script>
@@ -33,6 +36,11 @@ export default {
       ],
     };
   },
+  methods:{
+    jump(url){
+      window.open(url);
+    }
+  },
   created() {
     setTimeout(() => {
       console.log("传过来的", this.bannerList);
@@ -49,10 +57,7 @@ export default {
 <style lang="scss" scoped>
 /deep/ .bannaer {
   padding:0 !important;
-  * {
-    margin: 0;
-    padding: 0;
-  }
+  border: 1px solid red;
 }
 /deep/ .bannaer[data-v-6d720fe5]{
    padding:0 !important;

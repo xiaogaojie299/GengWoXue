@@ -28,11 +28,20 @@
                 active: $route.path.indexOf(item.path) != -1,
               }"
             ></span>
+
+            
+
           </div>
           <!-- <div @click="go_personalCenter()">个人中心</div> -->
         </div>
       </div>
-
+      <div class="cooperation hand">
+          <span @click="goTeacherCooperation">招募/合作</span>
+         <div class="choice">
+            <a @click="goTeacherCooperation">老师入驻</a>
+            <a @click="goOrganizationCooperation">机构入驻</a>
+          </div>
+      </div>
       <!-- 右侧登陆注册 -->
       <div class="right-content">
         <!-- 客服电话 -->
@@ -52,6 +61,7 @@
           :class="{
             regist: true,
             active1: $route.path.indexOf('/register') != -1,
+            hand:true
           }"
           @click="go_register"
         >
@@ -108,6 +118,7 @@ export default {
         { title: "办公中心", path: url + "/officeCenter" },
         { title: "APP下载", path: url + "/appInstall" },
         { title: "关于我们", path: url + "/about" },
+        // { title:"入驻/合作", path: url + "/coIndex",isHover:true}
       ],
       options: [{ name: "退出登录" }],
     };
@@ -186,6 +197,13 @@ export default {
       // }, false);
     },
     // 获取消息列表
+      goTeacherCooperation() {
+      this.$router.push("/page/coIndex/teacherCo").catch((err) => err);
+    },
+      goOrganizationCooperation() {
+      this.$router.push("/page/coIndex/organizatCo").catch((err) => err);
+      console.log(2);
+      },
   },
 };
 </script>
@@ -247,16 +265,81 @@ export default {
   width: 100%;
   display: flex;
   justify-content: space-around;
+  flex-wrap: nowrap;
 }
 .navbar > .navbar-item {
   position: relative;
-  margin-right: 86px;
+  margin-right: 56px;
   font-size: 24px;
   font-family: Source Han Sans CN;
   font-weight: 500;
   /* color: #191616; */
   line-height: 32px;
   height: 80px;
+}
+.cooperation{
+  position: relative;
+  height: 36px;
+  width: 200px;
+  span{
+    font-size: 24px;
+    font-family: Source Han Sans CN;
+    font-weight: 500;
+    /* color: #191616; */
+    line-height: 32px;
+    height: 80px;
+  }
+  .choice {
+          position: relative;
+          display: none;
+          height: 100px;
+          width: 108px;
+          padding-top: 10px;
+          z-index: 9999;
+          &::before {
+            position: absolute;
+            top: -10px;
+            left: 45px;
+            content: "";
+            display: block;
+            border: 10px solid transparent;
+            border-bottom: 10px solid #ef753c;
+          }
+          &::after {
+            position: absolute;
+            top: 0;
+            left: 0;
+            content: "";
+            display: block;
+            border: 10px solid transparent;
+          }
+          a {
+            display: block;
+            width: 108px;
+            height: 40px;
+            background-color: #d0d0d0;
+            color: #fff;
+            font-size: 18px;
+            text-align: center;
+            line-height: 40px;
+            &:hover {
+              background-color: #ef753c;
+            }
+          }
+        }
+  &:hover {
+    .choice {
+      display: block;
+    }
+  }
+}
+
+
+.hezuo{
+  display: none;
+}
+.navbar-item :last-child:hover>.hezuo{
+  display: block;
 }
 /* 下面横线 */
 .inline {

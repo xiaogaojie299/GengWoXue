@@ -1,22 +1,29 @@
 <template>
-  <div id="app">
-    <my-box class="my-box">
+  <div class="app">
+    <!-- <my-box class="my-box">
       <div slot="my-header">
           <nav-bar></nav-bar>
       </div>
-      <div class="my-main" style="height:100%" slot="my-main">
+      <div class="my-main" slot="my-main">
         <router-view></router-view>
       </div>
       <div slot="my-footer">
         <footers></footers>
       </div>
-    </my-box>
+    </my-box> -->
 
-    <!-- <el-container>
-    <el-header><nav-bar></nav-bar></el-header>
-    <el-main><router-view></router-view></el-main>
-    <el-footer><footers></footers></el-footer>
-</el-container> -->
+    <div class="my-box">
+      <!-- 头部 -->
+      <div class="my-header">
+        <nav-bar></nav-bar>
+      </div>
+      <div class="my-main">
+        <router-view></router-view>
+      </div>
+      <div class="my-footer">
+        <footers></footers>
+      </div>
+    </div>
 
   </div>
 </template>
@@ -36,8 +43,17 @@ export default {
   height: 1000px;
 
 }
-.my-main{
-//  min-height:100vh;
-  // border: 1px solid red;
+
+.my-box{
+   display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  .my-header,.my-footer {
+    height: 80px;
+  }
+  .my-main {
+    flex: 1;
+    position: relative;
+  }
 }
 </style>

@@ -152,7 +152,7 @@ export default {
         this.$myAlert("请输入您的问题描述");
         return;
       }
-      if (this.golds) {
+      if (!this.golds) {
         this.$myAlert("请输入状元币个数");
         return;
       }
@@ -160,9 +160,9 @@ export default {
         this.$myAlert("状元币余额不足");
         return;
       }
-      if (!this.imgUrl) {
-        this.$myAlert("请上传您的问题图片");
-      }
+      // if (!this.imgUrl) {
+      //   this.$myAlert("请上传您的问题图片");
+      // }
       console.log(this.imgUrl);
       this.imgUrl = this.imgUrl.length==0?this.imgUrl[0]:this.imgUrl.join(",")
       let params = {

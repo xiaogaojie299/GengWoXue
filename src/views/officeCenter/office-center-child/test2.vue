@@ -235,12 +235,7 @@ export default {
       params.avatar = this.userInfo.avatar;
       console.log("params==>", params);
       params = JSON.stringify(params);
-      window.open(
-        "https://gengwoxue.com:8443/index.html" +
-          "?params=" +
-          encodeURIComponent(params)
-      );
-      
+      window.open("https://gengwoxue.com:8443/live/index.html"+"?params="+encodeURIComponent(params))
     //  window.open(
     //     "http://127.0.0.1:5500/index.html" +
     //       "?params=" +

@@ -150,8 +150,7 @@ export function queryCoursewareOrder(data){
 // 提交阅卷激励
 export function saveExamines(data){
   return request({
-    url:api+"saveExamines",
-    data
+    url:api+"saveExamines?"+data,
   })
 }
 
@@ -159,5 +158,12 @@ export function saveExamines(data){
 export function pushExamination(data){
   return request({
     url:api+"pushExamination"+qs(data)
+  })
+}
+
+// 保存上课情况
+export function saveScheduleContent(data){
+  return request({
+    url:api + "saveScheduleContent"+qs(data)
   })
 }

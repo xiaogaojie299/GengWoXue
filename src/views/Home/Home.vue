@@ -1,6 +1,6 @@
 <template>
   <div id="box">
-    <div class="bannaer">
+    <div class="bannaer hand">
       <swiper :bannerList="bannerList"></swiper>
     </div>
     <!-- 面包屑 -->
@@ -157,7 +157,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .bannaer {
-  padding: 10px;
 }
 .rank-list-box {
   width: 100%;
