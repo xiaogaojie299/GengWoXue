@@ -154,34 +154,43 @@ export default {
     // 用户密码登录
     upwdLogin() {
       if (!this.inputList[0].value) {
-        this.$Alert("手机号码不能为空");
+        this.$myAlert("手机号码不能为空");
         return;
       }
       if (!this.password) {
-        this.$Alert("密码不能为空");
+        this.$myAlert("密码不能为空");
         return;
       }
       if (!validatePhoneNumber(this.inputList[0].value)) {
-        this.$Alert("请输入正确的手机格式");
+        this.$myAlert("请输入正确的手机格式");
         return;
       }
       let data = { password: this.password, phone: this.inputList[0].value };
-      passwordLogin(data).then((res) => {
-        console.log("密码登录成功", res);
-      });
+      let params ={data:data,$router:this.$router}
+      this.$store.dispatch("getPwdToken", params, this.$router); //将token存储在vuex中
+      // passwordLogin(data).then((res) => {
+      //   console.log("密码登录成功", res);
+      //   if(res.code==200){
+      //     setTimeout(() => {
+      //     this.$router.push({
+      //       path: "/page/home",
+      //     });
+      //   }, 2000);
+      //   }
+      // });
     },
     //用户验证码登录
     codeLogin() {
       if (!this.inputList[1].value) {
-        this.$Alert("手机号码不能为空");
+        this.$myAlert("手机号码不能为空");
         return;
       }
       if (!this.phoneCode) {
-        this.$Alert("验证码不能为空");
+        this.$myAlert("验证码不能为空");
         return;
       }
       if (!validatePhoneNumber(this.inputList[1].value)) {
-        this.$Alert("请输入正确的手机格式");
+        this.$myAlert("请输入正确的手机格式");
         return;
       }
       let params ={data:{ code: this.phoneCode, phone: this.inputList[1].value },$router:this.$router}
@@ -228,11 +237,11 @@ export default {
     send_code() {
       let phone = this.inputList[1].value;
       if (!phone) {
-        this.$Alert("手机号码不能为空");
+        this.$myAlert("手机号码不能为空");
         return;
       }
       if (!validatePhoneNumber(phone)) {
-        this.$Alert("请输入正确的手机格式");
+        this.$myAlert("请输入正确的手机格式");
         return;
       }
       this.startTime(phone);
@@ -241,7 +250,7 @@ export default {
       console.log(queryCaptcha);
       // 调用函数
       this.get_queryCaptcha(phone, "2", this.phoneCaptcha);
-      let i = 10;
+      let i = 60;
       let timer = null;
       timer = setInterval(() => {
         i--;
@@ -251,7 +260,7 @@ export default {
         } else {
           clearInterval(timer);
           i = 9;
-          this.textCode = `重新发送`;
+          this.textCode = `获取验证码`;
           this.disabledBtn = false;
         }
       }, 1000);

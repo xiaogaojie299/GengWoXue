@@ -6,7 +6,7 @@ import {
   querySystemSetByType,
 } from "@/network/messageCenter";
 import { queryPersonalData } from "@/network/personalCenter";
-import { captchaLogin } from "@/network/login";
+import { captchaLogin,passwordLogin } from "@/network/login";
 import {queryNoReadNumber} from "@/network/messageCenter"
 import createPersistedState from "vuex-persistedstate";
 Vue.use(Vuex);
@@ -69,9 +69,24 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    //获取登录状态的token
+    //获取验证码登录状态的token
     async getToken({ dispatch, commit }, params) {
       let res = await captchaLogin(params.data);
+      console.log("res==》验证", res.data);
+      // context.commit("setToken", res.data.token);
+      commit("setUserInfo", res.data);
+      commit("setUserImg", res.data.avatar);
+      dispatch("getMessageList");
+      dispatch("getUnread");     //调用获取未读消息展示
+      // window.localStorage.setItem("userInfo", res.data);
+      // window.localStorage.setItem("token",res.data.token);
+      params.$router.push({
+        path: "/page/home",
+      });
+    },
+    //获取密码登录状态的token
+    async getPwdToken({ dispatch, commit }, params) {
+      let res = await passwordLogin(params.data);
       console.log("res==》验证", res.data);
       // context.commit("setToken", res.data.token);
       commit("setUserInfo", res.data);

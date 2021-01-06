@@ -152,7 +152,7 @@ export default {
         } else {
           clearInterval(timer);
           i = 9;
-          this.textCode = `重新发送`;
+          this.textCode = `获取验证码`;
           this.disabledBtn = false;
         }
       }, 1000);

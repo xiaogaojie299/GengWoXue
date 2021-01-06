@@ -31,16 +31,13 @@ export function checkCaptcha(data) {
 export function passwordLogin(data) {
     console.log("调用密码登录接口",);
     return request({
-        url: base + 'passwordLogin',
-        method: "post",
-        data: data
+        url: base + 'passwordLogin'+qs(data),
     })
 }
 //  忘记密码操作
 export function forgetPassword(data){
     console.log("data=",data);
     return request({
-        url: base + 'passwordLogin',
-        data: data
+        url: base + 'forgetPassword'+qs(data),
     })
 }

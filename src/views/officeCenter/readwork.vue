@@ -100,7 +100,7 @@
               <!-- 右侧打分批阅 -->
               <div class="right-grade">
                 <div class="first-box">
-                  <div>得分1：</div>
+                  <div>得分：</div>
                   <input ref="piyue" v-model="item.studentScore" />
                   <!-- icon -->
                   <img @click.stop="inputFocus" src="@/assets/img/officeCenter/icon_edit.png" alt="" />
@@ -563,9 +563,9 @@ export default {
       testList.forEach((item) => {
         let arr = {};
         arr.id = item.id; //答案id
-        arr.answer = item.answer; //上传学生答案
+        arr.answer = item.studentAnswer; //上传学生答案
         arr.answerUrl = item.studentAnswerUrl; //上传学生简答题图片
-        arr.score = item.points; // 学生问题答案
+        arr.score = item.studentScore; // 学生问题答案
         arr.audio = item.teacherAudio; //老师批阅音频
         arr.remark = item.teacherRemark; //老师批阅备注
         arr.img = item.teacherImg.join("%&"); //老师批阅图片
