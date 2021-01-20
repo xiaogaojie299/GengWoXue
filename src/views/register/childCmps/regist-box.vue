@@ -49,7 +49,7 @@
           />
           <div slot="right-content">
             <div style="color: #eb002a" class="right-txt hand">
-              <span @click="forfet_upwd">忘记密码</span>
+              <span @click="forfet_upwd">忘记密码?</span>
             </div>
           </div>
         </input-template>
@@ -83,7 +83,7 @@
         </div>
       </div>
       <!-- 底部跳转到学生登陆 -->
-      <div @click="goStudent" class="footer hand">学生登录 》</div>
+      <div @click="goStudent" class="footer hand">学生登录<span class="ml-10"> <i class="el-icon-d-arrow-right"></i> </span></div>
     </div>
   </div>
 </template>
@@ -99,7 +99,6 @@ import {
 } from "@/network/login";
 import { validatePhoneNumber } from "@/utils/regular";
 import {studentURL} from "@/network/config"
-
 export default {
   data() {
     return {
@@ -121,8 +120,8 @@ export default {
 
   methods: {
     goStudent(){  //点击学生登录跳转学生详情
-    console.log(studentURL);
-     window.location.href=studentURL;
+    console.log("studentURL1=",studentURL);
+     window.location.href = studentURL+'#/login'
     },
     goCooperation(){  //跳转到入驻
       this.$router.push("/page/coIndex/teacherCo")
@@ -303,7 +302,7 @@ input:-ms-input-placeholder {
 }
 .loging-box{
   position: relative;
-  height: calc(100vh - 160px);
+  height: calc(100vh - 210px);
 }
 // 媒体查询
 @media screen and (max-height: 700px) {
@@ -378,7 +377,7 @@ input:-ms-input-placeholder {
 .footer {
   position: absolute;
   bottom: 0;
-  width: 100%;
+  width: 464px;
   height: 110px;
   justify-content: center;
   align-items: center;

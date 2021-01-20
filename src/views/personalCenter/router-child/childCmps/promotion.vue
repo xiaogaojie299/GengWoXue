@@ -37,7 +37,7 @@
         </div>
       </div>
 
-      <div class="main-footer">
+      <div class="main-footer pl-10">
         <!-- 历史邀请标题 -->
         <my-title>历史邀请</my-title>
         <!-- 表格 -->

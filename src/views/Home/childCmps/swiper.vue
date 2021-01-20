@@ -11,7 +11,8 @@
     </el-carousel> -->
       <el-carousel height="550px">
         <el-carousel-item v-for="(item,index) in bannerList" :key="index">
-          <img @click="jump(item.jumpUrl)" :src="item.url" alt="">
+          <!-- <img style="object-fit:contain;border:1px solid red;height:550px;" @click="jump(item.jumpUrl)" :src="item.url" alt=""> -->
+          <img style="height:550px;width:100vw;object-fit;none" @click="jump(item.jumpUrl)" :src="item.url" alt="">
         </el-carousel-item>
     </el-carousel>
 </template>

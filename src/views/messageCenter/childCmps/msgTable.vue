@@ -45,9 +45,18 @@
       <el-table-column prop="exercise" align="center" label="消息内容" >
         <template slot-scope="scope">
           <div style="display:flex;justify-content:center;">
-            <div style="width:100px">{{scope.row.title}}:</div>
+            <!-- <div style="width:100px">{{scope.row.title}}:</div> -->
             <!-- <div>{{scope.row.content}}</div> -->
-            <div v-html="scope.row.content"></div>
+            <el-collapse accordion>
+              <el-collapse-item>
+                <template slot="title">
+                 {{scope.row.title}}
+                </template>
+                <div v-html="scope.row.content"></div>
+              </el-collapse-item>
+            </el-collapse>
+
+            <!-- <div v-html="scope.row.content"></div> -->
           </div>
         </template>
       </el-table-column>
@@ -59,6 +68,12 @@
 </template>
 
 <style lang="scss" scoped>
+/deep/ .el-collapse{
+  border: none;
+}
+/deep/ .el-collapse-item__header{
+  background: none;
+}
 /deep/ .el-checkbox__inner{
   width: 18px;
   height: 18px;

@@ -42,16 +42,16 @@
         label="责任老师"
       >
       </el-table-column>
-      <el-table-column prop="assistantTeacher" align="center" label="助教老师">
+      <el-table-column prop="assistantTeacher" width="80" align="center" label="助教老师">
       </el-table-column>
-      <el-table-column prop="studentNum" align="center" label="学生人数">
+      <el-table-column prop="studentNum" width="80" align="center" label="学生人数">
       </el-table-column>
-      <el-table-column prop="courseNum" align="center" label="课次">
+      <el-table-column prop="courseNum" width="50" align="center" label="课次">
       </el-table-column>
-      <el-table-column prop="overCourseNum" align="center" label="已开课">
+      <el-table-column prop="overCourseNum" width="70" align="center" label="已开课">
       </el-table-column>
       <!-- 课后习题 -->
-      <el-table-column align="center" label="是否邮寄资料" width="150">
+      <el-table-column align="center" label="是否邮寄资料" width="120">
         <template slot-scope="scope">
           <span>{{ scope.row.mailingInformationNum == 0 ? "否" : "是" }}</span>
         </template>
@@ -63,18 +63,23 @@
       >
       </el-table-column>
       <el-table-column
-        prop="startTime"
         align="center"
         label="有效期起日"
-        width="180"
+        width="120"
       >
+      <template slot-scope="scope">
+      <span>{{ scope.row.startTime.split(" ")[0]}}</span>
+      </template>
       </el-table-column>
       <el-table-column
         prop="endTime"
         align="center"
         label="有效期止日"
-        width="180"
+        width="120"
       >
+      <template slot-scope="scope">
+      <span>{{ scope.row.endTime.split(" ")[0]}}</span>
+      </template>
       </el-table-column>
       <!-- 操作 -->
       <!-- <el-table-column fixed="right" label="操作" width="120">

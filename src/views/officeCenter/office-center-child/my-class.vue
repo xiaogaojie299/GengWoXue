@@ -50,10 +50,14 @@
     <!-- 底部分页 -->
 
     <div class="footer">
-      <page-device
+      <!-- <page-device
         :total="total"
-        :current="current"
         @handleCurrentChange="handleCurrentChange"
+      /> -->
+      <page-device
+        @handleCurrentChange="handleCurrentChange"
+        :current="current"
+        :total="total"
       />
     </div>
     <!-- 遮罩层弹框 -->
@@ -102,7 +106,7 @@ export default {
       let { data, code } = await queryMyAllClassList(pamars);
       if (code == 200) {
         this.tableData = data.list;
-        this.total = data.toal;
+        this.total = data.total;
         this.selectClassObj = data.list[0];
         this.classId = data.list[0].id;
         this.$refs.childMethod.chekcout(data.list[0].id);
@@ -148,7 +152,7 @@ export default {
       let { data, code } = await queryMyAllClassList(pamars);
       if (code == 200) {
         this.tableData = data.list;
-        this.total = data.toal;
+        this.total = data.total;
       }
     },
     // 跳转我的学生详情

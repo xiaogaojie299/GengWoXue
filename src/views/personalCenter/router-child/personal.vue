@@ -2,7 +2,7 @@
   <div style="height: 100%">
     <!-- <button @click="go_child()">跳转</button> -->
     <!-- <router-view></router-view> -->
-    <el-container style="height: 100%; border: 1px solid #eee">
+    <el-container style="height: 100%;margin-top:20px; border: 0px solid #eee">
       <el-aside height="100%" width="200px">
         <el-menu :default-active="'' + activeIndex">
           <el-menu-item index="1" @click="go_url('data', 1)"
@@ -29,7 +29,6 @@
         style="
           min-height: 100%;
           padding-left: 47px;
-          border: 1px solid rgb(238, 238, 238);
         "
       >
         <router-view></router-view>

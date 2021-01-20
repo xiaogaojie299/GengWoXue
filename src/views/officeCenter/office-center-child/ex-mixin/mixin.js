@@ -9,6 +9,7 @@ export const exmixin={
         dialogVisible:false,
         random:1,
         scheduleId:"",
+        couseDetail: {name:"测试"},  // 课程详情数据
      }   
     },
     methods: {

@@ -16,7 +16,7 @@
         <div class="second-row">
           <!-- <span>张思思</span>
           <span>英语直播课</span> -->
-          <span>{{ testList.courseName }}</span>
+          <span>{{ testList.courseName ||"暂无" }}</span>
         </div>
       </div>
 
@@ -35,24 +35,30 @@
               <div class="left-problem">
                 <span style="color: #eb0029"
                   >{{ index + 1 }}/{{ testList.list.length }}：</span
-                >{{item.title}}（{{testList.totalScore}}分）
+                >{{item.title}}（{{item.points}}分）
               </div>
             </div>
 
             <!--  答题框 -->
             <div class="answer-board">
-              <img :src="item.img" alt="">
+              <el-image
+                v-for="(imgIt,imgI) in item.img" 
+                :key="imgI"
+                style="width: 100px; height: 100px"
+                :src="imgIt" 
+                :preview-src-list="item.img">
+              </el-image>
               <!-- <textarea disabled :value="item.studentAnswer" name="" id="" cols="30" rows="10"> </textarea> -->
             </div>
 
             <!-- 答案解析 -->
-            <div class="analysis">答案解析 (5分)</div>
+            <!-- <div class="analysis" v-if="studentParams.scoring=='已阅卷'">答案解析 (5分)</div> -->
             <!-- 正确答案 -->
             <div class="answer-box">
-              <div class="student-answer">学生答案：{{item.studentAnswer}}</div>
+              <div class="student-answer" v-if="testList.state==2">学生答案：{{item.studentAnswer}}</div>
               <div class="correct-answer">正确答案：{{item.answer}}</div>
               <!-- 右侧语音解析 -->
-              <div class="right-grade">
+              <div v-if="studentParams.scoring=='已阅卷'" class="right-grade">
                 <!-- 上传音频按钮 -->
                 <div class="second-box">
                   <!-- <img src="@/assets/img/officeCenter/icon_play.png" alt="" /> -->
@@ -87,13 +93,20 @@
             <!-- 选项A,B,C,D -->
             <div class="option-box">
               <div>
-                <img :src="item.img" alt="" />
+                <!-- <img v-for="(imgIt,imgI) in item.img" :key="imgI" :src="imgIt" alt="" /> -->
+                 <el-image
+                  v-for="(imgIt,imgI) in item.img" 
+                  :key="imgI"
+                  style="width: 100px; height: 100px"
+                  :src="imgIt" 
+                  :preview-src-list="item.img">
+              </el-image>
               </div>
             </div>
             <!-- 正确答案 -->
             <div class="answer-box">
               <!-- 右侧语音解析 -->
-              <div class="right-grade">
+              <div v-if="studentParams.scoring=='已阅卷'" class="right-grade">
                 <!-- 上传音频按钮 -->
                 <div class="second-box">
                   <!-- <img src="@/assets/img/officeCenter/icon_play.png" alt="" /> -->
@@ -103,12 +116,47 @@
               <div class="student-answer">
                 <div>学生答案：</div>
                 <!-- <img src="@/assets/img/officeCenter/test1.png" alt="" /> -->
-                <img :src="item.studentAnswerUrl" alt="">
+                <!-- <img :src="item.studentAnswerUrl" alt=""> -->
+                <el-image
+                  v-for="(imgIt,imgI) in item.studentAnswerUrl" 
+                  :key="imgI"
+                  style="width: 100px; height: 100px"
+                  :src="imgIt" 
+                  :preview-src-list="item.studentAnswerUrl">
+              </el-image>
+              </div>
+               <div class="correct-answer">老师批阅备注：{{ item.teacherRemark }}</div>
+              <div class="correct-answer flex">
+                <div class="nowrap">图片解析：</div>
+                <!-- <img v-for="(imgItem,imgIndex) in item.teacherImg" :src="item.teacherImg" :key="imgIndex" alt="" /> -->
+               <el-image
+                v-for="(imgIt,imgI) in item.img" 
+                :key="imgI"
+                style="width: 100px; height: 100px"
+                :src="imgIt" 
+                :preview-src-list="item.teacherImg">
+              </el-image>
               </div>
               <div class="correct-answer">
-                <div>正确答案：</div>
-                <img src="@/assets/img/officeCenter/test1.png" alt="" />
+                <div class="mt-10 mb-10">正确答案：{{item.answer}} </div>
+                <div v-if="item.img" class="right-answers">
+                  <el-image
+                  v-for="(imgIt,imgI) in item.img" 
+                  :key="imgI"
+                  style="width: 100px; height: 100px"
+                  :src="imgIt" 
+                  :preview-src-list="item.img">
+              </el-image>
+                </div>
               </div>
+
+              <!-- <div class="correct-answer">
+                <div class="mt-10 mb-10">老师批阅图片： </div>
+                <div v-if="item.teacherImg" class="right-answers">
+                  <img :src="item.teacherImg" alt="" />
+                </div>
+              </div> -->
+
             </div>
           </div>
         </div>
@@ -122,7 +170,7 @@
               <div class="left-problem">
                 <span class="" style="color: #eb0029"
                   >{{ index + 1 }}/{{ testList.list.length }}：</span
-                >{{ item.title }}（5分）
+                >{{ item.title }}（{{ item.points }}分）
               </div>
             </div>
             <!-- 选项A,B,C,D -->
@@ -133,7 +181,7 @@
               </div>
               <!-- <div><span class="active">{{}}</span> 答案1</div> -->
               <div v-for="(it, i) in item.options" :key="i">
-                <span :class="{ active:item.answer.includes(it.name) }">{{
+                <span :class="{ active:item.answer==it.info }">{{
                   it.name
                 }}</span
                 >{{ it.info }}
@@ -141,7 +189,7 @@
             </div>
 
             <!-- 答案解析 -->
-            <div class="analysis">答案解析 (5分)</div>
+            <!-- <div class="analysis" v-if="studentParams.scoring=='已阅卷'">答案解析 (5分)</div> -->
             <!-- 正确答案 -->
             <div class="answer-box">
               <div class="student-answer">
@@ -151,7 +199,7 @@
               </div>
               <div class="correct-answer">正确答案：{{ item.answer }}</div>
               <!-- 右侧语音解析 -->
-              <div class="right-grade">
+              <div v-if="studentParams.scoring=='已阅卷'" class="right-grade">
                 <!-- 上传音频按钮 -->
                 <div class="second-box">
                   <!-- <img src="@/assets/img/officeCenter/icon_play.png" alt="" /> -->
@@ -183,6 +231,7 @@ export default {
     return {
       studentInfo: {}, //传过来的学生详情对象
       studentWork:{}, //学生传过来的答题情况
+      studentParams:{},
       current: 1,
       size: 10,
       testList: [], //考试详情
@@ -191,7 +240,7 @@ export default {
   },
   created() {
     console.log(this.$route.query.type);
-    if(this.$route.query.type==1){
+    if(this.$route.query.type=="线上考试"){
       //如果type存在 则是根据学生排课ID查询。
       this.studentWork = JSON.parse(this.$route.query.data);
       this.getAnswerInfo();
@@ -200,8 +249,24 @@ export default {
       this.studentInfo = JSON.parse(this.$route.query.data);
       this.getExaminationInfo();
     }
+    this.studentParams = JSON.parse(this.$route.query.data);
+    console.log("this.studentParams==>",this.studentParams);
   },
   methods: {
+    // 切割 带%& 的图片URL
+    splitImg(item,symbol="%&"){
+      let tepArr=[];
+      if(item.includes("%&")){
+        tepArr = item.join("%&")
+      }else if(!item){
+        tepArr = [];
+      }else{
+        tepArr.push(item)
+      }
+      return tepArr
+    },
+    /* 1=填空题，2=单选题，3=多选题，4=判断题，5=问答题） */
+
     getExaminationInfo() {  //根据学生考试关系ID查询考试成绩
       //查询考试试题
       let params = {
@@ -211,101 +276,33 @@ export default {
         let { code, data } = res;
         if (code == 200) {
           this.testList = data;
-          let testObj = {
-            //测试数据
-            answer: "C%&D",
-            audio: "",
-            id: 0,
-            img:
-              "https://beixiaorui.obs.cn-southwest-2.myhuaweicloud.com/8b8d0d9e119f4566bc98ca02cc88c7e6.jpg",
-            options: "A：测试A%&B：测试B%&C：测试C%&D：测试D",
-            points: 10,
-            prompt: "",
-            studentAnswer: "",
-            studentAnswerUrl: "",
-            studentScore: 0,
-            studentState: 0,
-            teacherAudio: "",
-            teacherImg: "",
-            teacherRemark: "",
-            title: "这是一道多选题",
-            type: 3,
-          };
-          let testObj1 = {
-            //测试数据
-            answer: "A%&C",
-            audio: "",
-            id: 0,
-            img:
-              "https://beixiaorui.obs.cn-southwest-2.myhuaweicloud.com/8b8d0d9e119f4566bc98ca02cc88c7e6.jpg",
-            options: "A：测试多选A%&B：测试多选B%&C：测试多选C%&D：测试多选D",
-            points: 10,
-            prompt: "",
-            studentAnswer: "",
-            studentAnswerUrl: "",
-            studentScore: 0,
-            studentState: 0,
-            teacherAudio: "",
-            teacherImg: "",
-            teacherRemark: "",
-            title: "这是一道多选题",
-            type: 2,
-          };
-          let testObj2 = {
-            //测试数据
-            answer: "日照香炉生紫烟",
-            audio: "",
-            id: 0,
-            img:
-              "https://beixiaorui.obs.cn-southwest-2.myhuaweicloud.com/8b8d0d9e119f4566bc98ca02cc88c7e6.jpg",
-            options: "",
-            points: 10,
-            prompt: "",
-            studentAnswer: "我不想回答",
-            studentAnswerUrl: "",
-            studentScore: 0,
-            studentState: 0,
-            teacherAudio: "",
-            teacherImg: "",
-            teacherRemark: "",
-            title: "这是填空题",
-            type: 1,
-          };
-          let testObj3 = {
-            answer: "A",
-            audio: "",
-            id: 0,
-            img:
-              "https://beixiaorui.obs.cn-southwest-2.myhuaweicloud.com/8b8d0d9e119f4566bc98ca02cc88c7e6.jpg",
-            options: "A：正确%&B：错误",
-            points: 10,
-            prompt: "",
-            studentAnswer: "A",
-            studentAnswerUrl: "",
-            studentScore: 0,
-            studentState: 0,
-            teacherAudio: "",
-            teacherImg: "",
-            teacherRemark: "",
-            title: "判断题",
-            type: 4,
-          };
-          this.testList.list.push(testObj);
-          this.testList.list.push(testObj1);
-          this.testList.list.push(testObj2);
-          this.testList.list.push(testObj3);
+          let opt=['A','B','C','D','E','F','G','H'];
           this.testList.list.forEach((item) => {
+              item.img = this.splitImg(item.img);
+              item.teacherImg = this.splitImg(item.teacherImg);
+              item.studentAnswerUrl = this.splitImg(item.studentAnswerUrl)
             if (item.options) {
               let arr = []; //单选题  多选
               try {
                 item.options = item.options.split("%&");
-                item.options.forEach((item) => {
-                  let obj = {};
-                  obj.name = item.split("：")[0];
-                  obj.info = item.split("：")[1];
-                  arr.push(obj);
-                });
+                item.img
+                if(item.type==4){
+                    item.options.forEach((item) => {
+                    let obj = {};
+                    obj.name = item;
+                    obj.info = item;
+                    arr.push(obj);
+                  });
                 item.options = arr;
+                }else if(item.type==2 || item.type==3){
+                  item.options.forEach((item,i) => {
+                    let obj = {};
+                    obj.name = opt[i];
+                    obj.info = item;
+                    arr.push(obj);
+                  });
+                  item.options = arr;
+                }
               } catch (e) {
                 console.log(e);
               }
@@ -575,7 +572,7 @@ export default {
           font-family: Source Han Sans CN;
           font-weight: 400;
           line-height: 20px;
-          display: flex;
+          // display: flex;
         }
         .student-answer {
           color: #343434;
@@ -585,6 +582,11 @@ export default {
         }
         .correct-answer {
           color: #eb002a;
+          .right-answers{
+            display: flex;
+            flex-wrap: wrap;
+            padding-left:50px;
+          }
         }
 
         .jiexi-box {

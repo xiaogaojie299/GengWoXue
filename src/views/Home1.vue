@@ -38,22 +38,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.test {
-  width: 100%;
-  height: 1000px;
-
-}
-
 .my-box{
    display: flex;
   flex-direction: column;
   min-height: 100vh;
-  .my-header,.my-footer {
+  .my-header{
     height: 80px;
+  }
+  .my-footer{
+    height:130px;
   }
   .my-main {
     flex: 1;
-    position: relative;
   }
 }
 </style>

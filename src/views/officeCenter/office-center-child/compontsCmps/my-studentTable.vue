@@ -50,9 +50,9 @@
       </el-table-column>
       <el-table-column prop="birthday" width="140" align="center" label="生日">
       </el-table-column>
-      <el-table-column prop="courseName" align="center" label="在读课程">
+      <el-table-column prop="courseName" width="140" align="center" label="在读课程">
       </el-table-column>
-      <el-table-column prop="gradeName" width="100" align="center" label="年级">
+      <el-table-column prop="gradeName"  width="140" align="center" label="年级">
       </el-table-column>
       <!-- 课后习题 -->
       <el-table-column prop="courseNature" width="100" align="center" label="班级类别">
@@ -66,16 +66,19 @@
               <span>{{studentType(scope.row.studentState)}}</span>
           </template>
       </el-table-column>
-      <el-table-column prop="className" align="center" label="在读班级">
+      <el-table-column prop="className" align="center" width="140" label="在读班级">
       </el-table-column>
-      <el-table-column prop="classHour" align="center" label="总课时">
+      <el-table-column align="center" label="总课时">
+        <template slot-scope="scope">
+         <span>{{scope.row.noClassHour + scope.row.overClassHour}}</span>
+        </template>
       </el-table-column>
-      <el-table-column prop="overClassHour;" align="center" label="已上课时">
+      <el-table-column prop="overClassHour" align="center" label="已上课时">
       </el-table-column>
 
-       <el-table-column align="center" label="结业证附件">
+       <el-table-column align="center" width="140" label="结业证附件">
          <template slot-scope="scope">
-           <img style="width:38px;height:38px" :src="scope.row.graduationCertificate" alt="">
+           <img v-if="scope.row.graduationCertificate" style="width:38px;height:38px" :src="scope.row.graduationCertificate" alt="">
          </template>
       </el-table-column>
       <!-- 操作 -->
@@ -106,8 +109,6 @@
 
 <script>
 export default {
- 
-
   data() {
     return {
       isActive:0
@@ -138,7 +139,7 @@ props:{
          case 2:
         return "未分班";
          case 3:
-        return "转班";
+        return "已转班";
          case 4:
         return "离班";
         case 5:

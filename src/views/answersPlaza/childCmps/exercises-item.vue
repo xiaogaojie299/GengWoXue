@@ -13,11 +13,12 @@
         </div>
         <!-- 题目图片 -->
         <div class="exercises-img">
-          <div v-for="(it,index) in item.imgUrl" :key="index">
+          <div v-for="(it,index) in item.imgUrl" class="mr-30" :key="index">
               <el-image
-            style="width: 105px; height: 105px"
-            :src="it"
-          >
+              fit="contain"
+              style="width: 105px; height: 105px"
+              :src="it"
+            >
           </el-image>
           </div>
           <!-- <div class="exercises-img-item" v-for="i in 2" :key="i"></div> -->
@@ -44,7 +45,7 @@
           <span>{{info.golds||"0"}}</span>
         </div>
         <div class="footer-center">{{item.answerNum}}个回答</div>
-        <div class="footer-right">{{item.insertTime}}</div> 
+        <div class="footer-right">{{item.insertTime=item.insertTime.replace('-','/')}}</div> 
       </div>
     </div>
   </div>
@@ -52,6 +53,7 @@
 <script>
 import {optDeleteQuestion} from "@/network/answersPlaza"
 import {myMixin} from "../mixins/mixins"
+import utils from "@/utils/filters"
 export default {
   mixins:[myMixin],
   data() {
@@ -64,7 +66,8 @@ export default {
       ],
       info:{
         imgUrl:["https://xixisuxi.obs.cn-southwest-2.myhuaweicloud.com/16054585862.png"]
-      }
+      },
+      imgDate:{}
     };
   },
   inject:["_this"],
@@ -79,10 +82,10 @@ export default {
     },
   },
   mounted(){
-      // this.info = JSON.parse(JSON.stringify(this.item))
-      // console.log("this.info==>",this.info.imgUrl,this.item.imgUrl);
-      // this.$set(this.info.imgUrl,this.item.imgUrl);
+    console.log("this.imgDate1==",this.item);
+    // utils
   },
+
   methods: {
     go_exDetail() {
       console.log("跳转成功");
@@ -92,7 +95,6 @@ export default {
       });
     },
     deleteQuestion(){
-      
 
          this.$confirm('此操作将永久删除该问题, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -116,27 +118,24 @@ export default {
       
     }
   },
-  created(){
-    console.log("this.item=",this.item);
-  }
 };
 </script>
 <style lang="scss" scoped>
 .box {
   width: 100%;
-  min-height: 218px;
+  // min-height: 218px;
   background: #ffffff;
   box-shadow: 1px 2px 58px 5px rgba(200, 200, 200, 0.32);
   border-radius: 4px;
-  margin: 10px 0;
-  padding: 25px 27px;
+  margin: 20px 0;
+  padding: 10px 27px;
 }
 .exercises-item {
   display: flex;
   position: relative;
   flex-direction: column;
   justify-content: space-around;
-  min-height: 100%;
+  // min-height: 100%;
   .delete{
     position: absolute;
     right: 0;
@@ -168,7 +167,7 @@ export default {
       font-family: Source Han Sans CN;
       font-weight: 400;
       color: #9a9a9a;
-      margin-bottom: 25px;
+      margin-bottom: 5px;
     }
     .exercises-img {
       display: flex;

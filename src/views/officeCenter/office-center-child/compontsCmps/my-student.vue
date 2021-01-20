@@ -53,7 +53,7 @@
           label="是否邮寄资料"
         >
           <template slot-scope="scope">
-            <span>{{ scope.row.mailingInformation == 0 ? "否" : "是" }}</span>
+            <span>{{ scope.row.mailingInformation}}</span>
           </template>
         </el-table-column>
       </el-table>

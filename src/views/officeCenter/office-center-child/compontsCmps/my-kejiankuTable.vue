@@ -38,9 +38,9 @@
           />
         </template>
       </el-table-column>
-      <el-table-column prop="name" label="课件名称" width="120" align="center">
+      <el-table-column prop="name" label="课件名称" width="100" align="center">
       </el-table-column>
-      <el-table-column label="课件类型" align="center" width="120">
+      <el-table-column label="课件类型" align="center" width="100">
         <template slot-scope="scope">
           <div>
             {{
@@ -55,18 +55,24 @@
       </el-table-column>
       <el-table-column prop="coursesubjects" align="center" label="课件科目">
       </el-table-column>
-      <el-table-column prop="grade" align="center" label="年级">
+      <el-table-column prop="grade" align="center" width="80" label="年级">
       </el-table-column>
-      <el-table-column prop="url" align="center" width="180" label="附件">
+      <el-table-column prop="url" align="center" width="80" label="附件">
         <template slot-scope="scope">
           <el-button type="text" @click="watchPPT(scope.row)">
-            查看附件
+            {{scope.row.coursewareName}}
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="downloadFee" align="center" label="下载费用">
+      <el-table-column prop="" align="center" label="下载费用">
+        <template slot-scope="scope">
+          <span>{{scope.row.downloadFee==0?'-':scope.row.downloadFee+'元'}}</span>
+        </template>
       </el-table-column>
-      <el-table-column prop="downloadNumber" align="center" label="下载次数">
+      <el-table-column prop="" align="center" label="下载次数">
+        <template slot-scope="scope">
+          <span>{{scope.row.downloadNumber==0?'-':scope.row.downloadNumber}}</span>
+        </template>
       </el-table-column>
       <!-- 课后习题 -->
       <el-table-column prop="insertUser" align="center" label="上传人">
@@ -75,10 +81,10 @@
         prop="insertTime"
         align="center"
         label="上传时间"
-        width="180"
+        width="150"
       >
       </el-table-column>
-      <el-table-column label="课件类型" align="center" width="120">
+      <el-table-column label="审核状态" align="center" width="120">
         <template slot-scope="scope">
           <div>
             {{

@@ -40,7 +40,8 @@
       </div>
 
       <!-- 底部按钮 -->
-      <div class="footer" @click="bind">提交</div>
+      <div v-if="infoList.aliAccount==2 && !isBtnText" @click="go_back" class="footer">关闭</div>
+      <div v-else class="footer" @click="bind">提交</div>
     </div>
   </div>
 </template>
@@ -52,7 +53,8 @@ export default {
         return {
             isdisable:true,
             bindZfb:"",    //支付宝账号
-            bindZfbName:""  //支付宝账户名
+            bindZfbName:"",  //支付宝账户名
+            isBtnText:false // 控制按钮文本样式
         }
     },
     computed:{
@@ -61,7 +63,7 @@ export default {
       }
     },
     methods: {
-      async bind(){
+      async bind(){ // 绑定提交支付宝
         let data={};
         if(this.infoList.aliAccount==2){
           //已绑定
@@ -87,8 +89,10 @@ export default {
           this.$myAlert("绑定失败")
         }
       },
+      
       anew(){
             console.log("成功")
+            this.isBtnText=true;
             this.isdisable=false;
         },
         go_back(){
@@ -147,7 +151,12 @@ export default {
           background: #ffffff;
           border: 1px solid #efefef;
           border-radius: 4px;
+          outline: none;
           padding: 14px 17px;
+        }
+        & input:focus{
+          border: 1px solid #eb002a;
+          // color: $base-color;
         }
       }
     }

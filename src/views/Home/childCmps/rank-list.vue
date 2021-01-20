@@ -203,7 +203,6 @@ export default {
       width: 30px;
       height: 30px;
       border-radius: 50%;
-      border: 1px solid blue;
       margin-right: 17px;
     }
   }

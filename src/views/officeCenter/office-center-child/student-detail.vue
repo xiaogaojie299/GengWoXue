@@ -2,7 +2,7 @@
   <div class="box">
       <div style="margin-left:23px">
         <breadcrumb-nav>
-        <span slot="nav-name" @click="goBack">我的学生</span>
+        <span slot="nav-name" class="hand" @click="goBack">我的学生</span>
         <span slot="nav-child">{{studyInfo.name}}个人信息</span>
         </breadcrumb-nav>
       </div>
@@ -47,7 +47,7 @@
             <div>
               <div class="row-box">
                 <div class="left-title">在读课程：</div>
-                <div class="right-content my-font">{{studyInfo.courseName}}</div>
+                <div class="right-content my-font">{{studyInfo.course}}</div>
               </div>
             </div>
             <div>
@@ -59,7 +59,7 @@
             <div>
               <div class="row-box">
                 <div class="left-title">总课时：</div>
-                <div class="right-content my-font">{{studyInfo.classHour}}</div>
+                <div class="right-content my-font">{{studyInfo.totalHours}}</div>
               </div>
             </div>
           </div>

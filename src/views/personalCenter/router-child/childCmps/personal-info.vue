@@ -21,13 +21,13 @@
       </div>
       <!-- 一行两列 -->
       <div class="row">
-        <div class="col1">
+        <div @click="warn('alipayAccount')" class="col1">
           <div class="left-box my-font">账户：</div>
-          <input type="text" disabled :value="info.phone" />
+          <input ref="alipayAccount" type="text" disabled :value="info.alipayAccount" />
         </div>
-        <div class="col1">
+        <div @click="warn('phone')" class="col1">
           <div class="left-box my-font">电话：</div>
-          <input type="text" disabled :value="info.phone" />
+          <input type="text" ref="phone" disabled :value="info.phone" />
         </div>
       </div>
 
@@ -36,9 +36,9 @@
           <div class="left-box my-font">昵称：</div>
           <input type="text" v-model="form.nickname" />
         </div>
-        <div class="col1">
+        <div @click="warn('address')" class="col1">
           <div class="left-box my-font">联系地址：</div>
-          <input disabled type="text" :value="info.address" />
+          <input ref="address" disabled type="text" :value="info.address" />
         </div>
       </div>
 
@@ -94,25 +94,25 @@
       </div>
 
       <div class="row">
-        <div class="col1">
+        <div  @click="warn('ipt')" class="col1">
           <div class="left-box my-font">角色：</div>
-          <input disabled type="text" :value="info.type" />
+          <input ref="ipt" disabled type="text" :value="info.type" />
         </div>
-        <div class="col1">
+        <div class="col1" @click="warn('highestEducation')">
           <div class="left-box my-font">学历：</div>
-          <input disabled type="text" :value="info.highestEducation" />
+          <input disabled type="text" ref="highestEducation" :value="info.highestEducation" />
         </div>
       </div>
 
       <div class="row">
-        <div class="col1">
+        <div class="col1" @click="warn('address')">
           <div class="left-box my-font">姓名：</div>
-          <input type="text" disabled :value="info.name" />
+          <input type="text" ref="name" disabled :value="info.name" />
         </div>
-        <div class="col1">
+        <div class="col1" @click="warn('graduatedSchool')">
           <div class="left-box my-font">毕业院校：</div>
           <div class="right-box">
-            <input disabled type="text" :value="info.graduatedSchool" />
+            <input ref="graduatedSchool" disabled type="text" :value="info.graduatedSchool" />
           </div>
         </div>
       </div>
@@ -191,7 +191,7 @@
           >
             <div v-if="item.url" class="upload-img">
               <img :src="item.url" alt="" />
-              <div class="del-icon">
+              <div class="del-icon hand">
                 <img
                   @click="delImg(index)"
                   src="@/assets/img/icon_del.png"
@@ -278,12 +278,20 @@ export default {
     init() {
       this.subjectList = this.$store.dispatch("getSubjectList");
     },
+    warn(node){ // input disable属性置灰提示
+    setTimeout(()=>{
+      console.log(this.$refs[node].disabled);
+      if(this.$refs[node].disabled){
+        this.$myMessage("需要联系管理员进行修改","info")
+      }
+      console.log(this.$refs[node]); 
+    },500)
+    },
     // 获取用户个人详情
     async getPersonalData() {
       let res = await queryPersonalData();
       let { code, data } = res;
       if (code == 200) {
-        console.log("获取用户个人信息", data.avatar);
         this.$store.commit("setUserImg", data.avatar); //首页展示与当前更改头像保持一致
         switch (data.type) {
           case 1:
@@ -496,6 +504,8 @@ textarea {
       margin-right: 2px;
     }
     .right-content {
+        border:1px solid #efefef;
+        margin-left:10px;
       img {
         width: 168px;
         height: 168px;
@@ -508,9 +518,11 @@ textarea {
         .del-icon {
           opacity: 0;
           position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
+          // top: 50%;
+          // left: 50%;
+          // transform: translate(-50%, -50%);
+          top:-10px;
+          right:0;
           img {
             width: 22px;
             height: 22px;

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="ex-box">
     <!-- 顶部面包屑 -->
     <container>
       <breadcrumb-nav>
@@ -55,7 +55,7 @@
                 <span class="answer-people-tag hand" v-if="it.isAdopt == 2"
                   >已采纳</span
                 >
-                <span @click="toAdopt(i)" class="answer-people-tag hand" v-show="isCaina"
+                <span @click="toAdopt(i)" class="answer-people-tag hand" v-show="it.isCaina"
                   >置为采纳</span
                 >
                 <span class="answer-people-tag hand" v-show="it.state == 2"
@@ -123,9 +123,7 @@ export default {
     };
   },
   created() {
-    console.log("router=", this.$route.query.exercisesDetail);
     this.exercisesDetail = JSON.parse(this.$route.query.exercisesDetail);
-    console.log("exercisesDetail==",this.exercisesDetail);
     this.get_AnswerList();
   },
   mounted() {
@@ -147,8 +145,8 @@ export default {
       queryQuestionAnswerList(data).then((res) => {
         console.log("问题详情加载成功", res);
         this.answer = res.data.list;
-        this.answer.forEach(item=>{
-          item.isCaina = item.isAdopt==2;
+        this.answer.forEach(item=>{ 
+          item.isCaina = (item.isAdopt == 1); // 是否被采纳 1=否 2=是
         })
         this.total = res.data.total;
       console.log("this.answer==",this.answer);
@@ -221,14 +219,14 @@ export default {
 </script>
 <style lang="scss" scoped>
 .main {
-  min-height: 679px;
+  // min-height: 679px;
   background: #ffffff;
   box-shadow: 1px 2px 58px 5px rgba(200, 200, 200, 0.32);
   padding: 25px 27px;
   .exercises-item {
     display: flex;
     flex-direction: column;
-    min-height: 300px;
+    // min-height: 300px;
 
     .top-title {
       font-size: 24px;
@@ -287,10 +285,10 @@ export default {
       .answer-people-img {
         width: 51px;
         height: 51px;
-        border-radius: 50%;
-        background: #000;
+        
         margin-right: 9px;
         img{
+          border-radius: 50%;
           width: 100%;
           height: 100%;
         }
@@ -364,15 +362,20 @@ export default {
     margin: 20px 0;
   }
 }
-
+.ex-box{
+  height: calc(100vh - 210px);
+  position: relative;
+}
 .footer-input {
-  width: 100%;
+  position: absolute;
+  width: 1400px;
+  bottom: 0;
   height: 94px;
   background: #ffffff;
   box-shadow: 1px 4px 51px 9px rgba(197, 197, 197, 0.27);
   border-radius: 4px;
   margin-top: 26px;
-  margin-bottom: 79px;
+  margin-bottom: 20px;
   display: flex;
   input {
     outline: none;

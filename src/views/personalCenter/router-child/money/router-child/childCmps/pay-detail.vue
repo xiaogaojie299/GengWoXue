@@ -2,7 +2,7 @@
   <div class="box">
     <!-- 中间内容 -->
     <div class="main">
-      <div class="title">充值金额</div>
+      <div class="title">充值金额:</div>
       <input type="number" v-model="money" placeholder="请输入充值金额" />
       <!-- 单选框 -->
       <div>
@@ -10,7 +10,7 @@
           <span slot="radio1" class="my-font">微信支付</span>
           <span slot="radio2" class="my-font">支付宝支付</span>
         </radio-button>
-      </div>
+      </div> 
 
       <!-- 按钮 -->
       <div class="footer">
@@ -19,20 +19,21 @@
     </div>
     <!-- 遮罩层 -->
     <el-dialog :visible.sync="dialogVisible" :show-close="false" center>
-      <pay :qrCode="qrCode" @closeMask="closeMask()"></pay>
+      <pay :endTimer="endTimer" :money="money" :qrCode="qrCode" @closeMask="closeMask()"></pay>
     </el-dialog>
     <div v-html="payHtml"></div>
   </div>
 </template>
 <script>
 import pay from "./pay";
+import timeFilt from "@/utils/timeFilt"
 import { recharge, queryRecharge } from "@/network/personalCenter";
 import { mapState, mapActions } from "vuex";
 export default {
   data() {
     return {
       dialogVisible: false, //控制遮罩层
-      money: 0, //充值金额
+      money: null, //充值金额
       type: 2, //1.支付宝 2.微信 3.苹果内购
       payHtml: "",
       qrCode: "",
@@ -44,6 +45,15 @@ export default {
     if (this.timers) {
       clearInterval(this.timers); //关闭
     }
+  },
+  computed:{
+    endTimer(){// 点击支付的时候 时间内完成支付 
+      let d = new Date();
+      let time = d.getTime()    // 时间戳
+      let oldTime =timeFilt.tStamp(time + 2*60*1000);
+      return oldTime.house+":"+oldTime.minutes+":"+oldTime.seconds
+    }
+
   },
   methods: {
     //单选框选中
@@ -136,7 +146,8 @@ export default {
     },
     closeMask() {
       this.dialogVisible = false;
-      clearInterval(this.timers);
+      console.log("关闭成功");
+      window.clearInterval(this.timers);
       // this.$router.push({
       //   path: "/page/personalCenter/personal/recharge/succee",
       //   query: {

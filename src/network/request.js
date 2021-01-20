@@ -15,7 +15,7 @@ instance.interceptors.request.use(
     if (token) {
       config.headers.Authorization = "Bearer" + " " + token;
     } else {
-      vue.$router.push({ path: "/page/register" });
+      // vue.$router.push({ path: "/page/register" });
     }
     // 3.params/data序列化的操作
     return config;
@@ -31,9 +31,9 @@ instance.interceptors.response.use(
     } else {
       // vue.$myAlert(res.data.msg || res.data.message);
       switch (res.data.code) {
-        case 700:
-          vue.$router.push({ path: "/page/register" });
-          break;
+        // case 700:
+        //   vue.$router.push({ path: "/page/register" });
+        //   break;
         case 500:
           vue.$myAlert(res.data.msg);
       }

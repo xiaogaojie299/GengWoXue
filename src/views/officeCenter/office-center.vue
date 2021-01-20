@@ -1,6 +1,6 @@
 <template>
   <container>
-  <el-container class="box banner">
+  <el-container style="margin-top:19px">
     <!-- 侧边栏 -->
     <el-aside width="200px">
       <!-- <el-menu
@@ -70,10 +70,6 @@
           <el-menu-item index="4" @click="go_url('student', 4)"
             >我的学生</el-menu-item
           >
-          <!-- <el-menu-item index="4">
-          <i class="el-icon-setting"></i>
-          <span slot="title">导航四</span>
-        </el-menu-item> -->
         </el-menu>
 
     
@@ -151,6 +147,9 @@ let routerUrl='/page/officeCenter/OfficeCenterIndex/';
 /deep/ .el-menu-item {
   text-align: center;
 }
+/deep/ .el-main{
+  padding:0 18px;
+}
 // 修改左侧导航栏选中时的样式
 .el-menu-item:hover {
   // background-color: #EF703C !important;
@@ -166,5 +165,4 @@ let routerUrl='/page/officeCenter/OfficeCenterIndex/';
 .el-aside {
   color: #333;
 }
-</style>
 </style>

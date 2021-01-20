@@ -65,8 +65,9 @@
           @click="checkToday(visible[(i - 1) * 7 + (j - 1)])"
           :class="{
             notCurentMonth: !isCurrentMonth(visible[(i - 1) * 7 + (j - 1)]),
-            today: isToday(visible[(i - 1) * 7 + (j - 1)]),
-            checkToday: visible[(i - 1) * 7 + (j - 1)].getTime() == activeDay,
+            today: isToday(visible[(i - 1) * 7 + (j - 1)]), // 是否是今天
+            checkToday: visible[(i - 1) * 7 + (j - 1)].getTime() == activeDay, // 选中的月份的样式
+            'before-now':beforeNow(visible[(i - 1) * 7 + (j - 1)]),   // 当前时间以前的加透明度
             hand:true
           }"
         >
@@ -92,6 +93,7 @@
             ),
             today: isToday(visible[(todayIndex - 1) * 7 + (j - 1)]),
             checkToday:visible[(todayIndex - 1) * 7 + (j - 1)].getTime() == activeDay,
+            'before-now':beforeNow(visible[(todayIndex - 1) * 7 + (j - 1)]), // 
             hand:true
           }"
         >
@@ -226,10 +228,13 @@ export default {
     },
     // 点击选中样式
     checkToday(timer) {
-      this.activeDay = timer.getTime();
+      if(this.isCurrentMonth(timer)){
+        this.activeDay = timer.getTime();
       // let data=utils.getTimeType(timer);
       //把选中的时间传给父元素
       this.$emit("checkDay", timer);
+      }
+      
     },
     // 判断当前月哪天有课
     isMonthClass(data) {
@@ -243,12 +248,22 @@ export default {
       });
       return isDay
     },
+    // 当前日期之前日子
+    beforeNow(time){
+      let now = new Date().getTime()-24*60*60*1000;
+      let timeStamp = time.getTime();
+      return timeStamp<now
+    }
   },
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+.before-now{
+  // color: #dddddd;
+  opacity: .3;
+}
 .date-style {
   display: flex;
   justify-content: center;
@@ -320,13 +335,14 @@ export default {
   color: #dddddd;
 }
 .notCurentMonth {
-  color: #dddddd;
-  // color: #ffffff;
+  // color: #dddddd;
+  color: #ffffff;
   border: none;
 }
 .today {
   background: linear-gradient(110deg, #f13232, #ef753c);
   border-radius: 50%;
+  color: #ffffff !important;
 }
 .checkToday {
   border-radius: 50%;

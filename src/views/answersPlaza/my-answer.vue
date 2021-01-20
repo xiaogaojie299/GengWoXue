@@ -41,8 +41,8 @@
             :on-success="handleSuccess"
             :on-progress="handleProgress"
             :before-upload="beforeAvatarUpload"
-            :limit="3"
-            
+             :on-exceed="handleExceedFile"
+            :limit="1"
           >
             <i class="el-icon-plus"></i>
 
@@ -116,23 +116,26 @@ export default {
       this.i++
     },
     beforeAvatarUpload(file) {
-      if(this.i<=3){
-      const isJPG = file.type === "image/jpeg";
-      const isPNG = file.type === "image/png";
-      const isLt2M = file.size / 1024 / 1024 < 2;
+          if(this.i<=3){
+          const isJPG = file.type === "image/jpeg";
+          const isPNG = file.type === "image/png";
+          const isLt2M = file.size / 1024 / 1024 < 2;
 
-
-      if (!isJPG && !isPNG) {
-        this.$message.error("上传图片只能是 JPG或者PNG 格式!");
-      }
-      if (!isLt2M) {
-          this.$message.error('上传图片大小不能超过 2MB!');
+          if (!isJPG && !isPNG) {
+            this.$message.error("上传图片只能是 JPG或者PNG 格式!");
+          }
+          if (!isLt2M) {
+              this.$message.error('上传图片大小不能超过 2MB!');
+            }
+          return (isJPG || isPNG) && isLt2M;
+        }else{
+          this.$myMessage("有且之能上传三张图片","error")
+          return i==3
         }
-      return (isJPG || isPNG) && isLt2M;
-    }else{
-      this.$myMessage("有且之能上传三张图片","error")
-      return i==3
-    }
+      },
+      handleExceedFile(files, fileList) {
+        console.log("限制成功");
+        this.$message.warning(`只能上传一个文件`);
       },
     handleProgress() {},
     // 初始化
@@ -164,6 +167,7 @@ export default {
       //   this.$myAlert("请上传您的问题图片");
       // }
       console.log(this.imgUrl);
+      this.imgUrl=[...this.imgUrl]
       this.imgUrl = this.imgUrl.length==0?this.imgUrl[0]:this.imgUrl.join(",")
       let params = {
         question: this.problem,

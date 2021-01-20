@@ -99,7 +99,7 @@
       <div class="btn-groups">
         <div class="btn1 hand" @click="previewPPT">预览</div>
         <!-- <a class="btn2" style="text-decoration: none;" :href="selectKejian.url">下载</a> -->
-        <a class="btn2 hand" @click="isuploadPPT" style="text-decoration: none;" target="_blank"
+        <a class="btn2 hand" @click.stop="isuploadPPT" style="text-decoration: none;" target="_blank"
           >下载</a
         >
       </div>
@@ -233,10 +233,11 @@ export default {
     },
       //下载PPT
     async isuploadPPT() {
-      this.clearPPT();
+      // this.clearPPT();
       let {downloadFee,isPay} = this.selectKejian
+      console.log("isPay==>",isPay);
       // 判断当前的课件是否需要费用以及用户是否已经交费了
-        if(downloadFee!==0 &&isPay==1){
+        if(downloadFee!==0 && isPay==1){
         this.dialogVisible = true;
         this.pushCoursewareOrder();
       }else{
@@ -343,9 +344,10 @@ export default {
         let {code,data} = res;
         if(code ==200){
           this.i++;
-          console.log("课件库列表");
+          console.log("课件库列表",data);
         this.tableData = data.list;
         this.total = data.total;
+        console.log(this.total);
         if (this.i == 1) {
           this.selectKejian = data.list[0]; //页面刷新的时候，给row赋值一个初始值
           this.$refs.childMethod.chekcout(data.list[0].id);
@@ -357,10 +359,10 @@ export default {
       });
     },
     // 点击分页出发回调
-    handleCurrentChange(val) {
-      this.current = val;
-      get_AllCourseware;
-    },
+    // handleCurrentChange(val) {
+    //   this.current = val;
+    //   get_AllCourseware;
+    // },
 
     change(val) {
       console.log("val=", val);

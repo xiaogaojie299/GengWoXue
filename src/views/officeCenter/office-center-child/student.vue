@@ -177,7 +177,7 @@ export default {
     justify-content: space-between;
     .header-tag {
       margin-right: 44px;
-      width: 150px;
+      width: 250px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -192,7 +192,7 @@ export default {
       .tag-right {
         outline: none;
         padding-left: 6px;
-        width: 98px;
+        width: 450px;
         height: 34px;
         background: #ffffff;
         border: 1px solid #efefef;

@@ -72,6 +72,8 @@
 </template>
 <script>
 import exercises from "./childCmps/exercises";
+import utils from "@/utils/filters"
+
 import {
   queryQuestionSquareList,
   queryMeAnswerList,
@@ -173,21 +175,14 @@ export default {
         size: this.size,
       };
       queryMeAnswerList(params).then((res) => {
-        console.log("查询我的问题", res);
+        console.log("查询我的问题123", res);
         let { code, data } = res;
         this.total = data.total;
         if (code == 200) {
           //  判断返回的图片是否含有逗号，如果有，转为数组
           data.list.forEach((item) => {
-            if (item.imgUrl) {
-              item.imgUrl = item.imgUrl.includes(",")
-                ? item.imgUrl.split(",")
-                : [].concat(item.imgUrl);
-            } else {
-              item.imgUrl = [];
-            }
+           item.imgUrl =  utils.splitImg(item.imgUrl,",")
           });
-          data.list[0].setValue = this.value;
           this.questionSquareList = data.list;
         }
       });
@@ -211,13 +206,7 @@ export default {
         this.total = data.total;
         //  判断返回的图片是否含有逗号，如果有，转为数组
         data.list.forEach((item) => {
-          if (item.imgUrl) {
-            item.imgUrl = item.imgUrl.includes(",")
-              ? item.imgUrl.split(",")
-              : [].concat(item.imgUrl);
-          } else {
-            item.imgUrl = [];
-          }
+          item.imgUrl =  utils.splitImg(item.imgUrl,",")
         });
         if (data.list.length > 0) {
           data.list[0].setValue = this.value;

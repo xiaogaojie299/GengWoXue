@@ -18,8 +18,8 @@
         <div class="credit">充值金额：<span>{{money}} </span></div>
       </div>
       <!-- 充值成功 -->
-      <div class="inform">充值成功</div>
-      <div class="inform">{{i}}秒后返回我的钱包</div>
+      <div class="inform">已充值成功！</div>
+      <div class="inform">{{i}}秒后返回我的钱包...</div>
     </div>
   </div>
 </template>

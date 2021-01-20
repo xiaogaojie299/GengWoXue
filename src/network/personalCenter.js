@@ -77,3 +77,9 @@ export function queryRechargeRecordList(data){
         url:api+"queryRechargeRecordList"+qs(data)
     })
 }
+// 更换手机接口
+export function optChangePhone(data){
+    return request({
+        url:api+"optChangePhone"+qs(data)
+    })
+}

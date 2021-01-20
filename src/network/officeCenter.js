@@ -110,7 +110,7 @@ export function uploadTestFile(data){
 //获取关于我们
 export function queryAboutUs(){
   return request({
-    url:api+"queryAboutUs"
+    url:"/base/officeCenter/queryAboutUs"
   })
 }
 

@@ -84,15 +84,32 @@
 
       <div class="upload-ppt">
         <div>{{kejianTypeValue==2?"PPT":"文档"}}上传:</div>
-        <el-upload
+        <!-- <el-upload
           :action="BASE_URL+'student/base/uploadFile'"
           list-type="picture-card"
+          :headers="{'Access-Control-Allow-Origin':'http://192.168.0.38:8080'}"
           :on-preview="handlePictureCardPreview"
           :on-remove="handleRemove"
           :on-success="handleSuccess"
           :before-upload="beforeAvatarUpload"
         >
           <i class="el-icon-plus"></i>
+        </el-upload> -->
+
+        <el-upload
+          class="upload-demo"
+          drag
+          :action="BASE_URL+'student/base/uploadFile'"
+          :on-preview="handlePictureCardPreview"
+          :on-remove="handleRemove"
+          :on-success="handleSuccess"
+          :before-upload="beforeAvatarUpload"
+          :limit="1"
+          multiple>
+          <i class="el-icon-upload"></i>
+          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+          <!-- <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div> -->
+          <div class="el-upload__tip" slot="tip">有且只能上传一个文件</div>
         </el-upload>
       </div>
 
@@ -183,10 +200,9 @@ export default {
         this.$message.error(`只能上传${supprtTypes}类型的文件上传`);
       }
        if (!isLt2M) {
-          this.$message.error('上传图片大小不能超过 2MB!');
+          // this.$message.error('上传图片大小不能超过 2MB!');
         }
-      return validType && isLt2M;
-
+        return validType;
 
     },
     submit() {

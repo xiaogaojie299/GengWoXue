@@ -1,8 +1,8 @@
 <template>
   <div class="box">
     <div class="content">
-      <div class="title">请您在<span class="font-color">15:00</span>内支付</div>
-      <div class="RMB">￥100</div>
+      <div class="title">请您在<span class="font-color">{{endTimer}}</span>内支付</div>
+      <div class="RMB">￥{{money}}</div>
       <div class="app-name">微信</div>
       <div class="QR-code">
         <vue-qr
@@ -22,21 +22,34 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      time:"2020/12"
+    };
   },
   props:{
     qrCode:{
       type:String,
       default:""
+    },
+    money:{
+      type:String,
+      default:0
+    },
+    endTimer:{
+      type:String
     }
   },
   methods:{
+      timeType(){
+        let d = new Data();
+        // 获取当前的时间戳，然后往后加两分钟
+        console.log(d);
+      },
       handleClose(){
           this.$emit("closeMask")
       }
   },
   created(){
-    console.log("qrCode",this.qrCode)
   }
 };
 </script>

@@ -4,7 +4,7 @@
       <div class="right-box">
         <!-- 头部 -->
         <div class="header">
-          <span class="back hand" @click="go_regist()"> ＜ </span>
+          <span class="back hand" @click="go_regist()"> <i class="el-icon-arrow-left"></i> </span>
           <span class="header-title">重置密码</span>
         </div>
         <!-- 中间主题 -->
@@ -224,9 +224,12 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.el-icon-arrow-left{
+  font-weight: bold;
+}
 .forget-box{
   position: relative;
-  height: calc(100vh - 160px);
+  height: calc(100vh - 120px);
 }
 @media screen and (max-height: 700px) {
     .forget-box {
@@ -279,9 +282,9 @@ export default {
     .phone-box {
       margin-top: 24px;
       .main-title {
-        font-size: 16px;
+        font-size: 18px;
         font-family: Source Han Sans CN;
-        font-weight: 520;
+        font-weight: 550;
         color: #000000;
       }
       .input-number {
@@ -298,7 +301,7 @@ export default {
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 70px;
+    height: 90px;
     background: linear-gradient(110deg, #f13232, #ef763c);
     box-shadow: 1px 6px 9px 0px rgba(68, 6, 6, 0.32);
     border-radius: 0px;
@@ -315,6 +318,7 @@ export default {
     font-family: Source Han Sans CN;
     font-weight: 500;
     color: #eb002a;
+    font-weight: 550;
     margin-left: 4px;
   }
 }

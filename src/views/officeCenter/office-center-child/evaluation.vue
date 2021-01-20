@@ -159,7 +159,7 @@
         <div class="btn1 hand" @click="publish">
           发布成绩
         </div>
-        <div class="beizhu">（仅能发布课后习题成绩）</div>
+        <div class="beizhu">（仅能发布考试成绩）</div>
       </div>
       <!-- 底部表格 -->
       <div>
@@ -275,22 +275,34 @@ export default {
     go_evalDetails() {
       console.log(this.selectTest);
       let data = JSON.stringify(this.selectTest);
-      this.$router.push({
+      // this.$router.push({
+      //   path: "/page/officeCenter/evaluationDetail",
+      //   query: {
+      //     data: data,
+      //   },
+      // });
+      let routeData = this.$router.resolve({
         path: "/page/officeCenter/evaluationDetail",
-        query: {
-          data: data,
-        },
+        query: {data:data}
       });
+      window.open(routeData.href, '_blank');
     },
     //跳转到阅卷页面
     go_readWork() {
       let data = JSON.stringify(this.selectTest);
+      /* 
       this.$router.push({
         path: "/page/officeCenter/readwork",
         query: {
           data: data,
         },
       });
+    */
+   let routeData = this.$router.resolve({
+        path: "/page/officeCenter/readwork",
+        query: {data:data}
+      });
+      window.open(routeData.href, '_blank');
     },
     //发布成绩
     publish() {

@@ -15,8 +15,8 @@
                 <div class="right-content-top-group-title">
                   {{ item.courseName }}
                 </div>
-                <!-- <div class="tag">张三</div>
-                <div class="tag">高三</div> -->
+                <!-- <div class="tag">张三</div> -->
+                <div class="tag">{{item.gradeName}}</div>
                 <div class="tag">{{ item.courseNature }}</div>
               </div>
               <!-- 右侧课时 -->
@@ -29,13 +29,14 @@
               <div class="teacher-name">{{ item.teacherName }}</div>
               <!-- 老师开课时间 -->
               <div class="start-times-box">
-                <div class="start-times-item">
+                <div class="start-times-item flex-center">
                   <img
-                    class="icon_time"
+                    class="icon_time mr-10"
                     src="@/assets/img/home/icon_time.png"
                     alt=""
                   />
-                  <span>{{ item.time }}</span>
+                  <!-- <span>{{ item.time.split(":")[0] +":"+ item.time.split(":")[1] }}</span> -->
+                  <span>{{ second(item.time) }}</span>
                 </div>
 
                 <!-- 未开始或者开始按钮 -->
@@ -61,6 +62,7 @@
 </template>
 <script>
 import {state} from "vuex";
+import filters from "@/utils/filters"
 export default {
   data() {
     return {};
@@ -77,6 +79,11 @@ export default {
     }
   },
   methods:{
+    second(time){
+      // time====>12:00:00 - 12:00:12 
+      let date = time.split("-");
+      return filters.delSec(date[0]) + " - " + filters.delSec(date[1])
+    },
     go_live(item){  //看直播
     console.log("跳转成功");
     console.log(item);
@@ -89,8 +96,8 @@ export default {
         // window.open("http://www.xiaogaojie.vip:99/"+"?params="+encodeURIComponent(params));
         // window.open("https://demo.qcloudtiw.com/web/latest/index.html");
          // window.open("https://gengwoxue.com:8443/index.html"+"?params="+encodeURIComponent(params))
-          window.open("https://gengwoxue.com:8443/live/index.html"+"?params="+encodeURIComponent(params))
-          // window.open("http://127.0.0.1:5500/index.html"+"?params="+encodeURIComponent(params))
+          // window.open("https://gengwoxue.com:8443/live/index.html"+"?params="+encodeURIComponent(params))
+          window.open("http://127.0.0.1:5500/index.html"+"?params="+encodeURIComponent(params))
         // window.open("https://gengwoxue.com:8443/");
     },
   },
@@ -120,7 +127,6 @@ export default {
     width: 142px;
     height: 142px;
     border-radius: 50%;
-    border: 1px solid blue;
     margin-right: 12px;
   }
 
@@ -143,6 +149,7 @@ export default {
 
         .right-content-top-group-title {
           font-size: 24px;
+          height: 24px;
           font-family: Source Han Sans CN;
           font-weight: bold;
           color: #343434;
@@ -152,8 +159,8 @@ export default {
         .tag {
           margin-left: 24px;
           //   width: 52px;
-          width: 65px;
-          height: 20px;
+          width: 105px;
+          height: 33px;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -161,7 +168,7 @@ export default {
           border-radius: 4px;
           border: 1px solid #eb002a;
           //   文字
-          font-size: 11px;
+          font-size: 18px;
           font-family: Source Han Sans CN;
           font-weight: 400;
           color: #eb002a;
@@ -196,6 +203,9 @@ export default {
           .icon_time {
             width: 18px;
             height: 18px;
+          }
+          span{
+            // color: #adb4be !important;
           }
         }
         display: flex;

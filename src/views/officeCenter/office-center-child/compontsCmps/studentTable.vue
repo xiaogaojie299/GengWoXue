@@ -34,7 +34,11 @@
       <!-- 课后习题 -->
       <el-table-column align="center" label="课后习题">
         <template slot-scope="scope">
-          <span>{{
+          <!-- !couseDetail.examinationName -->
+          <span v-if="!couse.examinationName">
+            未上传
+          </span>
+          <span v-else>{{
             scope.row.state == 0
               ? "未完成"
               : scope.row.state == 1
@@ -46,7 +50,9 @@
       <!-- 操作 -->
       <el-table-column align="center" fixed="right" label="操作" width="120">
         <template slot-scope="scope">
+          <span v-if="!couse.examinationName">-</span>
           <el-button
+            v-else
             @click.native.prevent="operation(scope.row)"
             type="text"
             size="small"
@@ -69,17 +75,19 @@
 .el-table .warning-row {
   background: #f9f9f9;
 }
-
 .el-table .success-row {
   background: #ffffff;
 }
 </style>
 
 <script>
+import { exmixin } from "../ex-mixin/mixin"
 import { remindTheProblem } from "@/network/officeCenter";
 export default {
+  mixins: [exmixin],
   data() {
     return {
+      couse:{}
       // tableData: [
       //   {
       //     id: "10",
@@ -116,6 +124,13 @@ export default {
         ];
       },
     },
+  },
+  created(){
+  },
+  mounted(){
+    setTimeout(()=>{
+      this.couse = this._this.couseDetail
+    },500)
   },
   methods: {
     tableRowClassName({ row, rowIndex }) {

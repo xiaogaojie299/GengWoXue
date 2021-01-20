@@ -19,7 +19,7 @@ export default {
   },
   props: {
     current: {
-      //传过来的值枫叶来显示第一行
+      //传过来的值控制来显示第一行
       type: Number,
       default: 1,
     },
@@ -30,7 +30,6 @@ export default {
   },
   methods: {
     test(i) {
-      console.log("i", i);
     },
     handleCurrentChange(val) {
       this.$emit("handleCurrentChange", val);

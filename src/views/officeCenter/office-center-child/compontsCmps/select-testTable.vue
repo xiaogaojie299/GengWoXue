@@ -126,14 +126,6 @@
           width="160"
         >
         </el-table-column>
-
-        <el-table-column
-          prop="points4"
-          label="判断题分值"
-          align="center"
-          width="160"
-        >
-        </el-table-column>
       </el-table>
     </div>
     <div class="page-device"><page-device :total="total" :current="current" /></div>
@@ -196,7 +188,7 @@ export default {
         scheduleId: this.scheduleId,
       };
       //上传课件
-      let res = await uploadTestFile(data);
+      let res = await uploadTestFile(data); 
       if(res.code==200){
         this.$myMessage("习题上传成功");
         this.$emit("uploadSucc")

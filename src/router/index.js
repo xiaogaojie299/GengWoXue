@@ -6,6 +6,8 @@ import AnswersPlaza from "@/views/answersPlaza/answers-plaza";
 import OfficeCenter from "@/views/officeCenter/office-center";
 import AppInstall from "@/views/appInstall/app-install";
 import test2 from "@/views/officeCenter/office-center-child/test2.vue";
+import store from "../store/index";
+import filterRoutes from "./route"
 Vue.use(VueRouter);
 
 const routes = [
@@ -326,5 +328,36 @@ const routes = [
 const router = new VueRouter({
   routes,
 });
-
+router.beforeEach((to, from, next) => {
+  try {
+    let token = store.state.userInfo.token;
+    let release_Router =  filterRoutes.some((it)=>{ // 放行的路由
+      return to.fullPath.includes(it.path)
+    })
+    if(
+     !release_Router
+    ){
+    //根据字段判断是否路由过滤
+    if (token) {
+        next()
+      } else {
+        console.log("没有token");
+          //防止无限循环
+          if (to.name.includes('register')) {
+              next();
+              return
+          }
+          next({
+              path: '/page/register',
+          });
+      }
+    }else{
+      next()
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  
+  
+});
 export default router;

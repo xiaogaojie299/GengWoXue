@@ -163,7 +163,7 @@ import { kjMixin } from "./kj-mixin/mixins";
 export default {
   mixins: [kjMixin],
   provide() {
-    return {
+    return { 
       _this: this,
       name: this.name,
     };
@@ -231,6 +231,7 @@ export default {
     },
     // 查询
     query() {
+      this.current = 1;
       this.get_AllCourseware();
     },
     // 重置

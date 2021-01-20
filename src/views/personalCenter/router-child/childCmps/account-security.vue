@@ -32,7 +32,7 @@
             class="incon"
             alt=""
           />
-          <span>更换手机号</span>
+          <span>验证手机号：</span>
         </div>
       </div>
     </div>
@@ -74,11 +74,11 @@ import { validatePhoneNumber } from "@/utils/regular";
 import {
   passwordLogin,
   captchaLogin,
-  queryCaptcha,
+  queryCaptcha, 
   checkCaptcha,
   test,
 } from "@/network/login";
-import { optResetPassword } from "@/network/personalCenter";
+import { optResetPassword , optChangePhone } from "@/network/personalCenter";
 import {state} from "vuex"
 export default {
   data() {
@@ -94,7 +94,7 @@ export default {
       disabledBtn: false, //是否禁用按钮
       newTextCode: "获取验证码", //获取验证码文本
       newDisabledBtn: false, //是否禁用按钮
-      //phone: 15828353333, //用户手机号
+      phone: "", //用户手机号
       code: "", //用户输入验证码
       newCode: "", //用户更换新手机出现验证手机号
       serverCode: "", //验证手机服务器返回来的验证码
@@ -105,9 +105,12 @@ export default {
     };
   },
   computed:{
-    phone(){
+    /* 
+      phone(){
       return this.$store.state.infoList.phone
     }
+    */
+    
   },
   methods: {
     checkoutBtn(i) {
@@ -143,12 +146,13 @@ export default {
       type == 2 ? this.startTime(phone, type) : this.startTime(newPhone, type);
     },
     // 启动定时器
-    startTime(phone, type) {
+    async startTime(phone, type) {
       console.log(phone, type);
       // 调用函数
-      let i = 10;
+      let i = 60;
       let timer = null;
-      this.get_queryCaptcha(phone, type);
+      let res = await this.get_queryCaptcha(phone, type);
+      if(res.code!==200){return}
       timer = setInterval(() => {
         i--;
         if (i >= 0) {
@@ -161,12 +165,12 @@ export default {
           }
         } else {
           clearInterval(timer);
-          i = 9;
+          i = 60;
           if (type == 2) {
-            this.textCode = `获取验证码`;
+            this.textCode = `发送验证码`;
             this.disabledBtn = false;
           } else {
-            this.newTextCode = `获取验证码`;
+            this.newTextCode = `发送验证码`;
             this.newDisabledBtn = false;
           }
         }
@@ -175,9 +179,14 @@ export default {
     // 获取手机验证码
     async get_queryCaptcha(phone, type) {
       let data = { phone: phone, type: type };
-      let res = await queryCaptcha(data);
-      console.log("消息获取成功", res);
-      type == 2 ? (this.serverCode = res) : (this.newServerCode = res);
+      return queryCaptcha(data);
+      // if(res.code==200){
+      //   console.log("消息获取成功", res);
+      //   type == 2 ? (this.serverCode = res) : (this.newServerCode = res);
+
+      // }else{
+      //   return 
+      // }
     },
     // 传给后端，后端校验验证码
     get_checkCaptcha(phone, code) {
@@ -219,7 +228,7 @@ export default {
           this.$myAlert("两次输入的密码不一致");
           return;
         }
-        let result = await this.get_checkCaptcha(this.phone, this.code);
+        // let result = await this.get_checkCaptcha(this.phone, this.code);
         // 后端校验验证码，如果正确，调用修改密码接口，否则return 重新输入验证码
         let params = {
           code: this.code,
@@ -265,8 +274,15 @@ export default {
           newPhone: this.newPhone, //新手机号码
           phone: this.phone, //原手机号码
         };
-        let res = await optResetPassword(data);
-        // this.$myAlert("重置密码成功");
+        // let res = await optChangePhone(data);
+        if(res.code ==200){
+          // this.$myAlert("手机号码更改成功");
+          this.$myMessage("手机号码更改成功");
+          setTimeout(()=>{
+            // this.$router.replace({path: '/page/register'});
+            // window.location.reload();
+          },1000)
+        }
       }
     },
   },

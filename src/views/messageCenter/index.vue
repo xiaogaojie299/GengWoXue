@@ -53,7 +53,7 @@ export default {
         { name: "未阅读", read: 1 },
         { name: "已阅读", read: 2 },
       ],
-      msgTypeValue: 1,
+      msgTypeValue: 3,
       current:1,
       size:10,
       noticeUserId:"",
@@ -68,6 +68,9 @@ export default {
   components: {
     msgTable,
   },
+  created(){
+    this.init()
+  },
   methods: {
     // 初始化
     init() {
@@ -81,14 +84,15 @@ export default {
      this.$store.dispatch("getMessageList", data);
     },
     async resetRead(){
-    console.log(optSetRead);
-    let data={noticeUserId:this.noticeUserId}
-    let res = await optSetRead(data);
-     console.log("res====>",res);
-      this.init();
+      let data={noticeUserId:this.noticeUserId} 
+      let res = await optSetRead(data);
+      if(res.code==200){
+        console.log("res====>",res);
+        this.init();
+        this.$store.dispatch('getUnread');  // 标为已读过后，头像上的右侧突变需要刷新 
+      }
     },
     change(val) {
-      console.log("val=", val);
       this.init();
     },
     selectRows(val){

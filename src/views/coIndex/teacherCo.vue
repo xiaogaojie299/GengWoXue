@@ -1,5 +1,5 @@
 <template>
-  <div class="teacher-co banner">
+  <div class="teacher-co banner mt-30">
     <div class="title">
       <h4>成为老师</h4>
     </div>
@@ -17,7 +17,7 @@
            </el-form-item>
           </el-col>
           <el-col :span="12" class="sex">
-            <div class="ipt-title">性别</div>
+            <div class="ipt-title">性别:</div>
             <el-form-item prop="sex">
               <el-radio-group v-model="userInfo.sex">
                 <el-radio label="1">男</el-radio>
@@ -157,9 +157,8 @@
 </template>
 
 <script>
-import { log } from 'util';
 import {optTeacherApply} from '@/network/cooperation'
-import {BASE_URL} from "@/network/config"
+import BASE_URL from "@/network/config"
 export default {
   data() {
     return {
@@ -294,7 +293,7 @@ export default {
     async getoptTeacherApply(){ //发起申请
       try{
         let imgStr = this.userInfo.imgUrl.join(',')
-      let {data,code,msg} = await optTeacherApply({
+      let {data} = await optTeacherApply({
         address: this.userInfo.address + '',
         birthday: this.userInfo.birthday+ '',
         graduatedSchool: this.userInfo.school+ '',
@@ -307,11 +306,12 @@ export default {
         subjectIds: this.userInfo.course + '',
         qualificationImg: imgStr,
       })
-      if(code == 200){
+      if(data.code == 200){
         this.$message.success('申请成功')
       }else {
-        return this.$message(msg)
+        return this.$message(data.msg)
       }
+      console.log(data);
       }catch(err){
         return err
       }
@@ -321,6 +321,22 @@ export default {
 </script>
 
 <style scoped lang="scss">
+/deep/ .el-input-group__prepend{
+  width: 100px !important;
+}
+/deep/ .el-button{
+  width: 274px;
+      height: 45px;
+      background: linear-gradient(110deg, #f13232, #ef753c) !important;
+      box-shadow: 0px 6px 9px 0px rgba(68, 5, 5, 0.32);
+      border-radius: 4px;
+      text-align: center;
+      line-height: 45px;
+      color: #fff; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+}
 * {
   box-sizing: border-box;
 }
@@ -360,7 +376,7 @@ export default {
         .el-col {
           .ipt-title {
             height: 48px;
-            width: 100px;
+            width: 110px;
             font-size: 14px;
             color: #909399;
             background-color: #f5f7fa;
@@ -467,7 +483,7 @@ export default {
       display: block;
       width: 274px;
       height: 45px;
-      background: linear-gradient(110deg, #f13232, #ef753c);
+      background: linear-gradient(110deg, #f13232, #ef753c) !important;
       box-shadow: 0px 6px 9px 0px rgba(68, 5, 5, 0.32);
       border-radius: 4px;
       text-align: center;

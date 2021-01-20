@@ -31,13 +31,15 @@
       </div>
       <!-- 支付宝 -->
       <div class="row">
-        <div class="left-title left-font">输入提现金币：</div>
+        <!-- <div class="left-title left-font">输入提现{{moneyTypeValue==1?'学习币':'人民币'}}：</div> -->
+        <div class="left-title left-font">输入提现金额：</div>
         <div class="right-box">
           <input
             type="number"
             v-model="money"
-            placeholder="100（折算金额100）"
+            placeholder="请输入提现金额"
           />
+          <span v-show="moneyTypeValue==1" class="proportion">换算比例：{{infoList.proportion}}学习币 = 1￥</span> 
         </div>
       </div>
 
@@ -45,7 +47,8 @@
       <div class="row">
         <div class="left-title left-font">可提现余额：</div>
         <div class="right-box">
-          <span class="student-gold">{{ infoList.balance }} 学习币（个）</span>
+          <span v-if="moneyTypeValue==1" class="student-gold">{{ infoList.balance }} 学习币（个）</span>
+          <span v-else class="student-gold">￥{{ infoList.money || 0 }}</span>
         </div>
       </div>
       <!-- 底部按钮 -->
@@ -60,14 +63,14 @@ export default {
   data() {
     return {
       isdisable: true,
-      moneyTypeValue: 1,
+      moneyTypeValue: 1,  // 体现类型
       money: "",
     };
   },
   computed: {
     moneyType() {
       return [
-        { name: "金币", type: 1 },
+        { name: "学习币", type: 1 },
         { name: "人民币", type: 2 },
       ];
     },
@@ -79,27 +82,31 @@ export default {
     go_back() {
       this.$router.back(-1);
     },
+    verify(){ // 如果是人民币
+      if (this.money>this.infoList.balance || this.money>this.infoList.money ) {
+        return  false
+      }
+    },
     // 提交订单
     async submit() {
       if (!this.money) {
         this.$myAlert("提现金额不能为0");
         return;
       }
-      //  if(this.money>this.infoList.balance){
-      //   this.$myAlert("提现金额不能大于余额");
-      //   return
-      // }
+      if(!this.verify){
+       return this.$myMessage("超出可提现金额","error")
+      }
       let params = {
         number: this.money,
         type: this.moneyTypeValue,
       };
-      let {code,data} = await withdrawal(params);
+      let {code,data,msg} = await withdrawal(params);
       if(code ==200){
-        this.$myMessage("恭喜你提现成功");
+        this.$myMessage("提现申请提交成功");
+        setTimeout(this.go_back,1000);
       }else{
-        this.$myMessage("恭喜你提现失败","error");
+        this.$myMessage(msg,"error");
       }
-      console.log("res==>", res);
     },
   },
 };
@@ -161,12 +168,20 @@ export default {
       margin-bottom: 26px;
       .left-title {
         width: 140px;
+  
         margin-right: 12px;
       }
       .right-box {
         display: flex;
         align-items: center;
         position: relative;
+        .proportion{
+          margin-left:20px;
+          font-size: 14px;
+          font-family: PingFang SC;
+          font-weight: 400;
+          color: #4d4d4d;
+        }
         img {
           position: absolute;
           right: 4px;

@@ -13,7 +13,7 @@
       />
       <container v-else>
         <div class="noCurese">
-          今日暂无课程安排
+          今日暂无课程安排 
         </div>
       </container>
       <!-- 分页 -->

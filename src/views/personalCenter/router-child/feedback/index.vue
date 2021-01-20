@@ -50,6 +50,9 @@ export default {
       if (!this.textarea) {
         return this.$myAlert("留言板不能为空");
       }
+      if (this.textarea.length>200) {
+        return this.$myMessage("留言板字数限制不能超过200","error")
+      }
       let params = {
         content: this.textarea,
       };

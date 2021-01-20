@@ -39,16 +39,16 @@
               <!-- 右侧打分批阅 -->
               <div class="right-grade">
                 <div class="first-box">
-                  <div>得分：</div>
-                  <input v-model="item.studentScore" />
+                  <div class="nowrap">得分：</div>
+                  <input ref="piyue" v-model="item.studentScore" />
                   <!-- icon -->
-                  <img src="@/assets/img/officeCenter/icon_edit.png" alt="" />
+                  <img @click.stop="inputFocus(index)" src="@/assets/img/officeCenter/icon_edit.png" alt="" />
                 </div>
 
-                <!-- 上传音频按钮 -->
+                <!-- 上传音频批阅 -->
                 <!-- <div class="second-box">
                   <img src="@/assets/img/officeCenter/icon_upload.png" alt="" />
-                  <span>上传音频按钮</span>
+                  <span>上传音频批阅</span>
                 </div> -->
                 <el-upload
                   class="upload-demo"
@@ -61,14 +61,20 @@
                       src="@/assets/img/officeCenter/icon_upload.png"
                       alt=""
                     />
-                    <span>上传音频按钮</span>
+                    <span>上传音频批阅</span>
                   </div>
                 </el-upload>
               </div>
             </div>
             <!-- 选项A,B,C,D -->
             <div class="option-box">
-              <img :src="item.img" alt="" />
+              <el-image
+                v-for="(imgIt,imgI) in item.img" 
+                :key="imgI"
+                style="width: 100px; height: 100px"
+                :src="imgIt" 
+                :preview-src-list="item.img">
+              </el-image>
               <div v-for="(it, i) in item.options" :key="i">{{ it }}</div>
             </div>
             <!-- 正确答案 -->
@@ -100,10 +106,10 @@
               <!-- 右侧打分批阅 -->
               <div class="right-grade">
                 <div class="first-box">
-                  <div>得分：</div>
-                  <input ref="piyue" v-model="item.studentScore" />
+                  <div class="nowrap">得分：</div>
+                  <input ref="piyue"  v-model="item.studentScore" />
                   <!-- icon -->
-                  <img @click.stop="inputFocus" src="@/assets/img/officeCenter/icon_edit.png" alt="" />
+                  <img @click.stop="inputFocus(index)" src="@/assets/img/officeCenter/icon_edit.png" alt="" />
                 </div>
 
                 <el-upload
@@ -117,7 +123,7 @@
                       src="@/assets/img/officeCenter/icon_upload.png"
                       alt=""
                     />
-                    <span>上传音频按钮</span>
+                    <span>上传音频批阅</span>
                   </div>
                 </el-upload>
               </div>
@@ -125,30 +131,48 @@
             <!-- 选项A,B,C,D -->
             <div class="option-box">
               <div>
-                <img :src="item.img" alt="" />
+                <el-image
+                  v-for="(imgIt,imgI) in item.img" 
+                  :key="imgI"
+                  style="width: 100px; height: 100px"
+                  :src="imgIt" 
+                  :preview-src-list="item.img">
+              </el-image>
               </div>
             </div>
             <!-- 正确答案 -->
             <div class="answer-box">
               <div class="student-answer">
                 <div>学生答案：</div>
-                <div>{{ item.studentAnswer }}学生回答的答案</div>
+                <div>{{ item.studentAnswer }}</div>
                 <div>
                   <!-- <img src="@/assets/img/officeCenter/test1.png" alt=""> -->
                 </div>
               </div>
-              <div v-if="item.studentAnswerUrl" class="student-answer mt-10">
+              <div v-if="item.studentAnswerUrl" class="student-answer mt-10 mb-20">
                 <div style="width: 60px"></div>
                 <!-- <img :src="item.studentAnswerUrl" alt="" /> -->
                 <div>
-                  <img :src="item.studentAnswerUrl" alt="" />
+                  <el-image
+                      v-for="(imgIt,imgI) in item.studentAnswerUrl" 
+                      :key="imgI"
+                      style="width: 100px; height: 100px"
+                      :src="imgIt" 
+                      :preview-src-list="item.studentAnswerUrl">
+                  </el-image>
                   <!-- <img src="@/assets/img/officeCenter/test1.png" alt=""> -->
                 </div>
               </div>
               <!-- 正确答案分割 -->
               <div class="correct-answer">
-                <div>正确答案：</div>
-                <img :src="item.answer" alt="" />
+                <div>正确答案：{{item.answer}}</div>
+                <!-- <el-image
+                  v-for="(imgIt,imgI) in item.img" 
+                  :key="imgI"
+                  style="width: 100px; height: 100px"
+                  :src="imgIt" 
+                  :preview-src-list="item.img">
+              </el-image> -->
               </div>
               <!-- 正确答案包含的图片 （如果有显示出来）-->
               <div class="student-answer mt-10">
@@ -168,11 +192,13 @@
                   id=""
                   cols="30"
                   rows="10"
+                  maxlength="200"
                 >
                 </textarea>
+                <span class="max-word">{{item.teacherRemark.length}}/200字</span>
                 <!-- <vue-ueditor-wrap></vue-ueditor-wrap> -->
               </div>
-              <div @click="uploadPPTindex(index)" class="correct-answer">
+              <div @click="uploadPPTindex(index)" class="correct-answer mt-20">
                 <div>上传图片解析：</div>
                 <!-- <img src="@/assets/img/icon_photo_update.png" alt=""> -->
                 <el-upload
@@ -180,13 +206,15 @@
                   list-type="picture-card"
                   :before-upload="beforeImgUpload"
                   :on-success="handleImg"
+                  :limit="10"
+                  :on-exceed="handleExceedImg"
                   :on-preview="handlePictureCardPreview"
                   :on-remove="handleImgRemove"
                 >
                   <i class="el-icon-plus"></i>
                 </el-upload>
                 <el-dialog :visible.sync="dialogVisible">
-                  <img width="100%" :src="item.answerUrl" alt="" />
+                  <img class="dialog-img" width="100%" :src="dialogImageUrl" alt="" />
                 </el-dialog>
               </div>
             </div>
@@ -211,16 +239,16 @@
               <!-- 右侧打分批阅 -->
               <div class="right-grade">
                 <div class="first-box">
-                  <div>得分：</div>
-                  <input v-model="item.studentScore" />
+                  <div class="nowrap">得分：</div>
+                  <input ref="piyue" v-model="item.studentScore" />
                   <!-- icon -->
-                  <img src="@/assets/img/officeCenter/icon_edit.png" alt="" />
+                  <img @click.stop="inputFocus(index)" src="@/assets/img/officeCenter/icon_edit.png" alt="" />
                 </div>
 
-                <!-- 上传音频按钮 -->
+                <!-- 上传音频批阅 -->
                 <!-- <div class="second-box">
                   <img src="@/assets/img/officeCenter/icon_upload.png" alt="" />
-                  <span>上传音频按钮</span>
+                  <span>上传音频批阅</span>
                 </div> -->
                 <el-upload
                   class="upload-demo"
@@ -238,15 +266,26 @@
                       src="@/assets/img/officeCenter/icon_upload.png"
                       alt=""
                     />
-                    <span>上传音频按钮</span>
+                    <span>上传音频批阅</span>
                   </div>
                 </el-upload>
               </div>
             </div>
             <!-- 选项A,B,C,D -->
             <div class="option-box">
-              <img :src="item.img" alt="" />
-              <div v-for="(it, i) in item.options" :key="i">{{ it }}</div>
+              <!-- <img :src="item.img" alt="" /> -->
+              <el-image
+                v-for="(imgIt,imgI) in item.img" 
+                :key="imgI"
+                style="width: 100px; height: 100px"
+                :src="imgIt" 
+                :preview-src-list="item.img">
+              </el-image>
+              <div class="flex flex-center" v-for="(it, i) in item.options" :key="i">
+                <span :class="{ active:item.answer==it.info }">{{
+                  it.name
+                }}</span>{{ it.info }}
+              </div>
             </div>
             <!-- 正确答案 -->
             <div class="answer-box">
@@ -294,9 +333,10 @@ export default {
       audio: "",
       BASE_URL: BASE_URL,
       fileList: [],
-      dialogImageUrl: [],
+      dialogImageUrl: "",
       dialogVisible: false,
       index: 0, //上传音频的下标
+      showFocus:false,
     };
   },
   created() {
@@ -313,11 +353,37 @@ export default {
       this.getExaminationInfo();
     }
   },
+   directives: {
+    focus: {
+      //根据focusState的状态改变是否聚焦focus
+      update: function (el, value) {    //第二个参数传进来的是个json
+        if (value) {
+          el.focus()
+        }
+      }
+    }
+  },
   methods: {
-    inputFocus(){
+    handelClickFoucus(){
+      console.log("1564646")
+      this.showFocus = true
+    },
+    // 切割 带%& 的图片URL
+    splitImg(item,symbol="%&"){
+      let tepArr=[];
+      if(item.includes("%&")){
+        tepArr = item.join("%&")
+      }else if(!item){
+        tepArr = [];
+      }else{
+        tepArr.push(item)
+      }
+      return tepArr
+    },
+    inputFocus(index){
       // 点击编辑icon。input获取焦点
       this.$nextTick(()=>{
-        this.$refs.piyue[0].focus();
+        this.$refs.piyue[index].focus();
       })
     },
     uploadPPTindex(index) {
@@ -330,106 +396,36 @@ export default {
       let params = {
         id: this.studentInfo.id,
       };
+      let opt=['A','B','C','D','E','F','G','H'];
       queryExaminationInfo(params).then((res) => {
         let { code, data } = res;
         if (code == 200) {
           this.testList = data;
-          let testObj = {
-            //测试数据
-            answer: "C%&D",
-            audio: "",
-            id: 0,
-            img:
-              "https://beixiaorui.obs.cn-southwest-2.myhuaweicloud.com/8b8d0d9e119f4566bc98ca02cc88c7e6.jpg",
-            options: "A：测试A%&B：测试B%&C：测试C%&D：测试D",
-            points: 10,
-            prompt: "",
-            studentAnswer: "",
-            studentAnswerUrl: "",
-            studentScore: 0,
-            studentState: 0,
-            teacherAudio: "",
-            teacherImg: "",
-            teacherRemark: "",
-            title: "这是一道多选题",
-            type: 3,
-          };
-          let testObj1 = {
-            //测试数据
-            answer: "A%&C",
-            audio: "",
-            id: 0,
-            img:
-              "https://beixiaorui.obs.cn-southwest-2.myhuaweicloud.com/8b8d0d9e119f4566bc98ca02cc88c7e6.jpg",
-            options: "A：测试多选A%&B：测试多选B%&C：测试多选C%&D：测试多选D",
-            points: 10,
-            prompt: "",
-            studentAnswer: "",
-            studentAnswerUrl: "",
-            studentScore: 0,
-            studentState: 0,
-            teacherAudio: "",
-            teacherImg: "",
-            teacherRemark: "",
-            title: "这是一道多选题",
-            type: 2,
-          };
-          let testObj2 = {
-            //测试数据
-            answer: "日照香炉生紫烟",
-            audio: "",
-            id: 0,
-            img:
-              "https://beixiaorui.obs.cn-southwest-2.myhuaweicloud.com/8b8d0d9e119f4566bc98ca02cc88c7e6.jpg",
-            options: "",
-            points: 10,
-            prompt: "",
-            studentAnswer: "我不想回答",
-            studentAnswerUrl: "",
-            studentScore: 0,
-            studentState: 0,
-            teacherAudio: "",
-            teacherImg: "",
-            teacherRemark: "",
-            title: "这是填空题",
-            type: 1,
-          };
-          let testObj3 = {
-            answer: "A",
-            audio: "",
-            id: 0,
-            img:
-              "https://beixiaorui.obs.cn-southwest-2.myhuaweicloud.com/8b8d0d9e119f4566bc98ca02cc88c7e6.jpg",
-            options: "A：正确%&B：错误",
-            points: 10,
-            prompt: "",
-            studentAnswer: "A",
-            studentAnswerUrl: "",
-            studentScore: 0,
-            studentState: 0,
-            teacherAudio: "",
-            teacherImg: "",
-            teacherRemark: "",
-            title: "判断题",
-            type: 4,
-          };
-          // this.testList.list.push(testObj);
-          // this.testList.list.push(testObj1);
-          // this.testList.list.push(testObj2);
-          // this.testList.list.push(testObj3);
-
           this.testList.list.forEach((item) => {
             if (item.options) {
               let arr = [];
               try {
-                item.options = item.options.split("%&");
+                if(item.type==2 || item.type==3 || item.type==4){ // 选择题和判断题  暂且先加个判断题
+                  item.options = item.options.split("%&");
+                  console.log("item.options==>",item.options);
+                  item.options.forEach((it,i)=>{
+                    let obj = {};
+                   obj.name = opt[i];
+                   obj.info = it;
+                   arr.push(obj);
+                  })
+                  item.options = arr;
+                }else{
+                  item.options = item.options.split("%&");
+                }
               } catch (e) {
                 console.log(e);
               }
             }
-            item.teacherImg.includes("%&")
-              ? (item.teacherImg = item.teacherImg.split("%&"))
-              : (item.teacherImg = []); //老师上传图片
+            item.img = "https://beixiaorui.obs.cn-southwest-2.myhuaweicloud.com/fedd1aa757794267b2d07e19b58cdd81.png"
+            item.teacherImg =this.splitImg(item.teacherImg);
+            item.studentAnswerUrl = this.splitImg(item.studentAnswerUrl);
+            item.img=this.splitImg(item.img)
           });
         }
       });
@@ -517,14 +513,21 @@ export default {
     },
     handleExceed(files, fileList) {
       //限制音频上传个数
-      this.$message.warning("只能上传一端音频");
+      this.$message.warning("只能上传一段音频");
     },
+
+    handleExceedImg(files, fileList) {
+        this.$message.warning(`只能上传10张图片`);
+      },
+
     handlePictureCardPreview(file) {
       //查看图片
       //查看图片操作
+      console.log(file);
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
+
     beforeImgUpload(file) {
       // 校验上传的文件类型是否是图片
       const isJPG = file.type === "image/jpeg";
@@ -535,6 +538,7 @@ export default {
       return isJPG || isPNG;
     },
     beforeAudioUpload(file) {
+      const isLt2M = file.size / 1024 / 1024 < 2;
       //音频上传校验
       const type = "audio";
       const fileName = file.name;
@@ -549,12 +553,14 @@ export default {
         img: ["jpg", "jpeg", "png", "gif"],
       };
       const validType = (allowHook[type] || []).includes(fileType);
-      console.log("validType", validType);
       if (!validType) {
         const supprtTypes = allowHook[type].join(",");
         this.$message.error(`只能上传${supprtTypes}类型的文件上传`);
       }
-      return validType;
+      if(!isLt2M){
+        this.$message.error(`上传的音频不能超过2M`);
+      }
+      return validType && isLt2M;
     },
     submit() {
       let testList = [...this.testList.list];
@@ -598,7 +604,7 @@ export default {
         let { code, data } = res;
         if (code == 200) {
           this.$message({
-            message: "消息批阅成功",
+            message: "阅卷提交成功",
             type: "success",
           });
           this.$router.go(-1);
@@ -611,14 +617,20 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.dialog-img{
+  width: 46vw;
+  height: 70vh;
+  object-fit: call;
+}
 textarea {
   outline: none;
   width: 90%;
-  height: 110px;
+  height: 120px;
   padding: 4px;
   background: #ffffff;
   border: 1px solid #dbdbdb;
   border-radius: 6px;
+  padding-bottom:20px
 }
 textarea:focus {
   border: 1px solid #eb002a;
@@ -720,6 +732,7 @@ textarea:focus {
             font-weight: 400;
             color: #ea5810;
             width: 120px;
+            position: relative;
             height: 40px;
             display: flex;
             align-items: center;
@@ -731,6 +744,7 @@ textarea:focus {
               font-family: Source Han Sans CN;
               font-weight: 400;
               color: #ea5810;
+         
             }
             input:focus {
               border: 1px solid #ea5810;
@@ -745,6 +759,7 @@ textarea:focus {
               margin-left: 8px;
               width: 13px;
               height: 13px;
+              z-index: 1;
             }
           }
           .second-box {
@@ -777,7 +792,23 @@ textarea:focus {
         font-weight: 400;
         color: #343434;
         div {
-          margin: 4px 0;
+          margin: 12px 0;
+        }
+        span {
+          display: inline-block;
+          border: 1px solid red;
+          width: 26px;
+          height: 26px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #eb0029;
+          margin-right: 12px;
+        }
+        .active {
+          background: #eb0029;
+          color: #ffffff;
         }
       }
       //   下面正确答案
@@ -800,7 +831,13 @@ textarea:focus {
           }
         }
         .correct-answer {
+          position: relative;
           color: #eb002a;
+          .max-word{
+            position: absolute;
+            bottom: -2vh;
+            right: 6vw;
+          }
         }
       }
     }

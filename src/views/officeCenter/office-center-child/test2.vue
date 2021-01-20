@@ -2,9 +2,15 @@
   <div class="box">
     <!-- 头部日历 -->
     <breadcrumb-nav v-if="Object.keys(classInfo).length !== 0">
-      <div slot="nav-name" @click="goBack">我的班级</div>
+      <div slot="nav-name" class="hand" @click="goBack">我的班级</div>
       <div slot="nav-child">{{ classInfo.name }}</div>
     </breadcrumb-nav>
+
+    <breadcrumb-nav v-else>
+      <div slot="nav-name" @click="goBack">我的学生</div>
+      <div slot="nav-child">{{ studentInfo.name }}的课表</div>
+    </breadcrumb-nav>
+
     <div class="header">
       <calendar
         @initCurrent="initCurrent"
@@ -123,7 +129,7 @@ export default {
   },
   mounted() {
     let that = this;
-    document.addEventListener("visibilitychange", function () {
+    document.addEventListener("visibilitychange", function () { // 切换浏览器网页 刷新
       if (document.visibilityState == "hidden") {
         that.getDaySchedule();
       } else {
@@ -185,6 +191,8 @@ export default {
       let day = utils.getTimeType(this.monthTimer, true);
       let params = {
         time: day,
+        classId: this.classInfo.id || "",
+        studentId: this.studentInfo.id || "",
       };
       queryTeacherSchedule(params).then((res) => {
         let { data, code } = res;

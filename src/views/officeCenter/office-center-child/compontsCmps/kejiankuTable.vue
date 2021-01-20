@@ -60,13 +60,19 @@
       <el-table-column prop="url" align="center" width="180" label="附件">
         <template slot-scope="scope">
           <el-button type="text" @click="watchPPT(scope.row)">
-            查看附件
+            {{scope.row.coursewareName}}
           </el-button>
         </template>
       </el-table-column>
       <el-table-column prop="downloadFee" align="center" label="下载费用">
+         <template slot-scope="scope">
+          <span>{{scope.row.downloadFee==0?'-':scope.row.downloadFee+'元'}}</span>
+        </template>
       </el-table-column>
       <el-table-column prop="downloadNumber" align="center" label="下载次数">
+        <template slot-scope="scope">
+          <span>{{scope.row.downloadNumber==0?'-':scope.row.downloadFee}}</span>
+        </template>
       </el-table-column>
       <!-- 课后习题 -->
       <el-table-column prop="insertUser" align="center" label="上传人">
