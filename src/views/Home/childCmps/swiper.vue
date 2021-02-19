@@ -58,7 +58,6 @@ export default {
 <style lang="scss" scoped>
 /deep/ .bannaer {
   padding:0 !important;
-  border: 1px solid red;
 }
 /deep/ .bannaer[data-v-6d720fe5]{
    padding:0 !important;

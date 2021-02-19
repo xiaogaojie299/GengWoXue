@@ -233,6 +233,7 @@ export default {
         type: this.kejianTypeValue,
         url: this.pptUrl,
       };
+      console.log("this.pptUrl",this.pptUrl);
       saveMyCourseware(pamars).then((res) => {
         console.log(res);
         if (res.code == 200) {

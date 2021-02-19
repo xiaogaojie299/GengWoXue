@@ -110,6 +110,7 @@ export default {
       this.getBanner(); //获取首页轮播页面
       this.getClassHourRand(); //获取老师课时数排行
       this.getTodayCourse();  //查询今日课程
+      this.getExtensionRand(); // 推广人数排行
     },
     // 获取首页轮播图
     async getBanner() {

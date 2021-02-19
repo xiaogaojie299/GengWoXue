@@ -40,7 +40,7 @@
       </div>
       <!-- 底部详情 -->
       <div class="footer">
-        <div class="footer-left">
+        <div class="footer-left"> 
           <img src="@/assets/img/answers/icon_coin.png" alt="" />
           <span>{{info.golds||"0"}}</span>
         </div>

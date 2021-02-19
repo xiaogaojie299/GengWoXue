@@ -96,8 +96,8 @@ export default {
         // window.open("http://www.xiaogaojie.vip:99/"+"?params="+encodeURIComponent(params));
         // window.open("https://demo.qcloudtiw.com/web/latest/index.html");
          // window.open("https://gengwoxue.com:8443/index.html"+"?params="+encodeURIComponent(params))
-          // window.open("https://gengwoxue.com:8443/live/index.html"+"?params="+encodeURIComponent(params))
-          window.open("http://127.0.0.1:5500/index.html"+"?params="+encodeURIComponent(params))
+          window.open("https://gengwoxue.com:8443/live/index.html"+"?params="+encodeURIComponent(params))
+          // window.open("http://127.0.0.1:5500/index.html"+"?params="+encodeURIComponent(params))
         // window.open("https://gengwoxue.com:8443/");
     },
   },

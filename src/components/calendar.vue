@@ -58,7 +58,7 @@
         </span>
       </div>
       <!-- 判断是不是当前月 -->
-      <div class="cell" v-show="switchMonthWeek" v-for="i in 5" :key="i">
+      <div class="cell" v-show="switchMonthWeek" v-for="i in 6" :key="i">
         <span
           v-for="j in 7"
           :key="j"
@@ -143,6 +143,14 @@ export default {
     // let { yaer, month, day } = utils.getYearMonthDay(new Date());
     this.getTodayIndex();
   },
+  watch:{
+    "time":{
+      handler(){
+        this.activeDay = ""
+      },
+      deep:true
+    }
+  },
   computed: {
     formatDate() {
       let { year, month, day } = utils.getYearMonthDay(new Date());
@@ -157,7 +165,7 @@ export default {
       let week = currrentfirstDay.getDay();
       let startDay = currrentfirstDay - week * 60 * 60 * 1000 * 24;
       // 循环42天
-      for (let i = 0; i < 35; i++) {
+      for (let i = 0; i < 42; i++) {
         arr.push(new Date(startDay + i * 60 * 60 * 1000 * 24));
       }
       return arr;
@@ -228,12 +236,14 @@ export default {
     },
     // 点击选中样式
     checkToday(timer) {
-      if(this.isCurrentMonth(timer)){
-        this.activeDay = timer.getTime();
-      // let data=utils.getTimeType(timer);
-      //把选中的时间传给父元素
-      this.$emit("checkDay", timer);
-      }
+      /* 
+        if(this.isCurrentMonth(timer)){ // 当前日期之前的月份能否被点击    先注释掉
+          this.activeDay = timer.getTime();
+        }
+      */
+          this.activeDay = timer.getTime();
+          this.$emit("checkDay", timer);
+      
       
     },
     // 判断当前月哪天有课
@@ -262,7 +272,7 @@ export default {
 <style lang="scss" scoped>
 .before-now{
   // color: #dddddd;
-  opacity: .3;
+  // opacity: .3;
 }
 .date-style {
   display: flex;
@@ -335,8 +345,7 @@ export default {
   color: #dddddd;
 }
 .notCurentMonth {
-  // color: #dddddd;
-  color: #ffffff;
+  color: #dddddd;
   border: none;
 }
 .today {

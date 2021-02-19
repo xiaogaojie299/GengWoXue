@@ -201,8 +201,7 @@ export default {
       this.$router.push("/page/coIndex/teacherCo").catch((err) => err);
     },
       goOrganizationCooperation() {
-      this.$router.push("/page/coIndex/organizatCo").catch((err) => err);
-      console.log(2);
+       this.$router.push("/page/coIndex/organizatCo").catch((err) => err);
       },
   },
 };
@@ -215,7 +214,7 @@ export default {
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  border: 1px solid red;
+  border: 1px solid red; 
   overflow: hidden;
 }
 .nav {

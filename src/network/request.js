@@ -31,9 +31,9 @@ instance.interceptors.response.use(
     } else {
       // vue.$myAlert(res.data.msg || res.data.message);
       switch (res.data.code) {
-        // case 700:
-        //   vue.$router.push({ path: "/page/register" });
-        //   break;
+        case 700:
+          vue.$router.push({ path: "/page/register" });
+          break;
         case 500:
           vue.$myAlert(res.data.msg);
       }

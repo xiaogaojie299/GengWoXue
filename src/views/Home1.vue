@@ -12,7 +12,7 @@
       </div>
     </my-box> -->
 
-    <div class="my-box">
+    <div class="my-box"> 
       <!-- 头部 -->
       <div class="my-header">
         <nav-bar></nav-bar>
@@ -42,6 +42,7 @@ export default {
    display: flex;
   flex-direction: column;
   min-height: 100vh;
+  
   .my-header{
     height: 80px;
   }

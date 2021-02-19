@@ -74,6 +74,11 @@
           <span>{{scope.row.downloadNumber==0?'-':scope.row.downloadFee}}</span>
         </template>
       </el-table-column>
+      <el-table-column prop="downloadNumber" align="center" label="是否付费">
+        <template slot-scope="scope">
+          <span>{{scope.row.isPay==1?"未付费":"以付费"}}</span>
+        </template>
+      </el-table-column>
       <!-- 课后习题 -->
       <el-table-column prop="insertUser" align="center" label="上传人">
       </el-table-column>

@@ -16,7 +16,7 @@
         <div class="second-row">
           <!-- <span>张思思</span>
           <span>英语直播课</span> -->
-          <span>{{ testList.courseName ||"暂无" }}</span>
+          <span>{{ testList.courseName ||"" }}</span>
         </div>
       </div>
 
@@ -487,7 +487,6 @@ export default {
         color: #343434;
         span {
           display: inline-block;
-          border: 1px solid red;
           width: 26px;
           height: 26px;
           border-radius: 50%;

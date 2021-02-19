@@ -21,6 +21,8 @@
   min-height: 100vh;
   .my-header,.my-footer {
     height: 80px;
+  width: 100vw !important;
+
   }
   .my-main {
     flex: 1;

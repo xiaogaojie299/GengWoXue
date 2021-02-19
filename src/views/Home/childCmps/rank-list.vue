@@ -3,7 +3,7 @@
     <div class="rank-list-box">
       <div>
         </div>
-      <div class="title pt-10"> {{type==1?'老师课时排行榜':"老师推广排行榜"}}</div>
+      <div class="title pt-10"> {{type==1?'老师课时数排行':"推广人数排行"}}</div>
       <!-- 列表数据 -->
       <div class="top-title-list">
         <div>排名</div>

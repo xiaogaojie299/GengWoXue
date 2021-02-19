@@ -233,7 +233,7 @@ export default {
     },
       //下载PPT
     async isuploadPPT() {
-      // this.clearPPT();
+      
       let {downloadFee,isPay} = this.selectKejian
       console.log("isPay==>",isPay);
       // 判断当前的课件是否需要费用以及用户是否已经交费了
@@ -242,18 +242,18 @@ export default {
         this.pushCoursewareOrder();
       }else{
         this.uploadPPT();
-        console.log("PPT","下载失败")
       }
-      
+      return false // 阻止A标签默认事件
       //用户付款操作
     },
     uploadPPT(){  //用户下载操作
       let a = document.getElementsByClassName("btn2")[1];
-      if(a.href){
-      a.href ="";
-      }else{
-        a.href = this.selectKejian.url;
-      }
+      a.href = this.selectKejian.url;
+      a.click();
+      // if(a.href){
+      // }else{
+      //   a.href = this.selectKejian.url;
+      // }
     },
     clearPPT(){
       let a = document.getElementsByClassName("btn2")[1];
@@ -306,9 +306,11 @@ export default {
             if (res.data == 2) {
               //data ==1 失败  data==2 成功
               // 成功之后的的逻辑
+              console.log("支付成功");
               this.uploadPPT();
               this.dialogVisible = false;
               window.clearInterval(self.timers); //别忘记关闭定时器，否则会一直调这个接口
+              this.get_AllCourseware();
             }else{
                 // 支付不成功的逻辑
                 //  this.isPay = (num==4?true:false);

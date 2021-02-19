@@ -84,7 +84,7 @@ import {queryEvaluationList} from "@/network/officeCenter"
 export default {
   data() {
     return {
-      studyInfo:{},
+      studyInfo:{}, 
       current:1,
       size:10,
       total:0,
@@ -98,10 +98,10 @@ export default {
 },
   methods:{
     init(){
+      console.log("初始化");
       this.get_EvaluationList()
     },
     studentType(i){
-      console.log("i",i);
       switch(i){
         case 1:
         return "在读";
@@ -126,10 +126,17 @@ export default {
     },
     // 获取学生详情
     async get_EvaluationList(){
+      let studentId = null;
+      console.log("isClassPage==>",this.studyInfo.isClassPage);
+      if(this.studyInfo.isClassPage){ // 判断当前是从班级学生(学生id是 studentId)详情还是 老师学生详情(学生id 是id ) 
+        studentId = this.studyInfo.studentId
+      }else{
+        studentId = this.studyInfo.id
+      }
       let params={
         current:this.current,
         size:this.size,
-        studentId:this.studyInfo.id||""
+        studentId:studentId||""
       }
     let {code,data} = await queryEvaluationList(params);
       console.log("学生记录",data);

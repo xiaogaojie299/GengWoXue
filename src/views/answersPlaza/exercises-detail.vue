@@ -2,6 +2,8 @@
   <div class="ex-box">
     <!-- 顶部面包屑 -->
     <container>
+      <div>
+
       <breadcrumb-nav>
         <span class="hand" slot="nav-name" @click="go_black">问答广场</span>
         <span slot="nav-child">{{ routeNme }}</span>
@@ -55,7 +57,7 @@
                 <span class="answer-people-tag hand" v-if="it.isAdopt == 2"
                   >已采纳</span
                 >
-                <span @click="toAdopt(i)" class="answer-people-tag hand" v-show="it.isCaina"
+                <span @click="toAdopt(i)" class="answer-people-tag hand" v-show="it.isCaina &&exercisesDetail.questionUserId==userInfo.id"
                   >置为采纳</span
                 >
                 <span class="answer-people-tag hand" v-show="it.state == 2"
@@ -83,7 +85,7 @@
             @handleCurrentChange="handleCurrentChange"
           />
         </div>
-      </div>
+      </div> 
 
       <!-- 底部回答 -->
       <div class="footer-input">
@@ -93,6 +95,7 @@
           v-model="myAnswer"
         />
         <div class="btn hand" @click="letMeAnswer">我来回答</div>
+      </div>
       </div>
     </container>
   </div>
@@ -128,6 +131,11 @@ export default {
   },
   mounted() {
     this.routeNme = this.$route.name;
+  },
+  computed:{
+    userInfo(){
+      return this.$store.state.userInfo
+    }
   },
   methods: {
     go_black() {
@@ -363,13 +371,13 @@ export default {
   }
 }
 .ex-box{
-  height: calc(100vh - 210px);
-  position: relative;
+  min-height: calc(100vh - 210px);
+  // position: relative;
 }
 .footer-input {
-  position: absolute;
+  // position: absolute;
   width: 1400px;
-  bottom: 0;
+  // bottom: 0;
   height: 94px;
   background: #ffffff;
   box-shadow: 1px 4px 51px 9px rgba(197, 197, 197, 0.27);

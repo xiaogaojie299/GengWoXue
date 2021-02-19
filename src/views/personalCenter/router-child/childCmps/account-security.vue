@@ -54,7 +54,7 @@
     </div>
     <!-- 更换手机号 -->
     <div v-else class="change">
-      <div class="title">验证手机号：</div>
+      <div class="title">更换手机号：</div>
       <input type="number" v-model="newPhone" placeholder="输入更换的手机号" />
       <!-- 验证码 -->
       <div class="verify-code">
@@ -235,12 +235,12 @@ export default {
           newPassword: this.userUpwd,
           phone: this.phone,
         };
-        let { data, code } = await optResetPassword(params);
-        if (code == 200) {
-          this.$myAlert("重置密码成功");
-        } else {
-          this.$myAlert("重置密码失败，网络错误");
-        }
+        // let { data, code } = await optResetPassword(params);
+        // if (code == 200) {
+        //   this.$myAlert("重置密码成功");
+        // } else {
+        //   this.$myAlert("重置密码失败，网络错误");
+        // }
       } else {
         if (!this.phone) {
           this.$myAlert("手机号码不能为空");
@@ -274,14 +274,17 @@ export default {
           newPhone: this.newPhone, //新手机号码
           phone: this.phone, //原手机号码
         };
-        // let res = await optChangePhone(data);
+        let res = await optChangePhone(data);
         if(res.code ==200){
           // this.$myAlert("手机号码更改成功");
           this.$myMessage("手机号码更改成功");
           setTimeout(()=>{
-            // this.$router.replace({path: '/page/register'});
-            // window.location.reload();
-          },1000)
+            this.$router.push({
+              path: "/page/register",
+            });
+            this.$store.commit("setToken", "");
+            this.$store.commit("setUserInfo", {});
+          },1500)
         }
       }
     },

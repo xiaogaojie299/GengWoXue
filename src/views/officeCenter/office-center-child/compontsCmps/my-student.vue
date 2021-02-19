@@ -113,6 +113,7 @@ export default {
     go_studentDetail() {
       this.selectRow = this.selectRow || this.tableData[0];
       console.log(this.selectRow);
+      this.selectRow.isClassPage = true;
       this.$router.push({
         path: "/page/officeCenter/OfficeCenterIndex/studentDetail",
         query: {
