@@ -371,10 +371,17 @@ export default {
     // 切割 带%& 的图片URL
     splitImg(item,symbol="%&"){
       let tepArr=[];
-      if(item.includes("%&")){
-        tepArr = item.join("%&")
-      }else if(!item){
-        tepArr = [];
+      /* 
+        if(item.includes("%&")){
+          tepArr = item.join("%&")
+        }else if(!item){
+          tepArr = [];
+        }else{
+          tepArr.push(item)
+        }
+      */
+      if(item.includes("%&" && !item)){
+          tepArr = item.join("%&")
       }else{
         tepArr.push(item)
       }
@@ -455,7 +462,7 @@ export default {
           });
         }
       });
-      console.log();
+      console.log("this.testList.list==>",this.testList.list);
     },
     myAudio() {
       this.audio = new Audio();
@@ -562,6 +569,14 @@ export default {
       }
       return validType && isLt2M;
     },
+    ImgArr(params,sys="%&"){  // 数组转换为字符串
+      if(params && params.length>1){
+        return params.join(sys)
+    }else{
+        return params[0]
+    }
+
+    },
     submit() {
       let testList = [...this.testList.list];
       let params = {}; //上传的参数列表
@@ -574,9 +589,10 @@ export default {
         arr.score = item.studentScore; // 学生问题答案
         arr.audio = item.teacherAudio; //老师批阅音频
         arr.remark = item.teacherRemark; //老师批阅备注
-        arr.img = item.teacherImg.join("%&"); //老师批阅图片
+        arr.img = this.ImgArr(item.teacherImg); //老师批阅图片
         examines.push(arr); //已JSON自符串的形式
       });
+      console.log("examines==>",examines);
       // qs
          params.examines =JSON.stringify(examines);
          console.log("params.examines",params.examines);

@@ -97,9 +97,9 @@
         />
       </div>
       <div class="btn-groups">
-        <div class="btn1 hand" @click="previewPPT">预览</div>
+        <!-- <div class="btn1 hand" @click="previewPPT">预览</div> -->
         <!-- <a class="btn2" style="text-decoration: none;" :href="selectKejian.url">下载</a> -->
-        <a class="btn2 hand" @click.stop="isuploadPPT" style="text-decoration: none;" target="_blank"
+        <a class="btn2 hand left-dev" @click.stop="isuploadPPT" style="text-decoration: none;" target="_blank"
           >下载</a
         >
       </div>
@@ -229,7 +229,7 @@ export default {
     previewPPT() {
       console.log(this.selectKejian.url);
       // 预览PPT
-      this.$preview(this.selectKejian.url);
+      //this.$preview(this.selectKejian.url);
     },
       //下载PPT
     async isuploadPPT() {
@@ -308,8 +308,8 @@ export default {
               // 成功之后的的逻辑
               console.log("支付成功");
               this.uploadPPT();
-              this.dialogVisible = false;
               window.clearInterval(self.timers); //别忘记关闭定时器，否则会一直调这个接口
+              this.dialogVisible = false;
               this.get_AllCourseware();
             }else{
                 // 支付不成功的逻辑
@@ -493,6 +493,9 @@ export default {
   font-size: 9px;
   font-family: Source Han Sans CN;
   font-weight: 500;
+  .left-dev{
+     margin-left: auto !important;
+  }
   .btn1 {
     margin-left: auto;
     width: 80px;

@@ -11,10 +11,10 @@
         <div v-if="infoList.aliAccount==2" class="right-box">
           <div class="isbind left-font">已绑定</div>
           <!-- 如果已绑定，则出现重新绑定的按钮 -->
-          <div class="rebind-btn" @click="anew">重新绑定</div>
+          <div class="rebind-btn hand" @click="anew">重新绑定</div>
         </div>
 
-        <div v-else class="right-box">
+        <div v-else class="right-box hand">
           <div class="isbind left-font">未绑定</div>
           <!-- 如果已绑定，则出现重新绑定的按钮 -->
         </div>
@@ -24,7 +24,7 @@
       <div class="row">
         <div class="left-title left-font">支付宝：</div>
         <div class="right-box">
-          <input v-if="infoList.aliAccount==2" type="number" v-model="infoList.alipayAccount" :disabled="isdisable" />
+          <input ref="iptAcc" v-if="infoList.aliAccount==2" type="number" v-model="infoList.alipayAccount" :disabled="isdisable" />
           <input v-else type="number" v-model="bindZfb" placeholder="请绑定您的支付宝" />
         </div>
       </div>
@@ -40,8 +40,8 @@
       </div>
 
       <!-- 底部按钮 -->
-      <div v-if="infoList.aliAccount==2 && !isBtnText" @click="go_back" class="footer">关闭</div>
-      <div v-else class="footer" @click="bind">提交</div>
+      <div v-if="infoList.aliAccount==2 && !isBtnText" @click="go_back" class="footer hand">关闭</div>
+      <div v-else class="footer hand" @click="bind">提交</div>
     </div>
   </div>
 </template>
@@ -51,6 +51,7 @@ import { mapState,mapActions } from "vuex";
 export default {
     data(){
         return {
+            infoList:{},
             isdisable:true,
             bindZfb:"",    //支付宝账号
             bindZfbName:"",  //支付宝账户名
@@ -58,9 +59,12 @@ export default {
         }
     },
     computed:{
-      infoList(){
-        return this.$store.state.infoList
-      }
+      // infoList(){ 
+      //   return this.$store.state.infoList
+      // }
+    },
+    created(){
+      this.infoList = this.$store.state.infoList;
     },
     methods: {
       async bind(){ // 绑定提交支付宝
@@ -68,7 +72,7 @@ export default {
         if(this.infoList.aliAccount==2){
           //已绑定
          data={
-            account:this.infoList.phone,
+            account:this.infoList.alipayAccount,
             name:this.infoList.alipayName
           }
           
@@ -84,6 +88,7 @@ export default {
         if(res){
           this.$myAlert("绑定成功");
           this.$store.dispatch("getPersonalData");
+          this.isBtnText=false;
         this.isdisable=true;
         }else{
           this.$myAlert("绑定失败")
@@ -91,7 +96,12 @@ export default {
       },
       
       anew(){
-            console.log("成功")
+            console.log("成功");
+            setTimeout(()=>{
+              this.$refs.iptAcc.focus()
+                console.log(this.$refs.iptAcc.focus());
+            },100)
+            
             this.isBtnText=true;
             this.isdisable=false;
         },

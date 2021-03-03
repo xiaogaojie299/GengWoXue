@@ -6,10 +6,14 @@
       <div slot="nav-child">{{ classInfo.name }}</div>
     </breadcrumb-nav>
 
-    <breadcrumb-nav v-else>
+    <breadcrumb-nav v-else-if="Object.keys(studentInfo).length !== 0">
       <div slot="nav-name" @click="goBack">我的学生</div>
       <div slot="nav-child">{{ studentInfo.name }}的课表</div>
     </breadcrumb-nav>
+    <!-- <breadcrumb-nav v-else>
+      <div slot="nav-name" @click="goBack">课程表</div>
+      <div slot="nav-child">{{ studentInfo.name }}的课表</div>
+    </breadcrumb-nav> -->
 
     <div class="header">
       <calendar
@@ -107,6 +111,7 @@ import { queryDaySchedule, queryTeacherSchedule } from "@/network/officeCenter";
 import * as utils from "@/utils/getData";
 
 import { state } from "vuex";
+import isBrowser from "@/utils/browser"
 export default {
   data() {
     let { year, month, day } = utils.getYearMonthDay(new Date());
@@ -237,23 +242,40 @@ export default {
     },
     go_live(item) {
       //看直播
+      console.log("item",item);
       let params = item;
-      params.teacherId = this.userInfo.id;
-      params.token = this.userInfo.token;
-      params.avatar = this.userInfo.avatar;
-      console.log("params==>", params);
-      params = JSON.stringify(params);
-      window.open("https://gengwoxue.com:8443/live/index.html"+"?params="+encodeURIComponent(params));
-    //  window.open(
-    //     "http://127.0.0.1:5500/index.html" +
-    //       "?params=" +
-    //       encodeURIComponent(params)
-    //   );
+      if(item.status==1 && (this.userInfo.id!==item.teacherId) ){
+        return this.$message.error("助教老师要等主教老师开课哟")
+      }
+      if(isBrowser()==="Firefox"){
+          let routeData = this.$router.resolve({
+            path: "/livePage"
+          });
+          window.open(routeData.href, '_blank');
+      }else{
+        params.teacherId = this.userInfo.id;
+        params.token = this.userInfo.token;
+        params.avatar = this.userInfo.avatar;
+        console.log("params==>", params);
+        params = JSON.stringify(params);
+        // window.open("https://gengwoxue.com:8443/live/index.html"+"?params="+encodeURIComponent(params));
+         window.open(
+            "http://127.0.0.1:5500/index.html" +
+              "?params=" +
+              encodeURIComponent(params)
+          );
+          // window.open(
+          //   "http://127.0.0.1:5500/index.html" +
+          //     "?params=" +
+          //     encodeURIComponent(params)
+          // );
 
-      // window.open("http://www.xiaogaojie.vip:99/"+"?params="+encodeURIComponent(params));
-      // window.open("https://demo.qcloudtiw.com/web/latest/index.html");
-      //  window.open("https://gengwoxue.com/live/index.html"+"?params="+encodeURIComponent(params))
-      // window.open("https://gengwoxue.com:8443/");
+          // window.open("http://www.xiaogaojie.vip:99/"+"?params="+encodeURIComponent(params));
+          // window.open("https://demo.qcloudtiw.com/web/latest/index.html");
+          //  window.open("https://gengwoxue.com/live/index.html"+"?params="+encodeURIComponent(params))
+          // window.open("https://gengwoxue.com:8443/");
+      }
+
     },
     //分页页数
     handleCurrentChange(data) {

@@ -59,9 +59,15 @@
       </el-table-column>
       <el-table-column prop="url" align="center" width="180" label="附件">
         <template slot-scope="scope">
-          <el-button type="text" @click="watchPPT(scope.row)">
+          <!-- <el-button type="text" @click="watchPPT(scope.row)">
             {{scope.row.coursewareName}}
-          </el-button>
+          </el-button> -->
+          <el-image 
+              style="width: 100px; height: 100px"
+              :src="scope.row.img" 
+              :preview-src-list="[scope.row.img]">
+            </el-image>
+
         </template>
       </el-table-column>
       <el-table-column prop="downloadFee" align="center" label="下载费用">

@@ -12,6 +12,8 @@ Vue.use(VueRouter);
 
 const routes = [
   {path:'/',redirect: "/page/register"},
+  {path:'/livePage',
+  component:() => import("../views/livePage.vue")},
   {
     path: "/page",
     component: () => import("../views/Home1.vue"),

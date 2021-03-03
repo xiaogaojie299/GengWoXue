@@ -289,6 +289,10 @@ export default {
     },
     //跳转到阅卷页面
     go_readWork() {
+      console.log(this.selectTest.scoring);
+      if(this.selectTest.scoring == "已阅卷"){
+        return  this.$message.error("不能重复阅卷")
+      }
       let data = JSON.stringify(this.selectTest);
       /* 
       this.$router.push({
@@ -335,6 +339,7 @@ export default {
         status: this.examStatusValue, //考试状态（1=缺考，2=完成）
         testPaperName: this.examPaper, //试卷名称
         testPaperType: this.testPaperTypeValue, //考试类型（1=线上，2=线下）
+        className:this.className
       };
       let { code, data } = await queryClassEvaluation(params);
       if (code == 200) {

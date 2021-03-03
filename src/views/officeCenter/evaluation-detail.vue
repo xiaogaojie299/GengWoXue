@@ -22,7 +22,7 @@
 
       <!-- 中间题库 -->
       <div
-        v-for="(item, index) in testList.list"
+        v-for="(item, index) in evalList"
         :key="index"
         class="main-center"
       >
@@ -34,7 +34,7 @@
               <!-- 左侧题目 -->
               <div class="left-problem">
                 <span style="color: #eb0029"
-                  >{{ index + 1 }}/{{ testList.list.length }}：</span
+                  >{{ index + 1 }}/{{ evalList.length }}：</span
                 >{{item.title}}（{{item.points}}分）
               </div>
             </div>
@@ -60,9 +60,25 @@
               <!-- 右侧语音解析 -->
               <div v-if="studentParams.scoring=='已阅卷'" class="right-grade">
                 <!-- 上传音频按钮 -->
-                <div class="second-box">
+                <!-- 上传音频按钮 -->
+                <div class="second-box" v-show="item.audio">
                   <!-- <img src="@/assets/img/officeCenter/icon_play.png" alt="" /> -->
                   <span>语音解析</span>
+                  <!-- 播放中显示暂停按钮 -->
+                  <img
+                    v-if="!isPlayList[index].is_Play"
+                    @click.stop="player(index,evalList)"
+                    src="@/assets/img/play.png"
+                    alt=""
+                  />
+                  <img
+                    v-else
+                    @click.stop="player(index)"
+                    src="@/assets/img/pause.png"
+                    alt=""
+                  />
+                  <audio ref="audio" :src="item.audio"></audio>
+
                 </div>
               </div>
               <!-- 解析 -->
@@ -80,7 +96,7 @@
         <div v-else-if="item.type==5" class="topic-box">
           <!-- 左侧题形 -->
           <div class="left-subject">
-            {{ index + 1 }}/{{ testList.list.length }}：
+            {{ index + 1 }}/{{ evalList.length }}：
           </div>
           <!-- 右侧内容 -->
           <div class="subject-detail-box">
@@ -108,9 +124,23 @@
               <!-- 右侧语音解析 -->
               <div v-if="studentParams.scoring=='已阅卷'" class="right-grade">
                 <!-- 上传音频按钮 -->
-                <div class="second-box">
+                <div class="second-box" v-show="item.audio">
                   <!-- <img src="@/assets/img/officeCenter/icon_play.png" alt="" /> -->
                   <span>语音解析</span>
+                  <!-- 播放中显示暂停按钮 -->
+                  <img
+                    v-if="!isPlayList[index].is_Play"
+                    @click="player(index,evalList)"
+                    src="@/assets/img/play.png"
+                    alt=""
+                  />
+                  <img
+                    v-else
+                    @click="player(index)"
+                    src="@/assets/img/pause.png"
+                    alt=""
+                  />
+                  <audio ref="audio" :src="item.audio"></audio>
                 </div>
               </div>
               <div class="student-answer">
@@ -130,9 +160,9 @@
                 <div class="nowrap">图片解析：</div>
                 <!-- <img v-for="(imgItem,imgIndex) in item.teacherImg" :src="item.teacherImg" :key="imgIndex" alt="" /> -->
                <el-image
-                v-for="(imgIt,imgI) in item.img" 
+                v-for="(imgIt,imgI) in item.teacherImg" 
                 :key="imgI"
-                style="width: 100px; height: 100px"
+                style="width: 100px; height: 100px;margin-right:6px"
                 :src="imgIt" 
                 :preview-src-list="item.teacherImg">
               </el-image>
@@ -169,7 +199,7 @@
               <!-- 左侧题目 -->
               <div class="left-problem">
                 <span class="" style="color: #eb0029"
-                  >{{ index + 1 }}/{{ testList.list.length }}：</span
+                  >{{ index + 1 }}/{{ evalList.list }}：</span
                 >{{ item.title }}（{{ item.points }}分）
               </div>
             </div>
@@ -201,9 +231,25 @@
               <!-- 右侧语音解析 -->
               <div v-if="studentParams.scoring=='已阅卷'" class="right-grade">
                 <!-- 上传音频按钮 -->
-                <div class="second-box">
+                <!-- 上传音频按钮 -->
+                <div class="second-box" v-show="item.audio">
                   <!-- <img src="@/assets/img/officeCenter/icon_play.png" alt="" /> -->
                   <span>语音解析</span>
+                  <!-- 播放中显示暂停按钮 -->
+                  <img
+                    v-if="!isPlayList[index].is_Play"
+                    @click="player(index,item)"
+                    src="@/assets/img/play.png"
+                    alt=""
+                  />
+                  <img
+                    v-else
+                    @click="player(index,item)"
+                    src="@/assets/img/pause.png"
+                    alt=""
+                  />
+                  <audio ref="audio" :src="item.audio"></audio>
+
                 </div>
               </div>
               <!-- 解析 -->
@@ -226,7 +272,9 @@
 </template>
   <script>
 import { queryExaminationInfo,queryAnswerInfo } from "@/network/officeCenter";
+import mixin from "@/mixins/audioMixin.js"
 export default {
+  // mixins:[mixin],
   data() {
     return {
       studentInfo: {}, //传过来的学生详情对象
@@ -234,9 +282,39 @@ export default {
       studentParams:{},
       current: 1,
       size: 10,
-      testList: [], //考试详情
+      testList: {
+      }, //考试详情
+      evalList:[{
+        answer: "",
+        answerImg: "",
+        audio: "",
+        id: null,
+        img: [],
+        is_Play: false,
+        options: [],
+        points: 1,
+        prompt: "",
+        studentAnswer: " I can show you. ",
+        studentAnswerUrl: [],
+        studentScore: null,
+        studentState: null,
+        teacherAudio:null,
+        teacherImg: [],
+        teacherRemark: "",
+        title: "",
+        type: null
+      }],
+      isPlayList:[{play:false}],
       audio: "",
     };
+  },
+  watch:{
+    "evalList.is_play":{
+      "handle":()=>{
+        console.log("监听成成功");
+      },
+      deep:true
+    }
   },
   created() {
     console.log(this.$route.query.type);
@@ -253,16 +331,47 @@ export default {
     console.log("this.studentParams==>",this.studentParams);
   },
   methods: {
+    player(index,item) {
+            console.log("打印成功123");
+            // this.isPlayList[0].play=false
+            // 播放音频
+            let audio = this.$refs.audio[index];
+            // audio.load();    // 重新播放音频
+            if (this.isPlayList[index].is_Play) {
+              // this.$set(item,"is_Play",false)
+              this.$set(this.isPlayList,index,{is_Play:false})
+              console.log(this.isPlayList);
+              // item.is_Play = false;
+              audio.pause();
+              console.log("暂停成功");
+            } else {
+              console.log("播放成功");
+              this.$set(this.isPlayList,index,{is_Play:true})
+              // this.$set(item,"is_Play",true)
+              // item.is_Play = true;
+              audio.play();
+            }
+          },
+
     // 切割 带%& 的图片URL
-    splitImg(item,symbol="%&"){
+    splitImg(params,symbol="%&"){
+      let item = params;
+      // let item = ["https://beixiaorui.obs.cn-southwest-2.myhuaweicloud.com:443/1608629789310711.jpeg"];
+      if(item.includes("[")){ // 将返回的字符串转为数组格式
+        item=eval("("+item+")");
+        console.log("item==>",item);
+      }
+
       let tepArr=[];
-      if(item.includes("%&")){
-        tepArr = item.join("%&")
-      }else if(!item){
-        tepArr = [];
+      if(!item){
+        return []
+      }else if(item.includes("%&")){
+        tepArr = item.split("%&")
       }else{
         tepArr.push(item)
       }
+
+
       return tepArr
     },
     /* 1=填空题，2=单选题，3=多选题，4=判断题，5=问答题） */
@@ -276,8 +385,12 @@ export default {
         let { code, data } = res;
         if (code == 200) {
           this.testList = data;
+          this.evalList = data.list;
+          console.log("获取成功",data);
           let opt=['A','B','C','D','E','F','G','H'];
-          this.testList.list.forEach((item) => {
+          this.evalList.forEach((item) => {
+              this.isPlayList.push({is_Play:false})
+              item.is_Play = false; // 默认音频开始时时暂停
               item.img = this.splitImg(item.img);
               item.teacherImg = this.splitImg(item.teacherImg);
               item.studentAnswerUrl = this.splitImg(item.studentAnswerUrl)
@@ -308,6 +421,7 @@ export default {
               }
             }
           });
+            console.log("转化后的数组",this.evalList);
         }
       });
     },
@@ -550,14 +664,18 @@ export default {
             border: 1px solid #eb002a;
             border-radius: 18px;
             img {
-              width: 100%;
-              height: 100%;
+              width: 22px;
+              height: 22px;
+              position: absolute;
+              right: 10px;
+              top: 50%;
+              transform: translateY(-50%);
             }
             span {
               white-space: nowrap;
               position: absolute;
               top: 50%;
-              left: 50%;
+              left: 40%;
               transform: translate(-50%, -50%);
               font-size: 12px;
               font-family: Source Han Sans CN;

@@ -102,8 +102,7 @@ export default {
     };
   },
   methods: {
-    go_regist() {
-      console.log("返回密码登录");
+    go_regist() { // 返回密码登录
       this.$emit("backUpwdReg", 0);
     },
     // 获取手机验证码
@@ -212,8 +211,10 @@ export default {
         phone: this.upwdForm.userPhone,
       };
       forgetPassword(data).then((res) => {
+        this.$emit("goForgetUpwd", 1);
         if(res.code == 200){
           this.$myMessage("修改密码成功")
+          this.go_regist()
         }
       });
     },

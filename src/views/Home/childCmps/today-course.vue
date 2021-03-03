@@ -87,18 +87,27 @@ export default {
     go_live(item){  //看直播
     console.log("跳转成功");
     console.log(item);
-       let params = item;
+      if(item.status==1 && (this.userInfo.id!==item.teacherId) ){
+        return this.$message.error("助教老师要等主教老师开课哟")
+      }
+      if(isBrowser()==="Firefox"){
+          let routeData = this.$router.resolve({
+            path: "/livePage"
+          });
+          window.open(routeData.href, '_blank');
+      }else{
+        let params = item;
         params.teacherId = this.userInfo.id;
         params.token = this.userInfo.token;
         params.avatar = this.userInfo.avatar;
-       console.log("params==>",params);
         params = JSON.stringify(params)
-        // window.open("http://www.xiaogaojie.vip:99/"+"?params="+encodeURIComponent(params));
-        // window.open("https://demo.qcloudtiw.com/web/latest/index.html");
-         // window.open("https://gengwoxue.com:8443/index.html"+"?params="+encodeURIComponent(params))
+          // window.open("http://www.xiaogaojie.vip:99/"+"?params="+encodeURIComponent(params));
+          // window.open("https://demo.qcloudtiw.com/web/latest/index.html");
+          // window.open("https://gengwoxue.com:8443/index.html"+"?params="+encodeURIComponent(params))
           window.open("https://gengwoxue.com:8443/live/index.html"+"?params="+encodeURIComponent(params))
           // window.open("http://127.0.0.1:5500/index.html"+"?params="+encodeURIComponent(params))
-        // window.open("https://gengwoxue.com:8443/");
+          // window.open("https://gengwoxue.com:8443/");
+      }
     },
   },
   created() {

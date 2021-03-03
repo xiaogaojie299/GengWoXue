@@ -9,6 +9,9 @@
       <div class="verify-code">
         <!-- 输入验证码 -->
         <input type="text" v-model="code" placeholder="输入验证码" />
+        <!-- <button class="btn" :disabled="disabledBtn" @click="send_code(2)">
+          {{ textCode }}
+        </button> -->
         <button class="btn" :disabled="disabledBtn" @click="send_code(2)">
           {{ textCode }}
         </button>
@@ -159,6 +162,7 @@ export default {
           if (type == 2) {
             this.textCode = `${i}秒后重发`;
             this.disabledBtn = true;
+            console.log("禁用成功");
           } else {
             this.newTextCode = `${i}秒后重发`;
             this.newDisabledBtn = true;

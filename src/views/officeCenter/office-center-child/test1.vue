@@ -299,7 +299,7 @@ textarea {
 }
 // input框中的字体样式
 .input-style {
-  font-size: 2px;
+  font-size: 11px;
   font-family: PingFang SC;
   font-weight: 400;
   color: #4d4d4d;

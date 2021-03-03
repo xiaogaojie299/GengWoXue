@@ -53,20 +53,22 @@
             <!-- 回答人回复时间和姓名 -->
             <div class="answer-people">
               <div class="right-box">
-                <span class="answer-people-name">{{ it.answerUserName }}</span>
+                <span class="answer-people-name">{{ it.answerUserName }}</span> 
+                <!-- isAdopt 为2的时候为已采纳 -->
                 <span class="answer-people-tag hand" v-if="it.isAdopt == 2"
                   >已采纳</span
                 >
-                <span @click="toAdopt(i)" class="answer-people-tag hand" v-show="it.isCaina &&exercisesDetail.questionUserId==userInfo.id"
+                <!-- <span @click="toAdopt(i)" class="answer-people-tag hand" v-show="it.isCaina && exercisesDetail.questionUserId==userInfo.id"
                   >置为采纳</span
-                >
-                <span class="answer-people-tag hand" v-show="it.state == 2"
+                > -->
+                <span @click="toAdopt(i)" class="answer-people-tag hand" v-show="!isCaina && (it.roleType == 2 && it.userId!==userInfo.id)">置为采纳</span>
+                <span class="answer-people-tag hand" v-show="it.roleType == 2 && it.userId==userInfo.id"
                   >我的回答</span
                 >
                 <span
                   class="answer-delete hand"
                   @click="deleteMyAswer(i)"
-                  v-show="it.state == 2"
+                  v-show="it.roleType == 2 && it.userId==userInfo.id"
                   >删除回答</span
                 >
               </div>
@@ -123,6 +125,7 @@ export default {
       size: 10,
       total: 0,
       myAnswer: "",
+      isCaina:false // 判断当前列表是否有已采纳的
     };
   },
   created() {
@@ -153,9 +156,8 @@ export default {
       queryQuestionAnswerList(data).then((res) => {
         console.log("问题详情加载成功", res);
         this.answer = res.data.list;
-        this.answer.forEach(item=>{ 
-          item.isCaina = (item.isAdopt == 1); // 是否被采纳 1=否 2=是
-        })
+        this.isCaina = res.data.isAdopt==2;  // 1 未采纳 2采纳
+        console.log("this.isCaina==>",this.isCaina);
         this.total = res.data.total;
       console.log("this.answer==",this.answer);
       });
@@ -182,8 +184,6 @@ export default {
         }).catch(() => {
           
         });
-
-     
     },
     //我来回答
     letMeAnswer() {

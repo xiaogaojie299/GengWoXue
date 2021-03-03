@@ -170,14 +170,22 @@ export default {
   justify-content: space-around;
   margin-bottom: 23px;
   & .rank,
-  .teacher-name,
   .rank-num {
     // height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 30%;
+    width: 33%;
     text-align: center;
+  }
+  .teacher-name{
+    span{
+      width: 72px;
+    }
+    width: 30%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .rank {
     span {

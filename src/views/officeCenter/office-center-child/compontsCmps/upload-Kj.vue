@@ -81,6 +81,27 @@
           <!-- 下面按钮组 -->
         </div>
       </div>
+      <div style="margin: 20px 0" class="header">
+        <div class="header-tag">
+          <div class="tag-left">封面上传：</div>
+          <div>
+              <!-- :action="BASE_URL+'student/base/uploadImg'" -->
+            <!-- <el-upload
+              class="avatar-uploader"
+              action="http://192.168.0.80:81/student/base/uploadImg"
+              :show-file-list="false"
+              :on-success="handleCoverSuccess"
+              :before-upload="beforeCoverUpload">
+              <img v-if="imageUrl" :src="imageUrl" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload> -->
+            <upLoadImg @imgUrl="getImgUrl" />
+
+          </div>
+          <div></div>
+          <!-- 下面按钮组 -->
+        </div>
+      </div>
 
       <div class="upload-ppt">
         <div>{{kejianTypeValue==2?"PPT":"文档"}}上传:</div>
@@ -149,6 +170,7 @@ export default {
       kjName: "",
       dialogVisible: false,
       pptUrl: "",
+      coverImg:"",  // 封面图地址
       copy_classList: [],
       copy_subject: [],
       BASE_URL:BASE_URL
@@ -161,6 +183,29 @@ export default {
     this.copy_subject.shift();
   },
   methods: {
+    getImgUrl(e){  // 自定义组件传过来的值
+      this.coverImg = e;
+      console.log("自定义",e);
+    },
+    handleCoverSuccess(res, file) {
+        this.imageUrl = URL.createObjectURL(file.raw);
+    },
+    beforeCoverUpload(file){
+      console.log();
+        const isJPG = file.type === 'image/jpeg';
+        const isPNG = file.type === 'image/png';
+        const isLt2M = file.size / 1024 / 1024 < 2;
+
+        if (!isJPG && !isPNG) {
+            this.$message.error("上传封面只能是 JPG或者PNG 格式!");
+        }
+        
+        if (!isLt2M) {
+          this.$message.error('上传封面不能超过 2MB!');
+        }
+        return (isJPG || isPNG) && isLt2M;
+    },
+
     handleRemove(file, fileList) {
       console.log(file, fileList);
     },
@@ -171,6 +216,8 @@ export default {
       console.log("file==>", file);
       this.pptUrl = file.data;
     },
+    
+
     beforeAvatarUpload(file){
       // console.log("isLt2M==>",file);
       // const isLt2M = file.size / 1024 / 1024 < 2;
@@ -222,6 +269,9 @@ export default {
         this.$myAlert("课件名称不能为空");
         return;
       }
+      if(!this.coverImg){
+        this.$myAlert("课件封面不能为空");
+      }
       if (!this.pptUrl) {
         this.$myAlert("请上传PPT");
         return;
@@ -232,6 +282,7 @@ export default {
         subjectsId: this.subjectValue,
         type: this.kejianTypeValue,
         url: this.pptUrl,
+        img:this.coverImg
       };
       console.log("this.pptUrl",this.pptUrl);
       saveMyCourseware(pamars).then((res) => {

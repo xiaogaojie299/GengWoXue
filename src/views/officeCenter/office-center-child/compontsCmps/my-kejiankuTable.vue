@@ -57,11 +57,18 @@
       </el-table-column>
       <el-table-column prop="grade" align="center" width="80" label="年级">
       </el-table-column>
-      <el-table-column prop="url" align="center" width="80" label="附件">
+      <el-table-column prop="url" align="center" width="150" label="附件">
         <template slot-scope="scope">
           <el-button type="text" @click="watchPPT(scope.row)">
-            {{scope.row.coursewareName}}
+            <!-- {{scope.row.coursewareName}} -->
           </el-button>
+
+          <el-image 
+              style="width: 100px; height: 100px"
+              :src="scope.row.img" 
+              :preview-src-list="[scope.row.img]">
+            </el-image>
+
         </template>
       </el-table-column>
       <el-table-column prop="" align="center" label="下载费用">
