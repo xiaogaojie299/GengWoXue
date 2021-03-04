@@ -139,6 +139,9 @@ export default {
     },
     msgNum(){
       return this.$store.state.unread;
+    },
+    token(){
+      return this.$store.state.token;
     }
   },
   mounted() {},
@@ -198,10 +201,18 @@ export default {
     },
     // 获取消息列表
       goTeacherCooperation() {
-      this.$router.push("/page/coIndex/teacherCo").catch((err) => err);
+      if(this.token){
+        this.$router.push("/page/coIndex/teacherCo").catch((err) => err);
+      }else{
+        this.$myAlert("登录过后才能注册哦")
+      }
     },
       goOrganizationCooperation() {
-       this.$router.push("/page/coIndex/organizatCo").catch((err) => err);
+        if(this.thistoken){
+               this.$router.push("/page/coIndex/organizatCo").catch((err) => err);
+      }else{
+        this.$myAlert("登录过后才能注册哦")
+      }
       },
   },
 };

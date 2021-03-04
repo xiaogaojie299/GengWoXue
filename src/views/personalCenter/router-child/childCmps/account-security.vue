@@ -239,12 +239,19 @@ export default {
           newPassword: this.userUpwd,
           phone: this.phone,
         };
-        // let { data, code } = await optResetPassword(params);
-        // if (code == 200) {
-        //   this.$myAlert("重置密码成功");
-        // } else {
-        //   this.$myAlert("重置密码失败，网络错误");
-        // }
+        let { data, code } = await optResetPassword(params);
+        if (code == 200) {
+          this.$myMessage("密码更改成功");
+          setTimeout(()=>{
+            this.$router.push({
+              path: "/page/register",
+            });
+            this.$store.commit("setToken", "");
+            this.$store.commit("setUserInfo", {});
+          },1500)
+        } else {
+          this.$myAlert("重置密码失败，网络错误");
+        }
       } else {
         if (!this.phone) {
           this.$myAlert("手机号码不能为空");
