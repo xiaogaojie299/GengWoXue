@@ -105,7 +105,7 @@
       </div>
     </div>
     <!-- 弹框，遮罩层 -->
-    <el-dialog title="下载课件" :visible.sync="dialogVisible" width="60%">
+    <el-dialog title="下载课件" @close="closeMask" :visible.sync="dialogVisible" width="60%">
       <div style="display:flex">
         <div class="label">支付方式：</div>
         <div>
@@ -133,7 +133,7 @@
 <script>
 import kejiankuTable from "./compontsCmps/kejiankuTable";
 import { state, actions } from "vuex";
-import { queryAllCourseware, addCoursewareOrder,queryCoursewareOrder } from "@/network/officeCenter";
+import { queryAllCourseware, addCoursewareOrder,queryCoursewareOrder,downloadCoursewareCount } from "@/network/officeCenter";
 export default {
   data() {
     return {
@@ -171,10 +171,7 @@ export default {
     },
   },
   watch:{
-    isPay(val){
-      console.log(val);
-      val && this.uploadPPT()
-    }
+    
   },
   created() {
     this.init();
@@ -199,6 +196,7 @@ export default {
     init() {
       this.subjectList = this.$store.dispatch("getSubjectList");
       this.classList = this.$store.dispatch("getClassList");
+      this.current = 1;
       this.get_AllCourseware();
     },
     pay() {
@@ -208,6 +206,9 @@ export default {
        this.dialogVisible = false;
        window.clearInterval(this.timers);
        console.log(this.timers);
+    },
+    closeMask(){
+      this.quite()
     },
     // 查询
     query() {
@@ -247,9 +248,16 @@ export default {
       //用户付款操作
     },
     uploadPPT(){  //用户下载操作
+    let params = {
+      coursewareId : this.selectKejian.id
+    }
+      downloadCoursewareCount(params).then(res=>{  // 下载的时候调用
+        if(res.code == 200){
+          this.init()
+        }
+      });
       let a = document.getElementsByClassName("btn2")[1];
       a.href = this.selectKejian.url;
-      a.click();
       // if(a.href){
       // }else{
       //   a.href = this.selectKejian.url;
@@ -346,7 +354,10 @@ export default {
         let {code,data} = res;
         if(code ==200){
           this.i++;
-          console.log("课件库列表",data);
+          data.list.forEach(el => {
+            el.img = el.img.replace("blob:","")
+          });
+            console.log("课件库列表",data);
         this.tableData = data.list;
         this.total = data.total;
         console.log(this.total);

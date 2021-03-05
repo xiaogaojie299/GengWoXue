@@ -64,7 +64,7 @@
           </el-button> -->
           <el-image 
               style="width: 100px; height: 100px"
-              :src="scope.row.img" 
+              :src="scope.row.img.replace('blob:','')" 
               :preview-src-list="[scope.row.img]">
             </el-image>
 
@@ -77,12 +77,12 @@
       </el-table-column>
       <el-table-column prop="downloadNumber" align="center" label="下载次数">
         <template slot-scope="scope">
-          <span>{{scope.row.downloadNumber==0?'-':scope.row.downloadFee}}</span>
+          <span>{{scope.row.downloadNumber==0?'-':scope.row.downloadNumber}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="downloadNumber" align="center" label="是否付费">
         <template slot-scope="scope">
-          <span>{{scope.row.isPay==1?"未付费":"以付费"}}</span>
+          <span>{{scope.row.isPay==1?"未付费":"已付费"}}</span>
         </template>
       </el-table-column>
       <!-- 课后习题 -->

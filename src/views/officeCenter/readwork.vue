@@ -623,7 +623,13 @@ export default {
             message: "阅卷提交成功",
             type: "success",
           });
-          this.$router.go(-1);
+          setTimeout(()=>{
+            window.opener=null;
+		        window.open('','_self');
+		        window.close()
+          },1000)
+          // this.$router.go(-1);
+          
         } else {
           this.$message.error("上传失败，网络错误");
         }

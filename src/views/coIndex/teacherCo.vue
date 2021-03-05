@@ -158,7 +158,7 @@
 
 <script>
 import {optTeacherApply} from '@/network/cooperation'
-import BASE_URL from "@/network/config"
+import {BASE_URL} from "@/network/config"
 export default {
   data() {
     return {
@@ -252,7 +252,8 @@ export default {
     };
   },
   created() {
-    this.BASEURL = BASE_URL
+    this.BASEURL = BASE_URL;
+    console.log("this.BASEURL==>",this.BASEURL);
   },
   mounted() {},
   methods: {

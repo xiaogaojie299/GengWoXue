@@ -141,7 +141,7 @@ export default {
       return this.$store.state.unread;
     },
     token(){
-      return this.$store.state.token;
+      return this.$store.state.userInfo.token;
     }
   },
   mounted() {},
@@ -204,14 +204,14 @@ export default {
       if(this.token){
         this.$router.push("/page/coIndex/teacherCo").catch((err) => err);
       }else{
-        this.$myAlert("登录过后才能注册哦")
+        this.$myAlert("登录过后才能入驻哦")
       }
     },
       goOrganizationCooperation() {
         if(this.thistoken){
                this.$router.push("/page/coIndex/organizatCo").catch((err) => err);
       }else{
-        this.$myAlert("登录过后才能注册哦")
+        this.$myAlert("登录过后才能入驻哦")
       }
       },
   },

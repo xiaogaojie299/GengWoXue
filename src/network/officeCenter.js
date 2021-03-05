@@ -167,3 +167,10 @@ export function saveScheduleContent(data){
     url:api + "saveScheduleContent"+qs(data)
   })
 }
+
+// 课件下载计数器
+export function downloadCoursewareCount(data){
+  return request({
+    url:api + "downloadCoursewareCount"+qs(data)
+  })
+}

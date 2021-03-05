@@ -2,7 +2,7 @@
     <div>
         <el-upload
             class="avatar-uploader"
-            :action="BASE_URL+'student/base/uploadFile'"
+            :action="BASE_URL+'student/base/uploadImg'"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload">
@@ -48,6 +48,8 @@ import {BASE_URL} from "@/network/config"
     },
     methods: {
       handleAvatarSuccess(res, file) {
+        console.log("res==>",res);
+        console.log("file==>",file);
         this.imageUrl = URL.createObjectURL(file.raw);
         console.log("this.imageUrl===>",this.imageUrl);
         this.$emit("imgUrl",this.imageUrl+"")
